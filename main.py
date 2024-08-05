@@ -11,7 +11,7 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
-from torchsummary import summary
+# from torchsummary import summary
 
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
