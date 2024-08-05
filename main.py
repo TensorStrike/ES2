@@ -11,7 +11,7 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
-# from torchsummary import summary
+from torchsummary import summary
 
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
@@ -217,7 +217,7 @@ def main():
             cls, cls_args = models[args.model]
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
-        # print(summary(model, input_size=(3, 224, 224)))
+        print(summary(model, input_size=(3, 32, 32)))
 
 
         print_and_log(model)

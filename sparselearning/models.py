@@ -436,59 +436,59 @@ class WideResNet(nn.Module):
         return F.log_softmax(out, dim=1)
 
 
-class BasicBlock(nn.Module):
-
-    def __init__(self, in_planes, out_planes, stride, dropRate=0.0, save_features=False, bench=None):
-        super(BasicBlock, self).__init__()
-        self.bn1 = nn.BatchNorm2d(in_planes)
-        # self.relu1 = nn.ReLU(inplace=True)
-        self.relu1 = DyReLUB(in_planes, reduction=4, k=2, conv_type='2d')
-        self.conv1 = nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-                               padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(out_planes)
-        # self.relu2 = nn.ReLU(inplace=True)
-        self.relu2 = DyReLUB(out_planes, reduction=4, k=2, conv_type='2d')
-        self.conv2 = nn.Conv2d(out_planes, out_planes, kernel_size=3, stride=1,
-                               padding=1, bias=False)
-        self.droprate = dropRate
-        self.equalInOut = (in_planes == out_planes)
-        self.convShortcut = (not self.equalInOut) and nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride,
-                               padding=0, bias=False) or None
-        self.feats = []
-        self.densities = []
-        self.save_features = save_features
-        self.bench = bench
-        self.in_planes = in_planes
-
-    def forward(self, x):
-        if not self.equalInOut:
-            x = self.relu1(self.bn1(x))
-            if self.save_features:
-                self.feats.append(x.clone().detach())
-                self.densities.append((x.data != 0.0).sum().item()/x.numel())
-        else:
-            out = self.relu1(self.bn1(x))
-            if self.save_features:
-                self.feats.append(out.clone().detach())
-                self.densities.append((out.data != 0.0).sum().item()/out.numel())
-
-        if self.bench:
-            out0 = self.bench.forward(self.conv1, (out if self.equalInOut else x), str(self.in_planes) + '.conv1')
-        else:
-            out0 = self.conv1(out if self.equalInOut else x)
-
-        out = self.relu2(self.bn2(out0))
-        if self.save_features:
-            self.feats.append(out.clone().detach())
-            self.densities.append((out.data != 0.0).sum().item()/out.numel())
-        if self.droprate > 0:
-            out = F.dropout(out, p=self.droprate, training=self.training)
-        if self.bench:
-            out = self.bench.forward(self.conv2, out, str(self.in_planes) + '.conv2')
-        else:
-            out = self.conv2(out)
-
-        return torch.add(x if self.equalInOut else self.convShortcut(x), out)
+# class BasicBlock(nn.Module):
+#
+#     def __init__(self, in_planes, out_planes, stride, dropRate=0.0, save_features=False, bench=None):
+#         super(BasicBlock, self).__init__()
+#         self.bn1 = nn.BatchNorm2d(in_planes)
+#         # self.relu1 = nn.ReLU(inplace=True)
+#         self.relu1 = DyReLUB(in_planes, reduction=4, k=2, conv_type='2d')
+#         self.conv1 = nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
+#                                padding=1, bias=False)
+#         self.bn2 = nn.BatchNorm2d(out_planes)
+#         # self.relu2 = nn.ReLU(inplace=True)
+#         self.relu2 = DyReLUB(out_planes, reduction=4, k=2, conv_type='2d')
+#         self.conv2 = nn.Conv2d(out_planes, out_planes, kernel_size=3, stride=1,
+#                                padding=1, bias=False)
+#         self.droprate = dropRate
+#         self.equalInOut = (in_planes == out_planes)
+#         self.convShortcut = (not self.equalInOut) and nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride,
+#                                padding=0, bias=False) or None
+#         self.feats = []
+#         self.densities = []
+#         self.save_features = save_features
+#         self.bench = bench
+#         self.in_planes = in_planes
+#
+#     def forward(self, x):
+#         if not self.equalInOut:
+#             x = self.relu1(self.bn1(x))
+#             if self.save_features:
+#                 self.feats.append(x.clone().detach())
+#                 self.densities.append((x.data != 0.0).sum().item()/x.numel())
+#         else:
+#             out = self.relu1(self.bn1(x))
+#             if self.save_features:
+#                 self.feats.append(out.clone().detach())
+#                 self.densities.append((out.data != 0.0).sum().item()/out.numel())
+#
+#         if self.bench:
+#             out0 = self.bench.forward(self.conv1, (out if self.equalInOut else x), str(self.in_planes) + '.conv1')
+#         else:
+#             out0 = self.conv1(out if self.equalInOut else x)
+#
+#         out = self.relu2(self.bn2(out0))
+#         if self.save_features:
+#             self.feats.append(out.clone().detach())
+#             self.densities.append((out.data != 0.0).sum().item()/out.numel())
+#         if self.droprate > 0:
+#             out = F.dropout(out, p=self.droprate, training=self.training)
+#         if self.bench:
+#             out = self.bench.forward(self.conv2, out, str(self.in_planes) + '.conv2')
+#         else:
+#             out = self.conv2(out)
+#
+#         return torch.add(x if self.equalInOut else self.convShortcut(x), out)
 
 class NetworkBlock(nn.Module):
     """Wide Residual Network network block which holds basic blocks.
@@ -531,8 +531,12 @@ class BasicBlock(nn.Module):
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
+        self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
+        self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
@@ -542,10 +546,10 @@ class BasicBlock(nn.Module):
             )
 
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.relu1(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
         out += self.shortcut(x)
-        out = F.relu(out)
+        out = self.relu2(out)
         return out
 
 
@@ -584,6 +588,7 @@ class ResNet(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
+        self.relu = DyReLUB(64, reduction=4, k=2, conv_type='2d')
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
@@ -599,7 +604,7 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.relu(self.bn1(self.conv1(x)))
         out = self.layer1(out)
         out = self.layer2(out)
         out = self.layer3(out)
