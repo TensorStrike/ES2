@@ -225,9 +225,17 @@ class Masking(object):
 
     def add_module(self, module, density, sparse_init='ER'):
         self.modules.append(module)
+        # for name, tensor in module.named_parameters():
+        #     self.names.append(name)
+        #     self.masks[name] = torch.zeros_like(tensor, dtype=torch.float32, requires_grad=False).cuda()
+
         for name, tensor in module.named_parameters():
-            self.names.append(name)
-            self.masks[name] = torch.zeros_like(tensor, dtype=torch.float32, requires_grad=False).cuda()
+            if 'dyrelu' not in name.lower():
+                self.names.append(name)
+                self.masks[name] = torch.zeros_like(tensor, dtype=torch.float32, requires_grad=False).cuda()
+                print(f"Added to masking: {name}")
+            else:
+                print(f"Excluded from masking: {name}")
 
         print('Removing biases...')
         self.remove_weight_partial_name('bias')
