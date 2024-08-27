@@ -230,7 +230,7 @@ class Masking(object):
         #     self.masks[name] = torch.zeros_like(tensor, dtype=torch.float32, requires_grad=False).cuda()
 
         for name, tensor in module.named_parameters():
-            if 'dyrelu' not in name.lower():
+            if 'relu' not in name.lower():
                 self.names.append(name)
                 self.masks[name] = torch.zeros_like(tensor, dtype=torch.float32, requires_grad=False).cuda()
                 print(f"Added to masking: {name}")
