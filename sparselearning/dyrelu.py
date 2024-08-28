@@ -54,12 +54,17 @@ class DyReLUB(DyReLU):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLUB, self).__init__(channels, reduction, k, conv_type)
         self.fc2 = nn.Linear(channels // reduction, 2*k*channels)
+        self.beta = 1.0  # for phasing drelu to relu
 
     def forward(self, x):
         assert x.shape[1] == self.channels
         theta = self.get_relu_coefs(x)
 
         relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
+
+        relu_original = torch.zeros_like(relu_coefs)
+        relu_original[:, :, 0] = 1.0  # Set the positive slope to 1
+        relu_coefs = relu_coefs * self.beta + relu_original * (1 - self.beta)
 
         if self.conv_type == '1d':
             # BxCxL -> LxBxCx1

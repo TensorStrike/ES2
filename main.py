@@ -12,7 +12,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 from torchsummary import summary
-
+from sparselearning.dyrelu import DyReLUB
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, ResNet18
@@ -178,9 +178,17 @@ def main():
     # ITOP settings
     sparselearning.core.add_sparse_args(parser)
 
+    # drelu settings
+    parser.add_argument('--disable_drelu_grad', action='store_true', help='disable_drelu_grad')
+    parser.add_argument('--start_ghost_epoch', type=int, default=40, help='Start epoch for gradual phasing')
+    parser.add_argument('--end_ghost_epoch', type=int, default=79, help='End epoch for gradual phasing')
+
     args = parser.parse_args()
     setup_logger(args)
     print_and_log(args)
+
+    start_ghost_epoch = args.start_ghost_epoch
+    end_ghost_epoch = args.end_ghost_epoch
 
     if args.fp16:
         try:
@@ -279,10 +287,46 @@ def main():
 
         best_acc = 0.0
 
-        for epoch in range(1, args.epochs*args.multiplier + 1):
+        # for epoch in range(1, args.epochs*args.multiplier + 1):
+        #     t0 = time.time()
+        #     train(args, model, device, train_loader, optimizer, epoch, mask)
+        #     lr_scheduler.step()
+        #     if args.valid_split > 0.0:
+        #         val_acc = evaluate(args, model, device, valid_loader)
+        #
+        #     if val_acc > best_acc:
+        #         print('Saving model')
+        #         best_acc = val_acc
+        #         torch.save(model.state_dict(), args.save)
+        #
+        #     print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(optimizer.param_groups[0]['lr'], time.time() - t0))
+
+        for epoch in range(1, args.epochs * args.multiplier + 1):
             t0 = time.time()
+
+            if args.disable_drelu_grad:
+                if epoch == start_ghost_epoch:
+                    print("Disabling grad for DyReLU")
+                    for name, module in model.named_modules():
+                        if isinstance(module, DyReLUB):
+                            for param in module.parameters():
+                                param.requires_grad = False
+                                param.grad = None
+                                if param in optimizer.state:
+                                    if 'momentum_buffer' in optimizer.state[param]:
+                                        optimizer.state[param]['momentum_buffer'] = torch.zeros_like(param)
+
+            if start_ghost_epoch <= epoch <= end_ghost_epoch:
+                decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
+                print(f"Decay factor for epoch {epoch}: {decay_factor}")
+                for name, module in model.named_modules():
+                    if isinstance(module, DyReLUB):
+                        module.beta = decay_factor
+
             train(args, model, device, train_loader, optimizer, epoch, mask)
+
             lr_scheduler.step()
+
             if args.valid_split > 0.0:
                 val_acc = evaluate(args, model, device, valid_loader)
 
@@ -291,7 +335,9 @@ def main():
                 best_acc = val_acc
                 torch.save(model.state_dict(), args.save)
 
-            print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(optimizer.param_groups[0]['lr'], time.time() - t0))
+            print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
+                optimizer.param_groups[0]['lr'], time.time() - t0))
+
         print('Testing model')
         model.load_state_dict(torch.load(args.save))
         evaluate(args, model, device, test_loader, is_test_set=True)
