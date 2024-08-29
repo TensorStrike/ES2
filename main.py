@@ -310,7 +310,7 @@ def main():
             t0 = time.time()
 
             if args.disable_drelu_grad:
-                if epoch == start_ghost_epoch:          # when we freeze gradients of drelu
+                if epoch == end_ghost_epoch:          # when we freeze gradients of drelu
                     print("Disabling grad for DyReLU")
                     for name, module in model.named_modules():
                         if isinstance(module, DyReLUB):
