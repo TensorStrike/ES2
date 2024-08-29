@@ -70,6 +70,11 @@ def setup_logger(args):
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
+def store_final_slopes(model):
+    for module in model.modules():
+        if isinstance(module, DyReLUB):
+            module.store_inference_slopes()
+
 def print_and_log(msg):
     global logger
     print(msg)
@@ -310,7 +315,7 @@ def main():
             t0 = time.time()
 
             if args.disable_drelu_grad:
-                if epoch == end_ghost_epoch:          # when we freeze gradients of drelu
+                if epoch == start_ghost_epoch:
                     print("Disabling grad for DyReLU")
                     for name, module in model.named_modules():
                         if isinstance(module, DyReLUB):
@@ -321,7 +326,7 @@ def main():
                                     if 'momentum_buffer' in optimizer.state[param]:
                                         optimizer.state[param]['momentum_buffer'] = torch.zeros_like(param)
 
-            if start_ghost_epoch <= epoch <= end_ghost_epoch:       #decay factor (beta) for phasing out drelu
+            if start_ghost_epoch <= epoch <= end_ghost_epoch:           # set decay factor (beta) for phasing drelu into relu
                 decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
                 print(f"Decay factor for epoch {epoch}: {decay_factor}")
                 for name, module in model.named_modules():
@@ -332,12 +337,23 @@ def main():
 
             lr_scheduler.step()
 
+            # Set inference mode for evaluation
+            for module in model.modules():
+                if isinstance(module, DyReLUB):
+                    module.set_inference_mode(True)
+
             if args.valid_split > 0.0:
                 val_acc = evaluate(args, model, device, valid_loader)
+
+            # Set back to training mode
+            for module in model.modules():
+                if isinstance(module, DyReLUB):
+                    module.set_inference_mode(False)
 
             if val_acc > best_acc:
                 print('Saving model')
                 best_acc = val_acc
+                store_final_slopes(model)  # store slopes of dyrelu
                 torch.save(model.state_dict(), args.save)
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(

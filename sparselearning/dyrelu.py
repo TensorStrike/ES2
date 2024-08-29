@@ -55,29 +55,45 @@ class DyReLUB(DyReLU):
         super(DyReLUB, self).__init__(channels, reduction, k, conv_type)
         self.fc2 = nn.Linear(channels // reduction, 2*k*channels)
         self.beta = 1.0  # for phasing drelu to relu
+        self.inference_slopes = nn.Parameter(torch.Tensor(channels, 2), requires_grad=False)
+        self.inference_mode = False
 
     def forward(self, x):
-        assert x.shape[1] == self.channels
-        theta = self.get_relu_coefs(x)
+        if self.inference_mode:
+            return torch.where(x < 0, x * self.inference_slopes[:, 0].view(1, -1, 1, 1),
+                               x * self.inference_slopes[:, 1].view(1, -1, 1, 1))
+        else:
+            assert x.shape[1] == self.channels
+            theta = self.get_relu_coefs(x)
 
-        relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
+            relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
 
-        relu_original = torch.zeros_like(relu_coefs)
-        relu_original[:, :, 0] = 1.0  # Set the positive slope to 1
-        relu_coefs = relu_coefs * self.beta + relu_original * (1 - self.beta)
+            relu_original = torch.zeros_like(relu_coefs)
+            relu_original[:, :, 0] = 1.0  # Set the positive slope to 1
+            relu_coefs = relu_coefs * self.beta + relu_original * (1 - self.beta)
 
-        if self.conv_type == '1d':
-            # BxCxL -> LxBxCx1
-            x_perm = x.permute(2, 0, 1).unsqueeze(-1)
-            output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
-            # LxBxCx2 -> BxCxL
-            result = torch.max(output, dim=-1)[0].permute(1, 2, 0)
+            if self.conv_type == '1d':
+                # BxCxL -> LxBxCx1
+                x_perm = x.permute(2, 0, 1).unsqueeze(-1)
+                output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
+                # LxBxCx2 -> BxCxL
+                result = torch.max(output, dim=-1)[0].permute(1, 2, 0)
 
-        elif self.conv_type == '2d':
-            # BxCxHxW -> HxWxBxCx1
-            x_perm = x.permute(2, 3, 0, 1).unsqueeze(-1)
-            output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
-            # HxWxBxCx2 -> BxCxHxW
-            result = torch.max(output, dim=-1)[0].permute(2, 3, 0, 1)
+            elif self.conv_type == '2d':
+                # BxCxHxW -> HxWxBxCx1
+                x_perm = x.permute(2, 3, 0, 1).unsqueeze(-1)
+                output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
+                # HxWxBxCx2 -> BxCxHxW
+                result = torch.max(output, dim=-1)[0].permute(2, 3, 0, 1)
 
-        return result
+            return result
+
+    def store_inference_slopes(self):
+        with torch.no_grad():
+            # Compute and store the slopes
+            dummy_input = torch.randn(1, self.channels, 1, 1).to(self.inference_slopes.device)
+            slopes = self.get_relu_coefs(dummy_input).view(-1, self.channels, 2)
+            self.inference_slopes.copy_(slopes[0])
+
+    def set_inference_mode(self, mode=True):
+        self.inference_mode = mode
