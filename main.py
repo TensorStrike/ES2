@@ -326,38 +326,42 @@ def main():
                                     if 'momentum_buffer' in optimizer.state[param]:
                                         optimizer.state[param]['momentum_buffer'] = torch.zeros_like(param)
 
-            if start_ghost_epoch <= epoch <= end_ghost_epoch:           # set decay factor (beta) for phasing drelu into relu
-                decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
-                print(f"Decay factor for epoch {epoch}: {decay_factor}")
-                for name, module in model.named_modules():
-                    if isinstance(module, DyReLUB):
-                        module.beta = decay_factor
+                if start_ghost_epoch <= epoch <= end_ghost_epoch:
+                    decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
+                    print(f"Decay factor for epoch {epoch}: {decay_factor}")
+                    for name, module in model.named_modules():
+                        if isinstance(module, DyReLUB):
+                            module.beta = decay_factor
 
             train(args, model, device, train_loader, optimizer, epoch, mask)
 
             lr_scheduler.step()
 
-            # Set inference mode for evaluation
-            for module in model.modules():
-                if isinstance(module, DyReLUB):
-                    module.set_inference_mode(True)
-
             if args.valid_split > 0.0:
+                # Set inference mode for evaluation
+                for module in model.modules():
+                    if isinstance(module, DyReLUB):
+                        module.set_inference_mode(True)
+
                 val_acc = evaluate(args, model, device, valid_loader)
 
-            # Set back to training mode
-            for module in model.modules():
-                if isinstance(module, DyReLUB):
-                    module.set_inference_mode(False)
+                # Set back to training mode
+                for module in model.modules():
+                    if isinstance(module, DyReLUB):
+                        module.set_inference_mode(False)
 
             if val_acc > best_acc:
                 print('Saving model')
                 best_acc = val_acc
-                store_final_slopes(model)  # store slopes of dyrelu
                 torch.save(model.state_dict(), args.save)
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
+
+        store_final_slopes(model)
+        for module in model.modules():      # for final eval
+            if isinstance(module, DyReLUB):
+                module.set_inference_mode(True)
 
         print('Testing model')
         model.load_state_dict(torch.load(args.save))
