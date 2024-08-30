@@ -58,33 +58,19 @@ class DyReLUB(DyReLU):
         self.inference_slopes = None
         self.inference_mode = False
 
+
     def forward(self, x):
-        if self.inference_mode and self.inference_slopes is not None:
-            return torch.where(x < 0, x * self.inference_slopes[:, 0].view(1, -1, 1, 1),
-                               x * self.inference_slopes[:, 1].view(1, -1, 1, 1))
+        assert x.shape[1] == self.channels
+        theta = self.get_relu_coefs(x)
+        relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
+        relu_coefs = relu_coefs * self.beta + (1 - self.beta)  # phasing to standard ReLU
+
+        if self.conv_type == '2d':
+            x_perm = x.permute(2, 3, 0, 1).unsqueeze(-1)
+            output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
+            result = torch.max(output, dim=-1)[0].permute(2, 3, 0, 1)
         else:
-            # Normal DyReLU behavior
-            assert x.shape[1] == self.channels
-            theta = self.get_relu_coefs(x)
-            relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
-            relu_coefs = relu_coefs * self.beta + (1 - self.beta)  # phasing to standard ReLU
+            # Handle 1d case if needed
+            pass
 
-            if self.conv_type == '2d':
-                x_perm = x.permute(2, 3, 0, 1).unsqueeze(-1)
-                output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
-                result = torch.max(output, dim=-1)[0].permute(2, 3, 0, 1)
-            else:
-                # Handle 1d case if needed
-                pass
-
-            return result
-
-    def store_inference_slopes(self):
-        with torch.no_grad():
-            dummy_input = torch.randn(1, self.channels, 1, 1).to(next(self.parameters()).device)
-            theta = self.get_relu_coefs(dummy_input)
-            slopes = theta.view(-1, self.channels, 2 * self.k) * self.lambdas + self.init_v
-            self.inference_slopes = slopes[0, :, :2]  # Store only the first two slopes per channel
-
-    def set_inference_mode(self, mode=True):
-        self.inference_mode = mode
+        return result

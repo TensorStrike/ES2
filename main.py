@@ -70,10 +70,10 @@ def setup_logger(args):
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
-def store_final_slopes(model):
-    for module in model.modules():
-        if isinstance(module, DyReLUB):
-            module.store_inference_slopes()
+# def store_final_slopes(model):
+#     for module in model.modules():
+#         if isinstance(module, DyReLUB):
+#             module.store_inference_slopes()
 
 def print_and_log(msg):
     global logger
@@ -338,17 +338,7 @@ def main():
             lr_scheduler.step()
 
             if args.valid_split > 0.0:
-                # Set inference mode for evaluation
-                for module in model.modules():
-                    if isinstance(module, DyReLUB):
-                        module.set_inference_mode(True)
-
                 val_acc = evaluate(args, model, device, valid_loader)
-
-                # Set back to training mode
-                for module in model.modules():
-                    if isinstance(module, DyReLUB):
-                        module.set_inference_mode(False)
 
             if val_acc > best_acc:
                 print('Saving model')
@@ -358,10 +348,6 @@ def main():
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
 
-        store_final_slopes(model)
-        for module in model.modules():      # for final eval
-            if isinstance(module, DyReLUB):
-                module.set_inference_mode(True)
 
         print('Testing model')
         model.load_state_dict(torch.load(args.save))
