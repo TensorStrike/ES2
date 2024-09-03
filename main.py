@@ -220,7 +220,8 @@ def main():
         elif args.model == 'ResNet18':
             model = ResNet18(c=100).to(device)
         elif args.model == 'ResNet34':
-            model = ResNet34(c=100).to(device)
+            # model = ResNet34(c=100).to(device)
+            model = ResNet34(num_classes=100, ratio=2).to(device)
         else:
             cls, cls_args = models[args.model]
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)

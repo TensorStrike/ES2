@@ -78,6 +78,8 @@ class Masking(object):
         if self.args.fix: self.prune_every_k_steps = None
         else: self.prune_every_k_steps = self.args.update_frequency
 
+        self.density = None
+
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
         self.density = density
         if mode == 'GMP':
@@ -245,6 +247,29 @@ class Masking(object):
         self.remove_type(nn.BatchNorm1d)
         self.init(mode=sparse_init, density=density)
 
+        # for weight-sharing
+        print("Adjusting density for weight sharing")
+
+        total_size = 0
+        for module in self.modules:
+            for name, tensor in module.named_parameters():
+                if name not in self.masks: continue
+                total_size += tensor.numel()
+
+        shared_para = module.get_shared_para() if hasattr(module, 'get_shared_para') else 0
+        new_total_size = total_size + shared_para
+
+        print("Parameters without sharing:", total_size)
+        print("Shared parameters:", shared_para)
+        print("Total parameters with sharing:", new_total_size)
+
+        # Adjust density based on the new total size
+        adjusted_density = density * total_size / new_total_size
+        print("Original density:", density)
+        print("Adjusted density:", adjusted_density)
+
+        self.density = adjusted_density
+        self.init(mode=sparse_init, density=self.density)
 
     def remove_weight(self, name):
         if name in self.masks:
@@ -538,21 +563,51 @@ class Masking(object):
         grad = weight.grad.clone()
         return grad
 
+    # def print_nonzero_counts(self):
+    #     for module in self.modules:
+    #         for name, tensor in module.named_parameters():
+    #             if name not in self.masks: continue
+    #             mask = self.masks[name]
+    #             num_nonzeros = (mask != 0).sum().item()
+    #             val = '{0}: {1}->{2}, density: {3:.3f}'.format(name, self.name2nonzeros[name], num_nonzeros, num_nonzeros/float(mask.numel()))
+    #             print(val)
+    #
+    #
+    #     for module in self.modules:
+    #         for name, tensor in module.named_parameters():
+    #             if name not in self.masks: continue
+    #             print('Death rate: {0}\n'.format(self.death_rate))
+    #             break
     def print_nonzero_counts(self):
         for module in self.modules:
             for name, tensor in module.named_parameters():
                 if name not in self.masks: continue
                 mask = self.masks[name]
                 num_nonzeros = (mask != 0).sum().item()
-                val = '{0}: {1}->{2}, density: {3:.3f}'.format(name, self.name2nonzeros[name], num_nonzeros, num_nonzeros/float(mask.numel()))
+                val = '{0}: {1}->{2}, density: {3:.3f}'.format(name, self.name2nonzeros[name], num_nonzeros,
+                                                               num_nonzeros / float(mask.numel()))
                 print(val)
 
+        total_size = 0
+        sparse_size = 0
+        for name, weight in self.masks.items():
+            total_size += weight.numel()
+            sparse_size += (weight != 0).sum().int().item()
 
-        for module in self.modules:
-            for name, tensor in module.named_parameters():
-                if name not in self.masks: continue
-                print('Death rate: {0}\n'.format(self.death_rate))
-                break
+        # Account for shared parameters
+        if hasattr(self.modules[0], 'get_shared_para'):
+            shared_para = self.modules[0].get_shared_para()
+            total_size += shared_para
+            sparse_size += shared_para  # Assuming shared parameters are always non-zero
+
+        current_density = sparse_size / total_size
+        current_sparsity = 1 - current_density
+
+        print(60 * '=')
+        print('Current sparsity: {0:.3f}, Current density: {1:.3f}'.format(current_sparsity, current_density))
+        print('Total parameters: {0}, Non-zero parameters: {1}'.format(total_size, sparse_size))
+        print(60 * '=')
+
 
     def fired_masks_update(self):
         ntotal_fired_weights = 0.0

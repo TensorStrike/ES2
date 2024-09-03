@@ -524,7 +524,35 @@ class NetworkBlock(nn.Module):
 ################################################ ResNet ####################################################
 ############################################################################################################
 
-class BasicBlock(nn.Module):
+# class BasicBlock(nn.Module):
+#     expansion = 1
+#
+#     def __init__(self, in_planes, planes, stride=1):
+#         super(BasicBlock, self).__init__()
+#         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+#         self.bn1 = nn.BatchNorm2d(planes)
+#         self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+#
+#         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+#         self.bn2 = nn.BatchNorm2d(planes)
+#         self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+#
+#
+#         self.shortcut = nn.Sequential()
+#         if stride != 1 or in_planes != self.expansion*planes:
+#             self.shortcut = nn.Sequential(
+#                 nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
+#                 nn.BatchNorm2d(self.expansion*planes)
+#             )
+#
+#     def forward(self, x):
+#         out = self.relu1(self.bn1(self.conv1(x)))
+#         out = self.bn2(self.conv2(out))
+#         out += self.shortcut(x)
+#         out = self.relu2(out)
+#         return out
+
+class BasicBlock(nn.Module):    # for weight sharing
     expansion = 1
 
     def __init__(self, in_planes, planes, stride=1):
@@ -536,7 +564,6 @@ class BasicBlock(nn.Module):
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
         self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
-
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
@@ -552,6 +579,44 @@ class BasicBlock(nn.Module):
         out = self.relu2(out)
         return out
 
+    def get_params(self):
+        # get parameters for weight sharing
+        return [self.conv1.weight, self.conv2.weight, self.shortcut[0].weight if len(self.shortcut) > 0 else None]
+
+class BasicBlock_NoPara(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1):
+        super(BasicBlock_NoPara, self).__init__()
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+
+        self.stride = stride
+        self.in_planes = in_planes
+        self.planes = planes
+
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(nn.BatchNorm2d(self.expansion*planes))
+        else:
+            self.shortcut = nn.Sequential()
+
+    def forward(self, x, shared_params):
+        conv1_weight, conv2_weight, shortcut_weight = shared_params
+
+        out = self.relu1(self.bn1(F.conv2d(x, conv1_weight, stride=self.stride, padding=1)))
+        out = self.bn2(F.conv2d(out, conv2_weight, stride=1, padding=1))
+
+        if shortcut_weight is not None:
+            shortcut = F.conv2d(x, shortcut_weight, stride=self.stride)
+            shortcut = self.shortcut(shortcut)
+        else:
+            shortcut = self.shortcut(x)
+
+        out += shortcut
+        out = self.relu2(out)
+        return out
 
 class Bottleneck(nn.Module):
     expansion = 4
@@ -581,10 +646,46 @@ class Bottleneck(nn.Module):
         return out
 
 
+# class ResNet(nn.Module):
+#     def __init__(self, block, num_blocks, num_classes):
+#         super(ResNet, self).__init__()
+#         self.in_planes = 64
+#
+#         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+#         self.bn1 = nn.BatchNorm2d(64)
+#         self.relu = DyReLUB(64, reduction=4, k=2, conv_type='2d')
+#         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
+#         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
+#         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
+#         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
+#         self.classifier = nn.Linear(512*block.expansion, num_classes, bias=False)
+#
+#     def _make_layer(self, block, planes, num_blocks, stride):
+#         strides = [stride] + [1]*(num_blocks-1)
+#         layers = []
+#         for stride in strides:
+#             layers.append(block(self.in_planes, planes, stride))
+#             self.in_planes = planes * block.expansion
+#         return nn.Sequential(*layers)
+#
+#     def forward(self, x):
+#         out = self.relu(self.bn1(self.conv1(x)))
+#         out = self.layer1(out)
+#         out = self.layer2(out)
+#         out = self.layer3(out)
+#         out = self.layer4(out)
+#         out = F.avg_pool2d(out, 4)
+#         out = out.view(out.size(0), -1)
+#         out = self.classifier(out)
+#         out = F.log_softmax(out, dim=1)
+#         return out
+
+# weight sharing version
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes):
+    def __init__(self, block, num_blocks, num_classes=10, ratio=2):
         super(ResNet, self).__init__()
         self.in_planes = 64
+        self.ratio = ratio
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -593,34 +694,57 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.classifier = nn.Linear(512*block.expansion, num_classes, bias=False)
+        self.linear = nn.Linear(512*block.expansion, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
         layers = []
-        for stride in strides:
-            layers.append(block(self.in_planes, planes, stride))
+        for i, stride in enumerate(strides):
+            if i < self.ratio:
+                layers.append(block(self.in_planes, planes, stride))
+            else:
+                layers.append(block._nopara(self.in_planes, planes, stride))
             self.in_planes = planes * block.expansion
-        return nn.Sequential(*layers)
+        return nn.ModuleList(layers)
 
     def forward(self, x):
         out = self.relu(self.bn1(self.conv1(x)))
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = F.avg_pool2d(out, 4)
+        out = self._forward_layer(self.layer1, out)
+        out = self._forward_layer(self.layer2, out)
+        out = self._forward_layer(self.layer3, out)
+        out = self._forward_layer(self.layer4, out)
+        out = F.adaptive_avg_pool2d(out, (1, 1))
         out = out.view(out.size(0), -1)
-        out = self.classifier(out)
-        out = F.log_softmax(out, dim=1)
+        out = self.linear(out)
         return out
+
+    def _forward_layer(self, layer, x):
+        for i, block in enumerate(layer):
+            if i < self.ratio:
+                x = block(x)
+            else:
+                shared_params = layer[self.ratio-1].get_params()
+                x = block(x, shared_params)
+        return x
+
+    def get_shared_para(self):
+        shared_para = 0
+        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
+            if len(layer) > self.ratio:
+                params = layer[self.ratio-1].get_params()
+                shared_para += sum(p.numel() for p in params if p is not None)
+        return shared_para
+
 
 
 def ResNet18(c=1000):
     return ResNet(BasicBlock, [2,2,2,2],c)
 
-def ResNet34(c=10):
-    return ResNet(BasicBlock, [3,4,6,3],c)
+# def ResNet34(c=10):
+#     return ResNet(BasicBlock, [3,4,6,3],c)
+
+def ResNet34(num_classes=10, ratio=2):
+    return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes, ratio=ratio)
 
 def ResNet50(c=10):
     return ResNet(Bottleneck, [3,4,6,3],c)
