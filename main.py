@@ -87,7 +87,8 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         optimizer.zero_grad()
         output = model(data)
 
-        loss = F.nll_loss(output, target)
+        # loss = F.nll_loss(output, target)
+        loss = F.cross_entropy(output, target)
 
         train_loss += loss.item()
         pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
@@ -129,12 +130,15 @@ def evaluate(args, model, device, test_loader, is_test_set=False):
             correct += pred.eq(target.view_as(pred)).sum().item()
             n += target.shape[0]
 
-    test_loss /= float(n)
+    # test_loss /= float(n)
+    test_loss += F.cross_entropy(output, target, reduction='sum').item()
 
     print_and_log('\n{}: Average loss: {:.4f}, Accuracy: {}/{} ({:.3f}%)\n'.format(
         'Test evaluation' if is_test_set else 'Evaluation',
         test_loss, correct, n, 100. * correct / float(n)))
     return correct / float(n)
+
+
 
 
 def main():

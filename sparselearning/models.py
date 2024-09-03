@@ -640,7 +640,7 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512*block.expansion, num_classes)
+        self.linear = nn.Linear(512 * block[0].expansion, num_classes)
 
 
     def _make_layer(self, block, planes, num_blocks, stride):
@@ -648,10 +648,10 @@ class ResNet(nn.Module):
         layers = []
         for i, stride in enumerate(strides):
             if i < self.ratio:
-                layers.append(block(self.in_planes, planes, stride))
+                layers.append(block[0](self.in_planes, planes, stride))
             else:
-                layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
-            self.in_planes = planes * block.expansion
+                layers.append(block[1](self.in_planes, planes, stride))
+            self.in_planes = planes * block[0].expansion
         return nn.ModuleList(layers)
 
     def forward(self, x):
@@ -678,7 +678,7 @@ class ResNet(nn.Module):
         shared_para = 0
         for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
             if len(layer) > self.ratio:
-                params = layer[self.ratio-1].get_params()
+                params = layer[self.ratio - 1].get_params()
                 shared_para += sum(p.numel() for p in params if p is not None)
         return shared_para
 
@@ -691,7 +691,7 @@ def ResNet18(c=1000):
 #     return ResNet(BasicBlock, [3,4,6,3],c)
 
 def ResNet34(num_classes=10, ratio=2):
-    return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes, ratio=ratio)
+    return ResNet([BasicBlock, BasicBlock_NoPara], [3, 4, 6, 3], num_classes=num_classes, ratio=ratio)
 
 def ResNet50(c=10):
     return ResNet(Bottleneck, [3,4,6,3],c)
