@@ -436,60 +436,6 @@ class WideResNet(nn.Module):
         return F.log_softmax(out, dim=1)
 
 
-# class BasicBlock(nn.Module):
-#
-#     def __init__(self, in_planes, out_planes, stride, dropRate=0.0, save_features=False, bench=None):
-#         super(BasicBlock, self).__init__()
-#         self.bn1 = nn.BatchNorm2d(in_planes)
-#         # self.relu1 = nn.ReLU(inplace=True)
-#         self.relu1 = DyReLUB(in_planes, reduction=4, k=2, conv_type='2d')
-#         self.conv1 = nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-#                                padding=1, bias=False)
-#         self.bn2 = nn.BatchNorm2d(out_planes)
-#         # self.relu2 = nn.ReLU(inplace=True)
-#         self.relu2 = DyReLUB(out_planes, reduction=4, k=2, conv_type='2d')
-#         self.conv2 = nn.Conv2d(out_planes, out_planes, kernel_size=3, stride=1,
-#                                padding=1, bias=False)
-#         self.droprate = dropRate
-#         self.equalInOut = (in_planes == out_planes)
-#         self.convShortcut = (not self.equalInOut) and nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride,
-#                                padding=0, bias=False) or None
-#         self.feats = []
-#         self.densities = []
-#         self.save_features = save_features
-#         self.bench = bench
-#         self.in_planes = in_planes
-#
-#     def forward(self, x):
-#         if not self.equalInOut:
-#             x = self.relu1(self.bn1(x))
-#             if self.save_features:
-#                 self.feats.append(x.clone().detach())
-#                 self.densities.append((x.data != 0.0).sum().item()/x.numel())
-#         else:
-#             out = self.relu1(self.bn1(x))
-#             if self.save_features:
-#                 self.feats.append(out.clone().detach())
-#                 self.densities.append((out.data != 0.0).sum().item()/out.numel())
-#
-#         if self.bench:
-#             out0 = self.bench.forward(self.conv1, (out if self.equalInOut else x), str(self.in_planes) + '.conv1')
-#         else:
-#             out0 = self.conv1(out if self.equalInOut else x)
-#
-#         out = self.relu2(self.bn2(out0))
-#         if self.save_features:
-#             self.feats.append(out.clone().detach())
-#             self.densities.append((out.data != 0.0).sum().item()/out.numel())
-#         if self.droprate > 0:
-#             out = F.dropout(out, p=self.droprate, training=self.training)
-#         if self.bench:
-#             out = self.bench.forward(self.conv2, out, str(self.in_planes) + '.conv2')
-#         else:
-#             out = self.conv2(out)
-#
-#         return torch.add(x if self.equalInOut else self.convShortcut(x), out)
-
 class NetworkBlock(nn.Module):
     """Wide Residual Network network block which holds basic blocks.
 
@@ -696,6 +642,7 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.linear = nn.Linear(512*block.expansion, num_classes)
 
+
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
         layers = []
@@ -703,7 +650,7 @@ class ResNet(nn.Module):
             if i < self.ratio:
                 layers.append(block(self.in_planes, planes, stride))
             else:
-                layers.append(block._nopara(self.in_planes, planes, stride))
+                layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
             self.in_planes = planes * block.expansion
         return nn.ModuleList(layers)
 
@@ -723,7 +670,7 @@ class ResNet(nn.Module):
             if i < self.ratio:
                 x = block(x)
             else:
-                shared_params = layer[self.ratio-1].get_params()
+                shared_params = layer[self.ratio - 1].get_params()
                 x = block(x, shared_params)
         return x
 
