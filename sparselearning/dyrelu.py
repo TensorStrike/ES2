@@ -55,22 +55,29 @@ class DyReLUB(DyReLU):
         super(DyReLUB, self).__init__(channels, reduction, k, conv_type)
         self.fc2 = nn.Linear(channels // reduction, 2*k*channels)
         self.beta = 1.0  # for phasing drelu to relu
-        self.inference_slopes = None
-        self.inference_mode = False
-
 
     def forward(self, x):
         assert x.shape[1] == self.channels
         theta = self.get_relu_coefs(x)
-        relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
-        relu_coefs = relu_coefs * self.beta + (1 - self.beta)  # phasing to standard ReLU
 
-        if self.conv_type == '2d':
+        relu_coefs = theta.view(-1, self.channels, 2*self.k) * self.lambdas + self.init_v
+
+        relu_original = torch.zeros_like(relu_coefs)
+        relu_original[:, :, 0] = 1.0  # Set the positive slope to 1
+        relu_coefs = relu_coefs * self.beta + relu_original * (1 - self.beta)
+
+        if self.conv_type == '1d':
+            # BxCxL -> LxBxCx1
+            x_perm = x.permute(2, 0, 1).unsqueeze(-1)
+            output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
+            # LxBxCx2 -> BxCxL
+            result = torch.max(output, dim=-1)[0].permute(1, 2, 0)
+
+        elif self.conv_type == '2d':
+            # BxCxHxW -> HxWxBxCx1
             x_perm = x.permute(2, 3, 0, 1).unsqueeze(-1)
             output = x_perm * relu_coefs[:, :, :self.k] + relu_coefs[:, :, self.k:]
+            # HxWxBxCx2 -> BxCxHxW
             result = torch.max(output, dim=-1)[0].permute(2, 3, 0, 1)
-        else:
-            # Handle 1d case if needed
-            pass
 
         return result
