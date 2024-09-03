@@ -259,16 +259,16 @@ class Masking(object):
 
         print('Removing biases...')
         self.remove_weight_partial_name('bias')
+        print('Removing batch norm...')
+        self.remove_type(nn.BatchNorm2d)
         self.init(mode=sparse_init, density=density)
 
         # for weight-sharing
         print("Adjusting density for weight sharing")
 
         total_size = 0
-        for module in self.modules:
-            for name, tensor in module.named_parameters():
-                if name not in self.masks: continue
-                total_size += tensor.numel()
+        for name, mask in self.masks.items():
+            total_size += mask.numel()
 
         shared_para = module.get_shared_para() if hasattr(module, 'get_shared_para') else 0
         new_total_size = total_size + shared_para
