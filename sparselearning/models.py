@@ -604,6 +604,7 @@ class BasicBlock_NoPara(nn.Module):
         self.scale_1 = nn.Parameter(torch.ones(1))
         self.scale_2 = nn.Parameter(torch.ones(1))
 
+        self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.scale_3 = nn.Parameter(torch.ones(1))
             self.shortcut = nn.Sequential(nn.BatchNorm2d(self.expansion*planes))
@@ -612,7 +613,7 @@ class BasicBlock_NoPara(nn.Module):
         out = self.relu1(self.bn1(F.conv2d(x, self.scale_1*weight_params[0], None, stride=self.stride, padding=1)))
         out = self.bn2(F.conv2d(out, self.scale_2*weight_params[1], None, stride=1, padding=1))
         if len(weight_params) == 2:
-            out += x
+            out += self.shortcut(x)
         else:
             temp = F.conv2d(x, self.scale_3*weight_params[2], None, stride=self.stride)
             out += self.shortcut(temp)
@@ -651,9 +652,10 @@ class ResNet(nn.Module):
             if i < self.ratio:
                 out = blocks[i](out)
             else:
-                params = blocks[self.ratio-1].conv1.weight, blocks[self.ratio-1].conv2.weight
-                if hasattr(blocks[self.ratio-1], 'shortcut') and isinstance(blocks[self.ratio-1].shortcut, nn.Sequential):
-                    params += (blocks[self.ratio-1].shortcut[0].weight,)
+                params = [blocks[self.ratio-1].conv1.weight, blocks[self.ratio-1].conv2.weight]
+                if isinstance(blocks[self.ratio-1].shortcut, nn.Sequential) and len(blocks[self.ratio-1].shortcut) > 0:
+                    if isinstance(blocks[self.ratio-1].shortcut[0], nn.Conv2d):
+                        params.append(blocks[self.ratio-1].shortcut[0].weight)
                 out = blocks[i](out, params)
         return out
 
@@ -671,11 +673,12 @@ class ResNet(nn.Module):
     def get_shared_para(self):
         shared_para = 0
         for blocks in [self.layer1, self.layer2, self.layer3, self.layer4]:
-            for i in range(self.ratio, len(blocks)):
-                params = blocks[self.ratio-1].conv1.weight, blocks[self.ratio-1].conv2.weight
-                if hasattr(blocks[self.ratio-1], 'shortcut') and isinstance(blocks[self.ratio-1].shortcut, nn.Sequential):
-                    params += (blocks[self.ratio-1].shortcut[0].weight,)
-                shared_para += sum(p.numel() for p in params)
+            if len(blocks) > self.ratio:
+                params = [blocks[self.ratio-1].conv1.weight, blocks[self.ratio-1].conv2.weight]
+                if isinstance(blocks[self.ratio-1].shortcut, nn.Sequential) and len(blocks[self.ratio-1].shortcut) > 0:
+                    if isinstance(blocks[self.ratio-1].shortcut[0], nn.Conv2d):
+                        params.append(blocks[self.ratio-1].shortcut[0].weight)
+                shared_para += sum(p.numel() for p in params) * (len(blocks) - self.ratio)
         return shared_para
 
 def ResNet18(c=1000):
