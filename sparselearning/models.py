@@ -654,7 +654,7 @@ class BasicBlock(nn.Module):
 
 
 class ResNet34(nn.Module):
-    def __init__(self, num_classes=10, share_point=4):
+    def __init__(self, num_classes=10, share_point=2):
         super(ResNet34, self).__init__()
         self.in_planes = 64
         self.share_point = share_point
@@ -711,8 +711,8 @@ def ResNet18(c=1000):
 
 # def ResNet34(c=10):
 #     return ResNet(BasicBlock, [3,4,6,3],c)
-def resnet34(num_classes=10):
-    return ResNet34(num_classes=num_classes)
+def resnet34(c=10):
+    return ResNet34(num_classes=c)
 
 
 def ResNet50(c=10):
