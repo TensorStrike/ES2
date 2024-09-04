@@ -638,11 +638,9 @@ class BasicBlock(nn.Module):
         out = self.relu1(self.bn1(self.conv1(x)))
         if torch.isnan(out).any():
             print("NaN detected in BasicBlock after first conv+bn+relu")
-            return out
         out = self.bn2(self.conv2(out))
         if torch.isnan(out).any():
             print("NaN detected in BasicBlock after second conv+bn")
-            return out
         out += self.shortcut(x)
         out = self.relu2(out)
         if torch.isnan(out).any():
@@ -680,11 +678,9 @@ class BasicBlock_NoPara(nn.Module):
         out = self.relu1(self.bn1(F.conv2d(x, weight_params[0], bias=None, stride=self.stride, padding=1)))
         if torch.isnan(out).any():
             print("NaN detected in BasicBlock_NoPara after first conv+bn+relu")
-            return out
         out = self.bn2(F.conv2d(out, weight_params[1], bias=None, stride=1, padding=1))
         if torch.isnan(out).any():
             print("NaN detected in BasicBlock_NoPara after second conv+bn")
-            return out
         if len(weight_params) == 2:
             out += self.shortcut(x)
         else:
@@ -721,48 +717,37 @@ class ResNet(nn.Module):
         return nn.ModuleList(layers)
 
     def forward(self, x):
-        def forward(self, x):
-            out = self.relu1(self.bn1(self.conv1(x)))
-            if torch.isnan(out).any():
-                print("NaN detected after initial conv+bn+relu")
-                return out
-            out = self.iterativeCall(self.layer1, out)
-            if torch.isnan(out).any():
-                print("NaN detected after layer1")
-                return out
-            out = self.iterativeCall(self.layer2, out)
-            if torch.isnan(out).any():
-                print("NaN detected after layer2")
-                return out
-            out = self.iterativeCall(self.layer3, out)
-            if torch.isnan(out).any():
-                print("NaN detected after layer3")
-                return out
-            out = self.iterativeCall(self.layer4, out)
-            if torch.isnan(out).any():
-                print("NaN detected after layer4")
-                return out
-            out = F.adaptive_avg_pool2d(out, (1, 1))
-            out = out.view(out.size(0), -1)
-            out = self.linear(out)
-            if torch.isnan(out).any():
-                print("NaN detected after final linear layer")
-            return out
-    def iterativeCall(self, blocks, x):
-        out = blocks[0](x)
+        out = self.relu1(self.bn1(self.conv1(x)))
         if torch.isnan(out).any():
-            print(f"NaN detected in iterativeCall after block 0")
-            return out
-        for i in range(1, len(blocks)):
+            print("NaN detected after initial conv+bn+relu")
+        out = self.iterativeCall(self.layer1, out)
+        if torch.isnan(out).any():
+            print("NaN detected after layer1")
+        out = self.iterativeCall(self.layer2, out)
+        if torch.isnan(out).any():
+            print("NaN detected after layer2")
+        out = self.iterativeCall(self.layer3, out)
+        if torch.isnan(out).any():
+            print("NaN detected after layer3")
+        out = self.iterativeCall(self.layer4, out)
+        if torch.isnan(out).any():
+            print("NaN detected after layer4")
+        out = F.adaptive_avg_pool2d(out, (1, 1))
+        out = out.view(out.size(0), -1)
+        out = self.linear(out)
+        if torch.isnan(out).any():
+            print("NaN detected after final linear layer")
+        return out
+    def iterativeCall(self, blocks, x):
+        for i, block in enumerate(blocks):
             if i < self.ratio:
-                out = blocks[i](out)
+                x = block(x)
             else:
                 params = blocks[self.ratio-1].getParams()
-                out = blocks[i](out, *params)
-            if torch.isnan(out).any():
+                x = block(x, *params)
+            if torch.isnan(x).any():
                 print(f"NaN detected in iterativeCall after block {i}")
-                return out
-        return out
+        return x
 
     def get_shared_para(self):
         shared_para = 0

@@ -75,6 +75,7 @@ def print_and_log(msg):
     print(msg)
     logger.info(msg)
 
+
 def check_weights_and_grads(model):
     for name, param in model.named_parameters():
         if torch.isnan(param.data).any():
@@ -92,6 +93,31 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         data, target = data.to(device), target.to(device)
         if args.fp16: data = data.half()
         optimizer.zero_grad()
+
+        try:
+            output = model(data)
+            if output is None:
+                print(f"Model output is None at batch {batch_idx}")
+                continue
+            if torch.isnan(output).any():
+                print(f"NaN detected in output at batch {batch_idx}")
+                continue
+            loss = F.nll_loss(output, target)
+            if torch.isnan(loss).any():
+                print(f"NaN detected in loss at batch {batch_idx}")
+                continue
+            loss.backward()
+            if mask is not None:
+                mask.step()
+            else:
+                optimizer.step()
+        except Exception as e:
+            print(f"Exception occurred at batch {batch_idx}: {str(e)}")
+            continue
+
+
+
+
         output = model(data)
 
         if torch.isnan(output).any():
@@ -243,7 +269,8 @@ def main():
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
         # print(summary(model, input_size=(3, 32, 32)))
-
+        print("Checking initial weights:")
+        check_weights_and_grads(model)
 
         print_and_log(model)
         print_and_log('=' * 60)
