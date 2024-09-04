@@ -686,9 +686,6 @@ def ResNet18(c=1000):
 def ResNet34(num_classes=10, ratio=2):
     return ResNet([BasicBlock, BasicBlock_NoPara], [3, 4, 6, 3], num_classes=num_classes, ratio=ratio)
 
-def ResNet34(c=10):
-    return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=c, ratio=2)
-
 
 def ResNet50(c=10):
     return ResNet(Bottleneck, [3,4,6,3],c)
