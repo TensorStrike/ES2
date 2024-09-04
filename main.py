@@ -75,6 +75,13 @@ def print_and_log(msg):
     print(msg)
     logger.info(msg)
 
+def check_weights_and_grads(model):
+    for name, param in model.named_parameters():
+        if torch.isnan(param.data).any():
+            print(f"NaN detected in weights of {name}")
+        if param.grad is not None and torch.isnan(param.grad).any():
+            print(f"NaN detected in gradients of {name}")
+
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
     model.train()
     train_loss = 0
@@ -87,7 +94,15 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         optimizer.zero_grad()
         output = model(data)
 
+        if torch.isnan(output).any():
+            print(f"NaN detected in output at batch {batch_idx}")
+            continue
+
         loss = F.nll_loss(output, target)
+
+        if torch.isnan(loss).any():
+            print(f"NaN detected in loss at batch {batch_idx}")
+            continue
 
         train_loss += loss.item()
         pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
@@ -106,6 +121,8 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
             print_and_log('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} Accuracy: {}/{} ({:.3f}% '.format(
                 epoch, batch_idx * len(data), len(train_loader)*args.batch_size,
                 100. * batch_idx / len(train_loader), loss.item(), correct, n, 100. * correct / float(n)))
+
+        check_weights_and_grads(model)
 
 
     # training summary
