@@ -654,7 +654,7 @@ class BasicBlock(nn.Module):
 
 
 class ResNet34(nn.Module):
-    def __init__(self, num_classes=10, share_point=2):
+    def __init__(self, c=10, share_point=2):
         super(ResNet34, self).__init__()
         self.in_planes = 64
         self.share_point = share_point
@@ -667,7 +667,7 @@ class ResNet34(nn.Module):
         self.layer3 = self._make_layer(256, 6, stride=2)
         self.layer4 = self._make_layer(512, 3, stride=2)
 
-        self.linear = nn.Linear(512 * BasicBlock.expansion, num_classes)
+        self.linear = nn.Linear(512 * BasicBlock.expansion, c)
 
     def _make_layer(self, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
@@ -712,7 +712,7 @@ def ResNet18(c=1000):
 # def ResNet34(c=10):
 #     return ResNet(BasicBlock, [3,4,6,3],c)
 def resnet34(c=10):
-    return ResNet34(num_classes=c)
+    return ResNet34(c)
 
 
 def ResNet50(c=10):
