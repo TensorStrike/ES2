@@ -70,6 +70,11 @@ def setup_logger(args):
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
+# def store_final_slopes(model):
+#     for module in model.modules():
+#         if isinstance(module, DyReLUB):
+#             module.store_inference_slopes()
+
 def print_and_log(msg):
     global logger
     print(msg)
@@ -182,15 +187,13 @@ def main():
 
     # drelu settings
     parser.add_argument('--disable_drelu_grad', action='store_true', help='disable_drelu_grad')
-    parser.add_argument('--start_ghost_epoch', type=int, default=40, help='Start epoch for gradual phasing')
-    parser.add_argument('--end_ghost_epoch', type=int, default=79, help='End epoch for gradual phasing')
+    parser.add_argument('--start_ghost_epoch', type=int, default=None, help='Start epoch for gradual phasing')
+    parser.add_argument('--end_ghost_epoch', type=int, default=None, help='End epoch for gradual phasing')
 
     args = parser.parse_args()
     setup_logger(args)
     print_and_log(args)
 
-    start_ghost_epoch = args.start_ghost_epoch
-    end_ghost_epoch = args.end_ghost_epoch
 
     if args.fp16:
         try:
@@ -252,8 +255,15 @@ def main():
             print('Unknown optimizer: {0}'.format(args.optimizer))
             raise Exception('Unknown optimizer.')
 
-        lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[int(args.epochs / 2) * args.multiplier, int(args.epochs * 3 / 4) * args.multiplier], last_epoch=-1)
+        milestones = [int(args.epochs / 2) * args.multiplier, int(args.epochs * 3 / 4) * args.multiplier]
+        lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, last_epoch=-1)
+        if args.start_ghost_epoch is None:
+            args.start_ghost_epoch = milestones[0]/2
+        if args.end_ghost_epoch is None:
+            args.end_ghost_epoch = milestones[0] - 1
 
+        start_ghost_epoch = args.start_ghost_epoch
+        end_ghost_epoch = args.end_ghost_epoch
 
         if args.resume:
             if os.path.isfile(args.resume):
@@ -308,7 +318,7 @@ def main():
             t0 = time.time()
 
             if args.disable_drelu_grad:
-                if epoch == start_ghost_epoch:      # when phasing starts
+                if epoch == start_ghost_epoch:
                     print("Disabling grad for DyReLU")
                     for name, module in model.named_modules():
                         if isinstance(module, DyReLUB):
@@ -319,12 +329,12 @@ def main():
                                     if 'momentum_buffer' in optimizer.state[param]:
                                         optimizer.state[param]['momentum_buffer'] = torch.zeros_like(param)
 
-            if start_ghost_epoch <= epoch <= end_ghost_epoch:
-                decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
-                print(f"Decay factor for epoch {epoch}: {decay_factor}")
-                for name, module in model.named_modules():
-                    if isinstance(module, DyReLUB):
-                        module.beta = decay_factor
+                if start_ghost_epoch <= epoch <= end_ghost_epoch:
+                    decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
+                    print(f"Decay factor for epoch {epoch}: {decay_factor}")
+                    for name, module in model.named_modules():
+                        if isinstance(module, DyReLUB):
+                            module.beta = decay_factor
 
             train(args, model, device, train_loader, optimizer, epoch, mask)
 
@@ -340,6 +350,7 @@ def main():
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
+
 
         print('Testing model')
         model.load_state_dict(torch.load(args.save))
