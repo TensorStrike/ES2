@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sparselearning.dyrelu import DyReLUB
-from initializers import initializations
 
 
 class SparseSpeedupBench(object):
