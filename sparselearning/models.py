@@ -524,33 +524,33 @@ class NetworkBlock(nn.Module):
 ################################################ ResNet ####################################################
 ############################################################################################################
 
-class BasicBlock(nn.Module):
-    expansion = 1
-
-    def __init__(self, in_planes, planes, stride=1):
-        super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
-
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
-
-
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion*planes)
-            )
-
-    def forward(self, x):
-        out = self.relu1(self.bn1(self.conv1(x)))
-        out = self.bn2(self.conv2(out))
-        out += self.shortcut(x)
-        out = self.relu2(out)
-        return out
+# class BasicBlock(nn.Module):
+#     expansion = 1
+#
+#     def __init__(self, in_planes, planes, stride=1):
+#         super(BasicBlock, self).__init__()
+#         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+#         self.bn1 = nn.BatchNorm2d(planes)
+#         self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+#
+#         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+#         self.bn2 = nn.BatchNorm2d(planes)
+#         self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+#
+#
+#         self.shortcut = nn.Sequential()
+#         if stride != 1 or in_planes != self.expansion*planes:
+#             self.shortcut = nn.Sequential(
+#                 nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
+#                 nn.BatchNorm2d(self.expansion*planes)
+#             )
+#
+#     def forward(self, x):
+#         out = self.relu1(self.bn1(self.conv1(x)))
+#         out = self.bn2(self.conv2(out))
+#         out += self.shortcut(x)
+#         out = self.relu2(out)
+#         return out
 
 
 class Bottleneck(nn.Module):
@@ -615,84 +615,124 @@ class Bottleneck(nn.Module):
 #         out = F.log_softmax(out, dim=1)
 #         return out
 
+class BasicBlock(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1):
+        super(BasicBlock, self).__init__()
+        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion*planes)
+            )
+
+    def forward(self, x):
+        out = self.relu1(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)
+        out = self.relu2(out)
+        return out
+
+    def getParams(self):
+        weights_params = []
+        weights_params.append(self.conv1.weight)
+        weights_params.append(self.conv2.weight)
+        if len(self.shortcut) > 0:
+            weights_params.append(self.shortcut[0].weight)
+        return weights_params, None
+
 class BasicBlock_NoPara(nn.Module):
+    expansion = 1
+
     def __init__(self, in_planes, planes, stride=1):
         super(BasicBlock_NoPara, self).__init__()
         self.bn1 = nn.BatchNorm2d(planes)
+        self.relu1 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
         self.bn2 = nn.BatchNorm2d(planes)
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != planes:
-            self.shortcut = nn.Sequential(
-                nn.BatchNorm2d(planes)
-            )
+        self.relu2 = DyReLUB(planes, reduction=4, k=2, conv_type='2d')
         self.stride = stride
+        self.in_planes = in_planes
+        self.planes = planes
 
-    def forward(self, x, weight_params):
-        out = F.conv2d(x, weight_params[0], stride=self.stride, padding=1)
-        out = self.bn1(out)
-        out = F.relu(out)
-        out = F.conv2d(out, weight_params[1], stride=1, padding=1)
-        out = self.bn2(out)
-        out += self.shortcut(x)
-        out = F.relu(out)
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
+                nn.BatchNorm2d(self.expansion*planes)
+            )
+
+    def forward(self, x, weight_params, bias_params=None):
+        out = self.relu1(self.bn1(F.conv2d(x, weight_params[0], bias=None, stride=self.stride, padding=1)))
+        out = self.bn2(F.conv2d(out, weight_params[1], bias=None, stride=1, padding=1))
+        if len(weight_params) == 2:
+            out += self.shortcut(x)
+        else:
+            out += self.shortcut(F.conv2d(x, weight_params[2], bias=None, stride=self.stride))
+        out = self.relu2(out)
         return out
 
-
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=10, ratio=4):
+    def __init__(self, block, num_blocks, num_classes=10, ratio=2):
         super(ResNet, self).__init__()
         self.in_planes = 64
         self.ratio = ratio
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
-        self.relu = DyReLUB(64, reduction=4, k=2, conv_type='2d')
+        self.relu1 = DyReLUB(64, reduction=4, k=2, conv_type='2d')
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        # self.classifier = nn.Linear(512*block.expansion, num_classes, bias=False)
-        self.linear = nn.Linear(512 * block.expansion, num_classes, bias=False)
+        self.linear = nn.Linear(512*block.expansion, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride):
-        strides = [stride] + [1] * (num_blocks - 1)
+        strides = [stride] + [1]*(num_blocks-1)
         layers = []
         for i, stride in enumerate(strides):
             if i < self.ratio:
                 layers.append(block(self.in_planes, planes, stride))
             else:
                 layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
-            self.in_planes = planes
+            self.in_planes = planes * block.expansion
         return nn.ModuleList(layers)
 
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = self._forward_impl(self.layer1, out)
-        out = self._forward_impl(self.layer2, out)
-        out = self._forward_impl(self.layer3, out)
-        out = self._forward_impl(self.layer4, out)
-        out = F.avg_pool2d(out, 4)
+        out = self.relu1(self.bn1(self.conv1(x)))
+        out = self.iterativeCall(self.layer1, out)
+        out = self.iterativeCall(self.layer2, out)
+        out = self.iterativeCall(self.layer3, out)
+        out = self.iterativeCall(self.layer4, out)
+        out = F.adaptive_avg_pool2d(out, (1, 1))
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
 
-    def _forward_impl(self, layers, x):
-        for i, layer in enumerate(layers):
+    def iterativeCall(self, blocks, x):
+        out = blocks[0](x)
+        for i in range(1, len(blocks)):
             if i < self.ratio:
-                x = layer(x)
+                out = blocks[i](out)
             else:
-                weight_params = [layers[self.ratio-1].conv1.weight, layers[self.ratio-1].conv2.weight]
-                x = layer(x, weight_params)
-        return x
+                params = blocks[self.ratio-1].getParams()
+                out = blocks[i](out, *params)
+        return out
 
     def get_shared_para(self):
         shared_para = 0
-        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
-            if len(layer) > self.ratio:
-                shared_block = layer[self.ratio - 1]
-                shared_para += shared_block.conv1.weight.numel() + shared_block.conv2.weight.numel()
+        for blocks in [self.layer1, self.layer2, self.layer3, self.layer4]:
+            for i in range(self.ratio, len(blocks)):
+                params = blocks[self.ratio-1].getParams()
+                for shared_conv in params[0]:
+                    shared_para += shared_conv.numel()
         return shared_para
-
 def ResNet18(c=1000):
     return ResNet(BasicBlock, [2,2,2,2],c)
 
