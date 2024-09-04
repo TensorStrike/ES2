@@ -6,6 +6,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sparselearning.dyrelu import DyReLUB
+from initializers import initializations
+
 
 class SparseSpeedupBench(object):
     """Class to benchmark speedups for convolutional layers.
@@ -633,7 +635,13 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512*block[0].expansion, num_classes)
+        self.linear = nn.Linear(512 * block[0].expansion, num_classes)
+
+        self.apply(self._initialize_weights)
+
+    def _initialize_weights(self, m):
+        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+            nn.init.kaiming_normal_(m.weight)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
