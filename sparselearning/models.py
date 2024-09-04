@@ -620,6 +620,7 @@ def ResNet18(c=1000):
     return ResNet(BasicBlock, [2,2,2,2],c)
 
 def ResNet34(c=10):
+    print('class is', c)
     return ResNet(BasicBlock, [3,4,6,3],c)
 
 def ResNet50(c=10):
