@@ -582,11 +582,9 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes, ratio=2):
+    def __init__(self, block, num_blocks, num_classes):
         super(ResNet, self).__init__()
         self.in_planes = 64
-        self.ratio = ratio
-
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -596,6 +594,14 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.classifier = nn.Linear(512*block.expansion, num_classes, bias=False)
+
+    def _make_layer(self, block, planes, num_blocks, stride):
+        strides = [stride] + [1]*(num_blocks-1)
+        layers = []
+        for stride in strides:
+            layers.append(block(self.in_planes, planes, stride))
+            self.in_planes = planes * block.expansion
+        return nn.Sequential(*layers)
 
     def forward(self, x):
         out = self.relu(self.bn1(self.conv1(x)))
@@ -608,36 +614,6 @@ class ResNet(nn.Module):
         out = self.classifier(out)
         out = F.log_softmax(out, dim=1)
         return out
-
-    def _make_layer(self, block, planes, num_blocks, stride):
-        strides = [stride] + [1] * (num_blocks - 1)
-        layers = []
-        for i, stride in enumerate(strides):
-            if i < self.ratio:
-                layers.append(block[0](self.in_planes, planes, stride))
-            else:
-                layers.append(block[1](self.in_planes, planes, stride))
-            self.in_planes = planes * block[0].expansion
-        return nn.ModuleList(layers)
-
-    def iterativeCall(self, blocks, x):
-        out = blocks[0](x)
-        for i in range(1, len(blocks)):
-            if i < self.ratio:
-                out = blocks[i](out)
-            else:
-                params = blocks[self.ratio - 1].getParams()
-                out = blocks[i](out, *params)
-        return out
-
-    def get_shared_para(self):
-        shared_para = 0
-        for blocks in [self.layer1, self.layer2, self.layer3, self.layer4]:
-            for i in range(self.ratio, len(blocks)):
-                params = blocks[self.ratio - 1].getParams()
-                for shared_conv in params[0]:
-                    shared_para += shared_conv.numel()
-        return shared_para
 
 
 def ResNet18(c=1000):
