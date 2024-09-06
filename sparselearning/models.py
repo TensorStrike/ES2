@@ -585,6 +585,7 @@ class ResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes):
         super(ResNet, self).__init__()
         self.in_planes = 64
+        self.ratio = 2
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -596,23 +597,88 @@ class ResNet(nn.Module):
         self.classifier = nn.Linear(512*block.expansion, num_classes, bias=False)
 
     def _make_layer(self, block, planes, num_blocks, stride):
-        strides = [stride] + [1]*(num_blocks-1)
+        strides = [stride] + [1] * (num_blocks - 1)
         layers = []
-        for stride in strides:
-            layers.append(block(self.in_planes, planes, stride))
+        for i, stride in enumerate(strides):
+            if i < self.ratio:      # normal weights
+                layers.append(block(self.in_planes, planes, stride))
+            else:       # shared weights
+                layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
             self.in_planes = planes * block.expansion
-        return nn.Sequential(*layers)
+        return nn.ModuleList(layers)
 
     def forward(self, x):
         out = self.relu(self.bn1(self.conv1(x)))
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = F.avg_pool2d(out, 4)
+
+        out = self.layer_forward(self.layer1, out)
+        out = self.layer_forward(self.layer2, out)
+        out = self.layer_forward(self.layer3, out)
+        out = self.layer_forward(self.layer4, out)
+
+        out = F.adaptive_avg_pool2d(out, (1, 1))
         out = out.view(out.size(0), -1)
         out = self.classifier(out)
-        out = F.log_softmax(out, dim=1)
+        return out
+
+    def layer_forward(self, layer, x):
+        for i, block in enumerate(layer):
+            if i < self.ratio:
+                x = block(x)
+            else:
+                params = layer[self.ratio - 1].parameters()
+                weight_params = [p for p in params if len(p.shape) > 1]  # only get conv weights
+                x = block(x, weight_params)
+        return x
+
+
+
+class BasicBlock_NoPara(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1):
+        super(BasicBlock_NoPara, self).__init__()
+        self.in_planes = in_planes
+        self.planes = planes
+        self.stride = stride
+
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
+                nn.BatchNorm2d(self.expansion*planes)
+            )
+
+        self.relu1 = DyReLUB(planes)
+        self.relu2 = DyReLUB(planes)
+
+        # learnable scaling factors
+        self.scale_1 = nn.Parameter(torch.ones(1))
+        self.scale_2 = nn.Parameter(torch.ones(1))
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.scale_3 = nn.Parameter(torch.ones(1))
+
+        nn.init.uniform_(self.scale_1)
+        nn.init.uniform_(self.scale_2)
+        if hasattr(self, 'scale_3'):
+            nn.init.uniform_(self.scale_3)
+
+    def forward(self, x, weight_params):
+        conv1_weight, conv2_weight = weight_params[:2]
+        shortcut_weight = weight_params[2] if len(weight_params) > 2 else None
+
+        out = self.relu1(self.bn1(F.conv2d(x, self.scale_1 * conv1_weight, stride=self.stride, padding=1)))
+        out = self.bn2(F.conv2d(out, self.scale_2 * conv2_weight, stride=1, padding=1))
+
+        if shortcut_weight is not None:
+            shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
+            shortcut = self.shortcut(shortcut)
+        else:
+            shortcut = self.shortcut(x)
+
+        out += shortcut
+        out = self.relu2(out)
         return out
 
 

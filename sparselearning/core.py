@@ -225,9 +225,6 @@ class Masking(object):
 
     def add_module(self, module, density, sparse_init='ER'):
         self.modules.append(module)
-        # for name, tensor in module.named_parameters():
-        #     self.names.append(name)
-        #     self.masks[name] = torch.zeros_like(tensor, dtype=torch.float32, requires_grad=False).cuda()
 
         for name, tensor in module.named_parameters():
             if 'relu' not in name.lower():
