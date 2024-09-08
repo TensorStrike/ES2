@@ -625,10 +625,21 @@ class ResNet(nn.Module):
             if i < self.ratio:
                 x = block(x)
             else:
-                params = layer[self.ratio - 1].parameters()
-                weight_params = [p for p in params if len(p.shape) > 1]  # only get conv weights
+                # Extract only the convolutional weights
+                weight_params = []
+                for name, param in layer[self.ratio - 1].named_parameters():
+                    if 'conv' in name and 'weight' in name:
+                        weight_params.append(param)
                 x = block(x, weight_params)
         return x
+
+    def get_shared_para(self):
+        shared_params = 0
+        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
+            if len(layer) > self.ratio:
+                params_per_block = sum(p.numel() for p in layer[self.ratio-1].parameters() if len(p.shape) > 1)
+                shared_params += params_per_block * (len(layer) - self.ratio)
+        return shared_params
 
 
 
@@ -666,12 +677,29 @@ class BasicBlock_NoPara(nn.Module):
 
     def forward(self, x, weight_params):
         conv1_weight, conv2_weight = weight_params[:2]
-        shortcut_weight = weight_params[2] if len(weight_params) > 2 else None
+
+        # shortcut_weight = weight_params[2] if len(weight_params) > 2 else None
+
+        assert conv1_weight.shape == (
+        self.planes, self.in_planes, 3, 3), f"Unexpected shape for conv1_weight: {conv1_weight.shape}"
+        assert conv2_weight.shape == (
+        self.planes, self.planes, 3, 3), f"Unexpected shape for conv2_weight: {conv2_weight.shape}"
 
         out = self.relu1(self.bn1(F.conv2d(x, self.scale_1 * conv1_weight, stride=self.stride, padding=1)))
         out = self.bn2(F.conv2d(out, self.scale_2 * conv2_weight, stride=1, padding=1))
 
-        if shortcut_weight is not None:
+        # if shortcut_weight is not None:
+        #     assert shortcut_weight.shape == (
+        #     self.planes, self.in_planes, 1, 1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
+        #     shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
+        #     shortcut = self.shortcut(shortcut)
+        # else:
+        #     shortcut = self.shortcut(x)
+
+        if len(weight_params) > 2:
+            shortcut_weight = weight_params[2]
+            assert shortcut_weight.shape == (self.planes * self.expansion, self.in_planes, 1,
+                                             1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
             shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
             shortcut = self.shortcut(shortcut)
         else:

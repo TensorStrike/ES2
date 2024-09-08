@@ -224,8 +224,10 @@ class Masking(object):
 
 
     def add_module(self, module, density, sparse_init='ER'):
+        # this initializes the mask before training
         self.modules.append(module)
 
+        # we exclude dyrelu linear layers from parameter exploration
         for name, tensor in module.named_parameters():
             if 'relu' not in name.lower():
                 self.names.append(name)
@@ -240,6 +242,18 @@ class Masking(object):
         self.remove_type(nn.BatchNorm2d)
         print('Removing 1D batch norms...')
         self.remove_type(nn.BatchNorm1d)
+        # self.init(mode=sparse_init, density=density)
+
+        # Calculate effective number of parameters
+        total_params = sum(p.numel() for n, p in self.masks.items())
+        shared_params = module.get_shared_para()
+        effective_total_params = total_params - shared_params
+
+
+        print(f"Total parameters: {total_params}")
+        print(f"Shared parameters: {shared_params}")
+        print(f"Effective total parameters: {effective_total_params}")
+
         self.init(mode=sparse_init, density=density)
 
 

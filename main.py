@@ -225,7 +225,7 @@ def main():
             cls, cls_args = models[args.model]
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
-        print(summary(model, input_size=(3, 32, 32)))
+        # print(summary(model, input_size=(3, 32, 32)))
 
 
         print_and_log(model)
