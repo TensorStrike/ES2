@@ -13,6 +13,7 @@ import torch.optim as optim
 import torch.backends.cudnn as cudnn
 from torchsummary import summary
 from sparselearning.dyrelu import DyReLUB
+from torch.nn.utils import clip_grad_norm_
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, ResNet18
@@ -99,13 +100,34 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         else:
             loss.backward()
 
+        clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+
+        # #debug
+        # for name, param in model.named_parameters():
+        #     if param.grad is not None:
+        #         grad_norm = param.grad.norm().item()
+        #         print(f"Gradient norm for {name}: {grad_norm}")
+        #         if torch.isnan(param.grad).any():
+        #             print(f"NaN gradient in {name}")
+
         if mask is not None: mask.step()
         else: optimizer.step()
+
+
+        # # debug
+        # for name, param in model.named_parameters():
+        #     if torch.isnan(param).any():
+        #         print(f"NaN parameter in {name} after update")
 
         if batch_idx % args.log_interval == 0:
             print_and_log('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} Accuracy: {}/{} ({:.3f}% '.format(
                 epoch, batch_idx * len(data), len(train_loader)*args.batch_size,
                 100. * batch_idx / len(train_loader), loss.item(), correct, n, 100. * correct / float(n)))
+
+        # debug
+        # if batch_idx == 1:  # Break after second batch to check early behavior
+        #     break
 
 
     # training summary
