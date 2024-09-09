@@ -87,9 +87,8 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         if args.fp16: data = data.half()
         optimizer.zero_grad()
         output = model(data)
-
-        loss = F.nll_loss(output, target)
-
+        # loss = F.nll_loss(output, target)
+        loss = F.cross_entropy(output, target)
         train_loss += loss.item()
         pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
         correct += pred.eq(target.view_as(pred)).sum().item()
@@ -146,7 +145,9 @@ def evaluate(args, model, device, test_loader, is_test_set=False):
             if args.fp16: data = data.half()
             model.t = target
             output = model(data)
-            test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
+            # test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
+            test_loss += F.cross_entropy(output, target, reduction='sum').item()
+
             pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
             n += target.shape[0]
@@ -240,8 +241,8 @@ def main():
         elif args.model == 'ResNet18':
             model = ResNet18(c=100).to(device)
         elif args.model == 'ResNet34':
-            # model = ResNet34(c=100).to(device)
-            model = ResNet34(c=10).to(device)
+            model = ResNet34(c=100).to(device)
+            # model = ResNet34(c=10).to(device)
 
         else:
             cls, cls_args = models[args.model]
