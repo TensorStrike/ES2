@@ -76,6 +76,35 @@ def print_and_log(msg):
     print(msg)
     logger.info(msg)
 
+
+def calculate_adjusted_density(model, density):
+    non_shared_params = 0
+    shared_params = 0
+
+    for name, param in model.named_parameters():
+        if 'conv' in name or 'classifier' in name:          # normal layers
+            non_shared_params += param.numel()
+
+    for layer_name in ['layer1', 'layer2', 'layer3', 'layer4']:
+        layer = getattr(model, layer_name)
+        if len(layer) > model.ratio:        # shared layers
+            # parameters in one block
+            block_params = sum(p.numel() for name, p in layer[model.ratio - 1].named_parameters()
+                               if 'conv' in name)
+            shared_params += block_params * (len(layer) - model.ratio)      # multiply by how many
+
+    total_params = non_shared_params + shared_params
+
+
+    print(f"Total params: {total_params}")
+    print(f"Non-shared params: {non_shared_params}")
+    print(f"Shared params: {shared_params}")
+
+    adjusted_density = total_params * density / non_shared_params
+
+    return adjusted_density
+
+
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
     model.train()
     train_loss = 0
@@ -241,14 +270,15 @@ def main():
         elif args.model == 'ResNet18':
             model = ResNet18(c=100).to(device)
         elif args.model == 'ResNet34':
-            model = ResNet34(c=100).to(device)
-            # model = ResNet34(c=10).to(device)
+            # model = ResNet34(c=100).to(device)
+            model = ResNet34(c=10).to(device)
 
         else:
             cls, cls_args = models[args.model]
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
         # print(summary(model, input_size=(3, 32, 32)))
+        # print(sum(p.numel() for p in model.parameters()))
 
 
         print_and_log(model)
@@ -311,9 +341,10 @@ def main():
         mask = None
         if args.sparse:
             decay = CosineDecay(args.death_rate, len(train_loader)*(args.epochs*args.multiplier))
+            density = calculate_adjusted_density(model, args.density)           # we adjust density to account for weight sharing
             mask = Masking(optimizer, death_rate=args.death_rate, death_mode=args.death, death_rate_decay=decay, growth_mode=args.growth,
                            redistribution_mode=args.redistribution, args=args)
-            mask.add_module(model, sparse_init=args.sparse_init, density=args.density)
+            mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         best_acc = 0.0
 

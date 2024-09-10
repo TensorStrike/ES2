@@ -627,7 +627,7 @@ class ResNet(nn.Module):
             else:
                 # Extract only the convolutional weights
                 weight_params = []
-                for name, param in layer[self.ratio - 1].named_parameters():
+                for name, param in layer[self.ratio - 1].named_parameters():    # use the parameters from ratio-1
                     if 'conv' in name and 'weight' in name:
                         weight_params.append(param)
                 x = block(x, weight_params)

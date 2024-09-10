@@ -80,6 +80,7 @@ class Masking(object):
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
         self.density = density
+
         if mode == 'GMP':
             self.baseline_nonzero = 0
             for module in self.modules:
