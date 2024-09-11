@@ -131,31 +131,14 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         clip_grad_norm_(model.parameters(), max_norm=1.0)
 
 
-        # #debug
-        # for name, param in model.named_parameters():
-        #     if param.grad is not None:
-        #         grad_norm = param.grad.norm().item()
-        #         print(f"Gradient norm for {name}: {grad_norm}")
-        #         if torch.isnan(param.grad).any():
-        #             print(f"NaN gradient in {name}")
-
         if mask is not None: mask.step()
         else: optimizer.step()
 
-
-        # # debug
-        # for name, param in model.named_parameters():
-        #     if torch.isnan(param).any():
-        #         print(f"NaN parameter in {name} after update")
 
         if batch_idx % args.log_interval == 0:
             print_and_log('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} Accuracy: {}/{} ({:.3f}% '.format(
                 epoch, batch_idx * len(data), len(train_loader)*args.batch_size,
                 100. * batch_idx / len(train_loader), loss.item(), correct, n, 100. * correct / float(n)))
-
-        # debug
-        # if batch_idx == 1:  # Break after second batch to check early behavior
-        #     break
 
 
     # training summary
@@ -279,7 +262,7 @@ def main():
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
         # print(summary(model, input_size=(3, 32, 32)))
-        # print(sum(p.numel() for p in model.parameters()))
+        print('tensor param:',sum(p.numel() for p in model.parameters()))
 
 
         print_and_log(model)

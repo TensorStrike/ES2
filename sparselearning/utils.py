@@ -4,6 +4,8 @@ import torch
 import torch.nn.functional as F
 import torchvision
 from torchvision import datasets, transforms
+from torch.utils.data import SubsetRandomSampler
+
 
 class DatasetSplitter(torch.utils.data.Dataset):
     """This splitter makes sure that we always use the same training/validation split"""
@@ -25,10 +27,40 @@ class DatasetSplitter(torch.utils.data.Dataset):
         return self.parent_dataset[index + self.split_start]
 
 
+# def get_cifar100_dataloaders(args, validation_split=0.0, max_threads=10):
+#     """Creates augmented train, validation, and test data loaders."""
+#     cifar_mean = (0.5070751592371323, 0.48654887331495095, 0.4409178433670343)
+#     cifar_std = (0.2673342858792401, 0.2564384629170883, 0.27615047132568404)
+#     # Data
+#     print('==> Preparing data..')
+#     transform_train = transforms.Compose([
+#         transforms.RandomCrop(32, padding=4),
+#         transforms.RandomHorizontalFlip(),
+#         transforms.ToTensor(),
+#         transforms.Normalize(cifar_mean, cifar_std),
+#     ])
+#
+#     transform_test = transforms.Compose([
+#         transforms.ToTensor(),
+#         transforms.Normalize(cifar_mean, cifar_std),
+#     ])
+#
+#     trainset = torchvision.datasets.CIFAR100(root='./data', train=True, download=True,
+#                                              transform=transform_train)
+#     train_loader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=2)
+#
+#     testset = torchvision.datasets.CIFAR100(root='./data', train=False, download=True, transform=transform_test)
+#     test_loader = torch.utils.data.DataLoader(testset, batch_size=args.test_batch_size, shuffle=False, num_workers=2)
+#
+#     return train_loader, test_loader, test_loader
+
+
+
 def get_cifar100_dataloaders(args, validation_split=0.0, max_threads=10):
     """Creates augmented train, validation, and test data loaders."""
     cifar_mean = (0.5070751592371323, 0.48654887331495095, 0.4409178433670343)
     cifar_std = (0.2673342858792401, 0.2564384629170883, 0.27615047132568404)
+
     # Data
     print('==> Preparing data..')
     transform_train = transforms.Compose([
@@ -43,14 +75,30 @@ def get_cifar100_dataloaders(args, validation_split=0.0, max_threads=10):
         transforms.Normalize(cifar_mean, cifar_std),
     ])
 
-    trainset = torchvision.datasets.CIFAR100(root='./data', train=True, download=True,
-                                             transform=transform_train)
-    train_loader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=2)
+    full_trainset = torchvision.datasets.CIFAR100(root='./data', train=True, download=True, transform=transform_train)
+
+    num_train = len(full_trainset)
+    indices = list(range(num_train))
+    split = int(np.floor(validation_split * num_train))
+
+    np.random.seed(args.seed)
+    np.random.shuffle(indices)
+
+    train_idx, valid_idx = indices[split:], indices[:split]
+
+    train_sampler = SubsetRandomSampler(train_idx)
+    valid_sampler = SubsetRandomSampler(valid_idx)
+
+    train_loader = torch.utils.data.DataLoader(full_trainset, batch_size=args.batch_size, sampler=train_sampler,
+                                               num_workers=2)
+    valid_loader = torch.utils.data.DataLoader(full_trainset, batch_size=args.test_batch_size, sampler=valid_sampler,
+                                               num_workers=2)
 
     testset = torchvision.datasets.CIFAR100(root='./data', train=False, download=True, transform=transform_test)
     test_loader = torch.utils.data.DataLoader(testset, batch_size=args.test_batch_size, shuffle=False, num_workers=2)
 
-    return train_loader, test_loader, test_loader
+    return train_loader, valid_loader, test_loader
+
 
 def get_cifar10_dataloaders(args, validation_split=0.0, max_threads=10):
     """Creates augmented train, validation, and test data loaders."""
