@@ -1,0 +1,8 @@
+13:23:52: Namespace(batch_size=100, bench=False, data='mnist', death='magnitude', death_rate=0.5, decay_frequency=25000, decay_schedule='cosine', density=0.05, disable_drelu_grad=False, end_ghost_epoch=None, epochs=250, fix=False, fp16=False, growth='random', iters=1, l1=0.0, l2=0.0005, log_interval=100, lr=0.1, max_threads=10, model='', momentum=0.9, multiplier=1, no_cuda=False, optimizer='sgd', redistribution='none', resume=None, save='1725971032212457.pt', save_features=False, seed=17, sparse=False, sparse_init='ERK', start_epoch=1, start_ghost_epoch=None, test_batch_size=100, update_frequency=100, valid_split=0.1)
+13:23:52: 
+
+
+13:23:52: ================================================================================
+13:23:52: 
+Iteration start: 1/1
+

@@ -1,4 +1,5 @@
 *.pt
 _dataset/*
 data/*
-logs/*
+logs/*data/cifar-100-python/train
+data/cifar-100-python.tar.gz

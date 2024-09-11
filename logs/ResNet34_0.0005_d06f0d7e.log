@@ -1,0 +1,272 @@
+10:56:07: Namespace(batch_size=128, bench=False, data='cifar10', death='magnitude', death_rate=0.5, decay_frequency=30000, decay_schedule='cosine', density=0.0005, epochs=250, fix=False, fp16=False, growth='gradient', iters=1, l1=0.0, l2=0.0005, log_interval=100, lr=0.1, max_threads=10, model='ResNet34', momentum=0.9, multiplier=1, no_cuda=False, optimizer='sgd', redistribution='none', resume=None, save='17228517674763455.pt', save_features=False, seed=41, sparse=True, sparse_init='ERK', start_epoch=1, test_batch_size=100, update_frequency=4000, valid_split=0.1)
+10:56:07: 
+
+
+10:56:07: ================================================================================
+10:56:07: 
+Iteration start: 1/1
+
+10:56:08: ResNet(
+  (conv1): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+  (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (layer1): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+  )
+  (layer2): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (3): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+  )
+  (layer3): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (3): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (4): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (5): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+  )
+  (layer4): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+    )
+  )
+  (classifier): Linear(in_features=512, out_features=100, bias=False)
+)
+10:56:08: ============================================================
+10:56:08: ResNet34
+10:56:08: ============================================================
+10:56:08: ============================================================
+10:56:08: Prune mode: magnitude
+10:56:08: Growth mode: gradient
+10:56:08: Redistribution mode: none
+10:56:08: ============================================================
+10:56:09: Train Epoch: 1 [0/45056 (0%)]	Loss: 4.607852 Accuracy: 0/128 (0.000% 
+10:56:19: Train Epoch: 1 [12800/45056 (28%)]	Loss: 2.219935 Accuracy: 1840/12928 (14.233% 
+10:56:28: Train Epoch: 1 [25600/45056 (57%)]	Loss: 2.042199 Accuracy: 4638/25728 (18.027% 
+10:56:37: Train Epoch: 1 [38400/45056 (85%)]	Loss: 2.003916 Accuracy: 7813/38528 (20.279% 
+10:56:42: 
+Training summary: Average loss: 2.2478, Accuracy: 9545/45000 (21.211%)
+
+10:56:44: 
+Evaluation: Average loss: 2.3936, Accuracy: 901/5000 (18.020%)
+
+10:56:44: Current learning rate: 0.1. Time taken for epoch: 35.72 seconds.
+
+10:56:44: Train Epoch: 2 [0/45056 (0%)]	Loss: 1.970302 Accuracy: 34/128 (26.562% 
+10:56:54: Train Epoch: 2 [12800/45056 (28%)]	Loss: 2.075943 Accuracy: 3505/12928 (27.112% 
+10:57:03: Train Epoch: 2 [25600/45056 (57%)]	Loss: 1.901486 Accuracy: 7228/25728 (28.094% 
+10:57:12: Train Epoch: 2 [38400/45056 (85%)]	Loss: 1.861543 Accuracy: 11049/38528 (28.678% 
+10:57:17: 
+Training summary: Average loss: 1.9509, Accuracy: 12942/45000 (28.760%)
+
+10:57:18: 
+Evaluation: Average loss: 2.0220, Accuracy: 1289/5000 (25.780%)
+
+10:57:18: Current learning rate: 0.1. Time taken for epoch: 33.97 seconds.
+
+10:57:18: Train Epoch: 3 [0/45056 (0%)]	Loss: 1.893609 Accuracy: 42/128 (32.812% 
+10:57:27: Train Epoch: 3 [12800/45056 (28%)]	Loss: 1.916549 Accuracy: 3988/12928 (30.848% 
+10:57:36: Train Epoch: 3 [25600/45056 (57%)]	Loss: 1.787665 Accuracy: 8056/25728 (31.312% 
+10:57:46: Train Epoch: 3 [38400/45056 (85%)]	Loss: 1.931270 Accuracy: 12091/38528 (31.382% 
+10:57:50: 
+Training summary: Average loss: 1.8877, Accuracy: 14175/45000 (31.500%)
+
+10:57:52: 
+Evaluation: Average loss: 2.0905, Accuracy: 1246/5000 (24.920%)
+
+10:57:52: Current learning rate: 0.1. Time taken for epoch: 33.55 seconds.
+
+10:57:52: Train Epoch: 4 [0/45056 (0%)]	Loss: 1.658501 Accuracy: 57/128 (44.531% 
+10:58:01: Train Epoch: 4 [12800/45056 (28%)]	Loss: 1.733335 Accuracy: 4256/12928 (32.921% 
+10:58:10: Train Epoch: 4 [25600/45056 (57%)]	Loss: 1.890475 Accuracy: 8420/25728 (32.727% 
+10:58:19: Train Epoch: 4 [38400/45056 (85%)]	Loss: 1.775445 Accuracy: 12579/38528 (32.649% 
+10:58:24: 
+Training summary: Average loss: 1.8461, Accuracy: 14802/45000 (32.893%)
+
+10:58:25: 
+Evaluation: Average loss: 1.8967, Accuracy: 1588/5000 (31.760%)
+
+10:58:25: Current learning rate: 0.1. Time taken for epoch: 33.88 seconds.
+
+10:58:26: Train Epoch: 5 [0/45056 (0%)]	Loss: 1.739425 Accuracy: 40/128 (31.250% 
+10:58:35: Train Epoch: 5 [12800/45056 (28%)]	Loss: 1.835044 Accuracy: 4375/12928 (33.841% 
+10:58:44: Train Epoch: 5 [25600/45056 (57%)]	Loss: 1.685701 Accuracy: 8643/25728 (33.594% 
+10:58:53: Train Epoch: 5 [38400/45056 (85%)]	Loss: 1.790577 Accuracy: 13010/38528 (33.768% 
+10:58:58: 
+Training summary: Average loss: 1.8208, Accuracy: 15181/45000 (33.736%)
+
+10:58:59: 
+Evaluation: Average loss: 14.1442, Accuracy: 476/5000 (9.520%)
+
+10:58:59: Current learning rate: 0.1. Time taken for epoch: 33.55 seconds.
+
+10:58:59: Train Epoch: 6 [0/45056 (0%)]	Loss: 1.861678 Accuracy: 38/128 (29.688% 
+10:59:08: Train Epoch: 6 [12800/45056 (28%)]	Loss: 1.928352 Accuracy: 4421/12928 (34.197% 
+10:59:18: Train Epoch: 6 [25600/45056 (57%)]	Loss: 1.711872 Accuracy: 8915/25728 (34.651% 
+10:59:27: Train Epoch: 6 [38400/45056 (85%)]	Loss: 1.769855 Accuracy: 13422/38528 (34.837% 
+10:59:31: 
+Training summary: Average loss: 1.7908, Accuracy: 15658/45000 (34.796%)
+
+10:59:33: 
+Evaluation: Average loss: 1.8489, Accuracy: 1599/5000 (31.980%)
+
+10:59:33: Current learning rate: 0.1. Time taken for epoch: 33.73 seconds.
+
+10:59:33: Train Epoch: 7 [0/45056 (0%)]	Loss: 1.786805 Accuracy: 50/128 (39.062% 
+10:59:43: Train Epoch: 7 [12800/45056 (28%)]	Loss: 1.869384 Accuracy: 4463/12928 (34.522% 
+10:59:52: Train Epoch: 7 [25600/45056 (57%)]	Loss: 1.731705 Accuracy: 8977/25728 (34.892% 
+11:00:02: Train Epoch: 7 [38400/45056 (85%)]	Loss: 1.764048 Accuracy: 13559/38528 (35.193% 
+11:00:07: 
+Training summary: Average loss: 1.7841, Accuracy: 15896/45000 (35.324%)
+
+11:00:08: 
+Evaluation: Average loss: 1.8638, Accuracy: 1625/5000 (32.500%)
+
+11:00:08: Current learning rate: 0.1. Time taken for epoch: 35.48 seconds.
+
+11:00:08: Train Epoch: 8 [0/45056 (0%)]	Loss: 1.694557 Accuracy: 49/128 (38.281% 
+11:00:18: Train Epoch: 8 [12800/45056 (28%)]	Loss: 1.761413 Accuracy: 4536/12928 (35.087% 
+11:00:27: Train Epoch: 8 [25600/45056 (57%)]	Loss: 1.869353 Accuracy: 9178/25728 (35.673% 
+11:00:37: Train Epoch: 8 [38400/45056 (85%)]	Loss: 1.675892 Accuracy: 13797/38528 (35.810% 
+11:00:42: 
+Training summary: Average loss: 1.7728, Accuracy: 16056/45000 (35.680%)
+
+11:00:43: 
+Evaluation: Average loss: 1.9012, Accuracy: 1556/5000 (31.120%)
+
+11:00:43: Current learning rate: 0.1. Time taken for epoch: 34.60 seconds.
+
+11:00:43: Train Epoch: 9 [0/45056 (0%)]	Loss: 1.820901 Accuracy: 42/128 (32.812% 
+11:00:52: Train Epoch: 9 [12800/45056 (28%)]	Loss: 1.691073 Accuracy: 4551/12928 (35.203% 
+11:01:01: Train Epoch: 9 [25600/45056 (57%)]	Loss: 1.765850 Accuracy: 9105/25728 (35.389% 
+11:01:11: Train Epoch: 9 [38400/45056 (85%)]	Loss: 1.814345 Accuracy: 13566/38528 (35.211% 
+11:01:15: 
+Training summary: Average loss: 1.7689, Accuracy: 15849/45000 (35.220%)
+
+11:01:17: 
+Evaluation: Average loss: 2.1373, Accuracy: 1076/5000 (21.520%)
+
+11:01:17: Current learning rate: 0.1. Time taken for epoch: 33.90 seconds.
+
+11:01:17: Train Epoch: 10 [0/45056 (0%)]	Loss: 1.721712 Accuracy: 47/128 (36.719% 
+11:01:26: Train Epoch: 10 [12800/45056 (28%)]	Loss: 1.796899 Accuracy: 4591/12928 (35.512% 
+11:01:35: Train Epoch: 10 [25600/45056 (57%)]	Loss: 1.727891 Accuracy: 9257/25728 (35.980% 
+11:01:45: Train Epoch: 10 [38400/45056 (85%)]	Loss: 1.749389 Accuracy: 13893/38528 (36.059% 
+11:01:49: 
+Training summary: Average loss: 1.7593, Accuracy: 16281/45000 (36.180%)
+
+11:01:51: 
+Evaluation: Average loss: 1.9121, Accuracy: 1548/5000 (30.960%)
+
+11:01:51: Current learning rate: 0.1. Time taken for epoch: 34.05 seconds.
+
+11:01:51: Train Epoch: 11 [0/45056 (0%)]	Loss: 1.852847 Accuracy: 47/128 (36.719% 
+11:02:01: Train Epoch: 11 [12800/45056 (28%)]	Loss: 1.609044 Accuracy: 4665/12928 (36.084% 

@@ -1,0 +1,3354 @@
+12:14:30: Namespace(batch_size=128, bench=False, data='cifar10', death='magnitude', death_rate=0.5, decay_frequency=30000, decay_schedule='cosine', density=0.0005, disable_drelu_grad=True, end_ghost_epoch=None, epochs=250, fix=False, fp16=False, growth='gradient', iters=1, l1=0.0, l2=0.0001, log_interval=100, lr=0.1, max_threads=10, model='ResNet34', momentum=0.9, multiplier=1, no_cuda=False, optimizer='sgd', redistribution='none', resume=None, save='17255348703090005.pt', save_features=False, seed=41, sparse=True, sparse_init='ERK', start_epoch=1, start_ghost_epoch=None, test_batch_size=100, update_frequency=4000, valid_split=0.1)
+12:14:30: 
+
+
+12:14:30: ================================================================================
+12:14:30: 
+Iteration start: 1/1
+
+12:14:32: ResNet(
+  (conv1): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+  (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): DyReLUB(
+    (fc1): Linear(in_features=64, out_features=16, bias=True)
+    (relu): ReLU(inplace=True)
+    (fc2): Linear(in_features=16, out_features=256, bias=True)
+    (sigmoid): Sigmoid()
+  )
+  (layer1): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+  )
+  (layer2): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (3): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+  )
+  (layer3): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (3): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (4): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (5): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+  )
+  (layer4): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock(
+      (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+  )
+  (classifier): Linear(in_features=512, out_features=100, bias=False)
+)
+12:14:32: ============================================================
+12:14:32: ResNet34
+12:14:32: ============================================================
+12:14:32: ============================================================
+12:14:32: Prune mode: magnitude
+12:14:32: Growth mode: gradient
+12:14:32: Redistribution mode: none
+12:14:32: ============================================================
+12:14:33: Train Epoch: 1 [0/45056 (0%)]	Loss: 4.606490 Accuracy: 1/128 (0.781% 
+12:14:51: Train Epoch: 1 [12800/45056 (28%)]	Loss: 2.217463 Accuracy: 1941/12928 (15.014% 
+12:15:08: Train Epoch: 1 [25600/45056 (57%)]	Loss: 2.073950 Accuracy: 4548/25728 (17.677% 
+12:15:26: Train Epoch: 1 [38400/45056 (85%)]	Loss: 2.035013 Accuracy: 7626/38528 (19.793% 
+12:15:36: 
+Training summary: Average loss: 2.2372, Accuracy: 9423/45000 (20.940%)
+
+12:15:38: 
+Evaluation: Average loss: 1.9394, Accuracy: 1385/5000 (27.700%)
+
+12:15:39: Current learning rate: 0.1. Time taken for epoch: 66.92 seconds.
+
+12:15:39: Train Epoch: 2 [0/45056 (0%)]	Loss: 1.744382 Accuracy: 38/128 (29.688% 
+12:15:57: Train Epoch: 2 [12800/45056 (28%)]	Loss: 1.957728 Accuracy: 3945/12928 (30.515% 
+12:16:15: Train Epoch: 2 [25600/45056 (57%)]	Loss: 1.762566 Accuracy: 8275/25728 (32.163% 
+12:16:33: Train Epoch: 2 [38400/45056 (85%)]	Loss: 1.652135 Accuracy: 12873/38528 (33.412% 
+12:16:42: 
+Training summary: Average loss: 1.7942, Accuracy: 15329/45000 (34.064%)
+
+12:16:44: 
+Evaluation: Average loss: 2.9278, Accuracy: 1634/5000 (32.680%)
+
+12:16:45: Current learning rate: 0.1. Time taken for epoch: 65.95 seconds.
+
+12:16:45: Train Epoch: 3 [0/45056 (0%)]	Loss: 1.819706 Accuracy: 46/128 (35.938% 
+12:17:03: Train Epoch: 3 [12800/45056 (28%)]	Loss: 1.634661 Accuracy: 5024/12928 (38.861% 
+12:17:21: Train Epoch: 3 [25600/45056 (57%)]	Loss: 1.790233 Accuracy: 9934/25728 (38.612% 
+12:17:39: Train Epoch: 3 [38400/45056 (85%)]	Loss: 1.643884 Accuracy: 15074/38528 (39.125% 
+12:17:48: 
+Training summary: Average loss: 1.6493, Accuracy: 17758/45000 (39.462%)
+
+12:17:50: 
+Evaluation: Average loss: 1.6690, Accuracy: 1896/5000 (37.920%)
+
+12:17:50: Current learning rate: 0.1. Time taken for epoch: 65.94 seconds.
+
+12:17:51: Train Epoch: 4 [0/45056 (0%)]	Loss: 1.615225 Accuracy: 54/128 (42.188% 
+12:18:09: Train Epoch: 4 [12800/45056 (28%)]	Loss: 1.623289 Accuracy: 5601/12928 (43.325% 
+12:18:27: Train Epoch: 4 [25600/45056 (57%)]	Loss: 1.695880 Accuracy: 11272/25728 (43.812% 
+12:18:44: Train Epoch: 4 [38400/45056 (85%)]	Loss: 1.643174 Accuracy: 16822/38528 (43.662% 
+12:18:53: 
+Training summary: Average loss: 1.5405, Accuracy: 19734/45000 (43.853%)
+
+12:18:56: 
+Evaluation: Average loss: 1.5600, Accuracy: 2170/5000 (43.400%)
+
+12:18:56: Current learning rate: 0.1. Time taken for epoch: 65.41 seconds.
+
+12:18:56: Train Epoch: 5 [0/45056 (0%)]	Loss: 1.309684 Accuracy: 69/128 (53.906% 
+12:19:14: Train Epoch: 5 [12800/45056 (28%)]	Loss: 1.418372 Accuracy: 5921/12928 (45.800% 
+12:19:32: Train Epoch: 5 [25600/45056 (57%)]	Loss: 1.349203 Accuracy: 11915/25728 (46.311% 
+12:19:50: Train Epoch: 5 [38400/45056 (85%)]	Loss: 1.525135 Accuracy: 17878/38528 (46.403% 
+12:19:59: 
+Training summary: Average loss: 1.4801, Accuracy: 20852/45000 (46.338%)
+
+12:20:01: 
+Evaluation: Average loss: 1.6857, Accuracy: 2125/5000 (42.500%)
+
+12:20:01: Current learning rate: 0.1. Time taken for epoch: 65.18 seconds.
+
+12:20:01: Train Epoch: 6 [0/45056 (0%)]	Loss: 1.473547 Accuracy: 54/128 (42.188% 
+12:20:19: Train Epoch: 6 [12800/45056 (28%)]	Loss: 1.539885 Accuracy: 6139/12928 (47.486% 
+12:20:37: Train Epoch: 6 [25600/45056 (57%)]	Loss: 1.450412 Accuracy: 12308/25728 (47.839% 
+12:20:55: Train Epoch: 6 [38400/45056 (85%)]	Loss: 1.456284 Accuracy: 18544/38528 (48.131% 
+12:21:04: 
+Training summary: Average loss: 1.4300, Accuracy: 21826/45000 (48.502%)
+
+12:21:06: 
+Evaluation: Average loss: 285.6699, Accuracy: 2134/5000 (42.680%)
+
+12:21:06: Current learning rate: 0.1. Time taken for epoch: 65.22 seconds.
+
+12:21:07: Train Epoch: 7 [0/45056 (0%)]	Loss: 1.460993 Accuracy: 65/128 (50.781% 
+12:21:24: Train Epoch: 7 [12800/45056 (28%)]	Loss: 1.254603 Accuracy: 6485/12928 (50.162% 
+12:21:42: Train Epoch: 7 [25600/45056 (57%)]	Loss: 1.513845 Accuracy: 12864/25728 (50.000% 
+12:22:00: Train Epoch: 7 [38400/45056 (85%)]	Loss: 1.294523 Accuracy: 19326/38528 (50.161% 
+12:22:09: 
+Training summary: Average loss: 1.3818, Accuracy: 22613/45000 (50.251%)
+
+12:22:12: 
+Evaluation: Average loss: 1.4951, Accuracy: 2303/5000 (46.060%)
+
+12:22:12: Current learning rate: 0.1. Time taken for epoch: 65.38 seconds.
+
+12:22:12: Train Epoch: 8 [0/45056 (0%)]	Loss: 1.172073 Accuracy: 70/128 (54.688% 
+12:22:32: Train Epoch: 8 [12800/45056 (28%)]	Loss: 1.438798 Accuracy: 6684/12928 (51.702% 
+12:22:54: Train Epoch: 8 [25600/45056 (57%)]	Loss: 1.400114 Accuracy: 13184/25728 (51.244% 
+12:23:13: Train Epoch: 8 [38400/45056 (85%)]	Loss: 1.367277 Accuracy: 19719/38528 (51.181% 
+12:23:22: 
+Training summary: Average loss: 1.3612, Accuracy: 22962/45000 (51.027%)
+
+12:23:25: 
+Evaluation: Average loss: 2.3770, Accuracy: 1901/5000 (38.020%)
+
+12:23:25: Current learning rate: 0.1. Time taken for epoch: 72.90 seconds.
+
+12:23:25: Train Epoch: 9 [0/45056 (0%)]	Loss: 1.233903 Accuracy: 62/128 (48.438% 
+12:23:43: Train Epoch: 9 [12800/45056 (28%)]	Loss: 1.393968 Accuracy: 6677/12928 (51.648% 
+12:24:01: Train Epoch: 9 [25600/45056 (57%)]	Loss: 1.428155 Accuracy: 13335/25728 (51.831% 
+12:24:19: Train Epoch: 9 [38400/45056 (85%)]	Loss: 1.289062 Accuracy: 20024/38528 (51.973% 
+12:24:29: 
+Training summary: Average loss: 1.3249, Accuracy: 23445/45000 (52.100%)
+
+12:24:31: 
+Evaluation: Average loss: 1.6475, Accuracy: 2361/5000 (47.220%)
+
+12:24:31: Current learning rate: 0.1. Time taken for epoch: 66.55 seconds.
+
+12:24:32: Train Epoch: 10 [0/45056 (0%)]	Loss: 1.321025 Accuracy: 65/128 (50.781% 
+12:24:50: Train Epoch: 10 [12800/45056 (28%)]	Loss: 1.231770 Accuracy: 6859/12928 (53.055% 
+12:25:10: Train Epoch: 10 [25600/45056 (57%)]	Loss: 1.212964 Accuracy: 13722/25728 (53.335% 
+12:25:31: Train Epoch: 10 [38400/45056 (85%)]	Loss: 1.499987 Accuracy: 20625/38528 (53.532% 
+12:25:42: 
+Training summary: Average loss: 1.2922, Accuracy: 24094/45000 (53.542%)
+
+12:25:45: 
+Evaluation: Average loss: 1.4568, Accuracy: 2338/5000 (46.760%)
+
+12:25:45: Current learning rate: 0.1. Time taken for epoch: 73.69 seconds.
+
+12:25:45: Train Epoch: 11 [0/45056 (0%)]	Loss: 1.320859 Accuracy: 66/128 (51.562% 
+12:26:05: Train Epoch: 11 [12800/45056 (28%)]	Loss: 1.329077 Accuracy: 7098/12928 (54.904% 
+12:26:23: Train Epoch: 11 [25600/45056 (57%)]	Loss: 1.457392 Accuracy: 14056/25728 (54.633% 
+12:26:41: Train Epoch: 11 [38400/45056 (85%)]	Loss: 1.317072 Accuracy: 21067/38528 (54.680% 
+12:26:50: 
+Training summary: Average loss: 1.2647, Accuracy: 24611/45000 (54.691%)
+
+12:26:52: 
+Evaluation: Average loss: 1.3263, Accuracy: 2656/5000 (53.120%)
+
+12:26:52: Current learning rate: 0.1. Time taken for epoch: 67.40 seconds.
+
+12:26:53: Train Epoch: 12 [0/45056 (0%)]	Loss: 1.195156 Accuracy: 78/128 (60.938% 
+12:27:10: Train Epoch: 12 [12800/45056 (28%)]	Loss: 1.242815 Accuracy: 7138/12928 (55.213% 
+12:27:28: Train Epoch: 12 [25600/45056 (57%)]	Loss: 1.818424 Accuracy: 11509/25728 (44.733% 
+12:27:47: Train Epoch: 12 [38400/45056 (85%)]	Loss: 1.674903 Accuracy: 15979/38528 (41.474% 
+12:27:57: 
+Training summary: Average loss: 1.6554, Accuracy: 18469/45000 (41.042%)
+
+12:28:00: 
+Evaluation: Average loss: 2.3004, Accuracy: 953/5000 (19.060%)
+
+12:28:00: Current learning rate: 0.1. Time taken for epoch: 67.60 seconds.
+
+12:28:00: Train Epoch: 13 [0/45056 (0%)]	Loss: 1.560391 Accuracy: 50/128 (39.062% 
+12:28:21: Train Epoch: 13 [12800/45056 (28%)]	Loss: 1.517488 Accuracy: 5209/12928 (40.292% 
+12:28:39: Train Epoch: 13 [25600/45056 (57%)]	Loss: 1.683675 Accuracy: 10465/25728 (40.676% 
+12:28:57: Train Epoch: 13 [38400/45056 (85%)]	Loss: 1.548486 Accuracy: 16007/38528 (41.546% 
+12:29:06: 
+Training summary: Average loss: 1.5788, Accuracy: 18878/45000 (41.951%)
+
+12:29:08: 
+Evaluation: Average loss: 2.5926, Accuracy: 939/5000 (18.780%)
+
+12:29:08: Current learning rate: 0.1. Time taken for epoch: 68.52 seconds.
+
+12:29:09: Train Epoch: 14 [0/45056 (0%)]	Loss: 1.587576 Accuracy: 48/128 (37.500% 
+12:29:27: Train Epoch: 14 [12800/45056 (28%)]	Loss: 1.464499 Accuracy: 5746/12928 (44.446% 
+12:29:44: Train Epoch: 14 [25600/45056 (57%)]	Loss: 1.334394 Accuracy: 11660/25728 (45.320% 
+12:30:02: Train Epoch: 14 [38400/45056 (85%)]	Loss: 1.505288 Accuracy: 17600/38528 (45.681% 
+12:30:11: 
+Training summary: Average loss: 1.4906, Accuracy: 20639/45000 (45.864%)
+
+12:30:14: 
+Evaluation: Average loss: 2.7418, Accuracy: 1100/5000 (22.000%)
+
+12:30:14: Current learning rate: 0.1. Time taken for epoch: 65.74 seconds.
+
+12:30:15: Train Epoch: 15 [0/45056 (0%)]	Loss: 1.512867 Accuracy: 60/128 (46.875% 
+12:30:34: Train Epoch: 15 [12800/45056 (28%)]	Loss: 1.459728 Accuracy: 6240/12928 (48.267% 
+12:30:52: Train Epoch: 15 [25600/45056 (57%)]	Loss: 1.511249 Accuracy: 12447/25728 (48.379% 
+12:31:10: Train Epoch: 15 [38400/45056 (85%)]	Loss: 1.333256 Accuracy: 18637/38528 (48.373% 
+12:31:19: 
+Training summary: Average loss: 1.4210, Accuracy: 21834/45000 (48.520%)
+
+12:31:21: 
+Evaluation: Average loss: 2.2072, Accuracy: 1339/5000 (26.780%)
+
+12:31:21: Current learning rate: 0.1. Time taken for epoch: 67.14 seconds.
+
+12:31:22: Train Epoch: 16 [0/45056 (0%)]	Loss: 1.376477 Accuracy: 61/128 (47.656% 
+12:31:39: Train Epoch: 16 [12800/45056 (28%)]	Loss: 1.311193 Accuracy: 6416/12928 (49.629% 
+12:31:59: Train Epoch: 16 [25600/45056 (57%)]	Loss: 1.328515 Accuracy: 12826/25728 (49.852% 
+12:32:18: Train Epoch: 16 [38400/45056 (85%)]	Loss: 1.366591 Accuracy: 19283/38528 (50.049% 
+12:32:27: 
+Training summary: Average loss: 1.3768, Accuracy: 22586/45000 (50.191%)
+
+12:32:30: 
+Evaluation: Average loss: 3.8355, Accuracy: 605/5000 (12.100%)
+
+12:32:30: Current learning rate: 0.1. Time taken for epoch: 68.55 seconds.
+
+12:32:30: Train Epoch: 17 [0/45056 (0%)]	Loss: 1.406841 Accuracy: 65/128 (50.781% 
+12:32:48: Train Epoch: 17 [12800/45056 (28%)]	Loss: 1.373727 Accuracy: 6653/12928 (51.462% 
+12:33:06: Train Epoch: 17 [25600/45056 (57%)]	Loss: 1.511595 Accuracy: 13295/25728 (51.675% 
+12:33:25: Train Epoch: 17 [38400/45056 (85%)]	Loss: 1.220204 Accuracy: 19886/38528 (51.614% 
+12:33:34: 
+Training summary: Average loss: 1.3407, Accuracy: 23286/45000 (51.747%)
+
+12:33:37: 
+Evaluation: Average loss: 1.6753, Accuracy: 2009/5000 (40.180%)
+
+12:33:37: Current learning rate: 0.1. Time taken for epoch: 66.85 seconds.
+
+12:33:37: Train Epoch: 18 [0/45056 (0%)]	Loss: 1.325331 Accuracy: 58/128 (45.312% 
+12:33:56: Train Epoch: 18 [12800/45056 (28%)]	Loss: 1.478218 Accuracy: 6730/12928 (52.058% 
+12:34:15: Train Epoch: 18 [25600/45056 (57%)]	Loss: 1.283508 Accuracy: 13447/25728 (52.266% 
+12:34:33: Train Epoch: 18 [38400/45056 (85%)]	Loss: 1.413805 Accuracy: 20120/38528 (52.222% 
+12:34:43: 
+Training summary: Average loss: 1.3141, Accuracy: 23584/45000 (52.409%)
+
+12:34:46: 
+Evaluation: Average loss: 3.2130, Accuracy: 620/5000 (12.400%)
+
+12:34:46: Current learning rate: 0.1. Time taken for epoch: 69.69 seconds.
+
+12:34:47: Train Epoch: 19 [0/45056 (0%)]	Loss: 1.307935 Accuracy: 70/128 (54.688% 
+12:35:05: Train Epoch: 19 [12800/45056 (28%)]	Loss: 1.232297 Accuracy: 6854/12928 (53.017% 
+12:35:24: Train Epoch: 19 [25600/45056 (57%)]	Loss: 1.140401 Accuracy: 13748/25728 (53.436% 
+12:35:42: Train Epoch: 19 [38400/45056 (85%)]	Loss: 1.288816 Accuracy: 20713/38528 (53.761% 
+12:35:51: 
+Training summary: Average loss: 1.2848, Accuracy: 24220/45000 (53.822%)
+
+12:35:53: 
+Evaluation: Average loss: 1.9792, Accuracy: 1543/5000 (30.860%)
+
+12:35:53: Current learning rate: 0.1. Time taken for epoch: 66.82 seconds.
+
+12:35:53: Train Epoch: 20 [0/45056 (0%)]	Loss: 1.272383 Accuracy: 70/128 (54.688% 
+12:36:12: Train Epoch: 20 [12800/45056 (28%)]	Loss: 1.383394 Accuracy: 6897/12928 (53.349% 
+12:36:30: Train Epoch: 20 [25600/45056 (57%)]	Loss: 1.178236 Accuracy: 13935/25728 (54.163% 
+12:36:49: Train Epoch: 20 [38400/45056 (85%)]	Loss: 1.137157 Accuracy: 20946/38528 (54.366% 
+12:36:59: 
+Training summary: Average loss: 1.2678, Accuracy: 24456/45000 (54.347%)
+
+12:37:01: 
+Evaluation: Average loss: 1.5905, Accuracy: 2213/5000 (44.260%)
+
+12:37:01: Current learning rate: 0.1. Time taken for epoch: 68.00 seconds.
+
+12:37:02: Train Epoch: 21 [0/45056 (0%)]	Loss: 1.129713 Accuracy: 78/128 (60.938% 
+12:37:20: Train Epoch: 21 [12800/45056 (28%)]	Loss: 1.170992 Accuracy: 7142/12928 (55.244% 
+12:37:38: Train Epoch: 21 [25600/45056 (57%)]	Loss: 1.265710 Accuracy: 14290/25728 (55.543% 
+12:37:56: Train Epoch: 21 [38400/45056 (85%)]	Loss: 1.231066 Accuracy: 21312/38528 (55.316% 
+12:38:06: 
+Training summary: Average loss: 1.2478, Accuracy: 24863/45000 (55.251%)
+
+12:38:08: 
+Evaluation: Average loss: 2.2063, Accuracy: 1569/5000 (31.380%)
+
+12:38:08: Current learning rate: 0.1. Time taken for epoch: 67.06 seconds.
+
+12:38:09: Train Epoch: 22 [0/45056 (0%)]	Loss: 1.275110 Accuracy: 76/128 (59.375% 
+12:38:27: Train Epoch: 22 [12800/45056 (28%)]	Loss: 1.228571 Accuracy: 7103/12928 (54.943% 
+12:38:44: Train Epoch: 22 [25600/45056 (57%)]	Loss: 1.397299 Accuracy: 14175/25728 (55.096% 
+12:39:02: Train Epoch: 22 [38400/45056 (85%)]	Loss: 1.111258 Accuracy: 21293/38528 (55.266% 
+12:39:11: 
+Training summary: Average loss: 1.2315, Accuracy: 24997/45000 (55.549%)
+
+12:39:14: 
+Evaluation: Average loss: 2.4221, Accuracy: 1566/5000 (31.320%)
+
+12:39:14: Current learning rate: 0.1. Time taken for epoch: 65.59 seconds.
+
+12:39:14: Train Epoch: 23 [0/45056 (0%)]	Loss: 1.154627 Accuracy: 73/128 (57.031% 
+12:39:32: Train Epoch: 23 [12800/45056 (28%)]	Loss: 1.217671 Accuracy: 7255/12928 (56.119% 
+12:39:50: Train Epoch: 23 [25600/45056 (57%)]	Loss: 1.179175 Accuracy: 14431/25728 (56.091% 
+12:40:08: Train Epoch: 23 [38400/45056 (85%)]	Loss: 2.489455 Accuracy: 19437/38528 (50.449% 
+12:40:17: 
+Training summary: Average loss: 1.4811, Accuracy: 20789/45000 (46.198%)
+
+12:40:19: 
+Evaluation: Average loss: 2.4972, Accuracy: 775/5000 (15.500%)
+
+12:40:19: Current learning rate: 0.1. Time taken for epoch: 65.64 seconds.
+
+12:40:20: Train Epoch: 24 [0/45056 (0%)]	Loss: 2.183943 Accuracy: 20/128 (15.625% 
+12:40:38: Train Epoch: 24 [12800/45056 (28%)]	Loss: 2.200446 Accuracy: 3126/12928 (24.180% 
+12:40:56: Train Epoch: 24 [25600/45056 (57%)]	Loss: 2.064382 Accuracy: 6233/25728 (24.227% 
+12:41:14: Train Epoch: 24 [38400/45056 (85%)]	Loss: 2.122955 Accuracy: 9289/38528 (24.110% 
+12:41:24: 
+Training summary: Average loss: 2.0412, Accuracy: 10885/45000 (24.189%)
+
+12:41:26: 
+Evaluation: Average loss: 2.4999, Accuracy: 917/5000 (18.340%)
+
+12:41:26: Current learning rate: 0.1. Time taken for epoch: 67.01 seconds.
+
+12:41:27: Train Epoch: 25 [0/45056 (0%)]	Loss: 1.931485 Accuracy: 36/128 (28.125% 
+12:41:45: Train Epoch: 25 [12800/45056 (28%)]	Loss: 2.037112 Accuracy: 3291/12928 (25.456% 
+12:42:03: Train Epoch: 25 [25600/45056 (57%)]	Loss: 1.963625 Accuracy: 6752/25728 (26.244% 
+12:42:21: Train Epoch: 25 [38400/45056 (85%)]	Loss: 1.889173 Accuracy: 10259/38528 (26.627% 
+12:42:30: 
+Training summary: Average loss: 1.9758, Accuracy: 12153/45000 (27.007%)
+
+12:42:33: 
+Evaluation: Average loss: 2.4073, Accuracy: 940/5000 (18.800%)
+
+12:42:33: Current learning rate: 0.1. Time taken for epoch: 66.55 seconds.
+
+12:42:33: Train Epoch: 26 [0/45056 (0%)]	Loss: 1.869280 Accuracy: 36/128 (28.125% 
+12:42:52: Train Epoch: 26 [12800/45056 (28%)]	Loss: 1.728799 Accuracy: 3757/12928 (29.061% 
+12:43:10: Train Epoch: 26 [25600/45056 (57%)]	Loss: 1.884704 Accuracy: 7474/25728 (29.050% 
+12:43:28: Train Epoch: 26 [38400/45056 (85%)]	Loss: 2.042469 Accuracy: 11388/38528 (29.558% 
+12:43:38: 
+Training summary: Average loss: 1.8954, Accuracy: 13552/45000 (30.116%)
+
+12:43:40: 
+Evaluation: Average loss: 2.6450, Accuracy: 841/5000 (16.820%)
+
+12:43:40: Current learning rate: 0.1. Time taken for epoch: 67.03 seconds.
+
+12:43:40: Train Epoch: 27 [0/45056 (0%)]	Loss: 1.877725 Accuracy: 42/128 (32.812% 
+12:43:59: Train Epoch: 27 [12800/45056 (28%)]	Loss: 1.905962 Accuracy: 4224/12928 (32.673% 
+12:44:17: Train Epoch: 27 [25600/45056 (57%)]	Loss: 1.706954 Accuracy: 8528/25728 (33.147% 
+12:44:35: Train Epoch: 27 [38400/45056 (85%)]	Loss: 1.758975 Accuracy: 12971/38528 (33.666% 
+12:44:44: 
+Training summary: Average loss: 1.7926, Accuracy: 15374/45000 (34.164%)
+
+12:44:47: 
+Evaluation: Average loss: 3.4061, Accuracy: 749/5000 (14.980%)
+
+12:44:47: Current learning rate: 0.1. Time taken for epoch: 66.91 seconds.
+
+12:44:47: Train Epoch: 28 [0/45056 (0%)]	Loss: 1.820668 Accuracy: 41/128 (32.031% 
+12:45:06: Train Epoch: 28 [12800/45056 (28%)]	Loss: 1.730208 Accuracy: 4682/12928 (36.216% 
+12:45:24: Train Epoch: 28 [25600/45056 (57%)]	Loss: 1.669693 Accuracy: 9392/25728 (36.505% 
+12:45:42: Train Epoch: 28 [38400/45056 (85%)]	Loss: 1.629962 Accuracy: 13988/38528 (36.306% 
+12:45:51: 
+Training summary: Average loss: 1.7323, Accuracy: 16468/45000 (36.596%)
+
+12:45:53: 
+Evaluation: Average loss: 2.2966, Accuracy: 1156/5000 (23.120%)
+
+12:45:53: Current learning rate: 0.1. Time taken for epoch: 66.44 seconds.
+
+12:45:54: Train Epoch: 29 [0/45056 (0%)]	Loss: 1.757792 Accuracy: 47/128 (36.719% 
+12:46:12: Train Epoch: 29 [12800/45056 (28%)]	Loss: 1.775734 Accuracy: 4836/12928 (37.407% 
+12:46:29: Train Epoch: 29 [25600/45056 (57%)]	Loss: 1.742793 Accuracy: 9670/25728 (37.586% 
+12:46:47: Train Epoch: 29 [38400/45056 (85%)]	Loss: 1.685966 Accuracy: 14553/38528 (37.773% 
+12:46:56: 
+Training summary: Average loss: 1.6906, Accuracy: 17085/45000 (37.967%)
+
+12:46:59: 
+Evaluation: Average loss: 2.0714, Accuracy: 1455/5000 (29.100%)
+
+12:46:59: Current learning rate: 0.1. Time taken for epoch: 65.20 seconds.
+
+12:46:59: Train Epoch: 30 [0/45056 (0%)]	Loss: 1.549105 Accuracy: 54/128 (42.188% 
+12:47:17: Train Epoch: 30 [12800/45056 (28%)]	Loss: 1.659295 Accuracy: 5052/12928 (39.078% 
+12:47:35: Train Epoch: 30 [25600/45056 (57%)]	Loss: 1.710326 Accuracy: 10006/25728 (38.891% 
+12:47:52: Train Epoch: 30 [38400/45056 (85%)]	Loss: 1.757308 Accuracy: 15097/38528 (39.184% 
+12:48:01: 
+Training summary: Average loss: 1.6622, Accuracy: 17635/45000 (39.189%)
+
+12:48:04: 
+Evaluation: Average loss: 2.5349, Accuracy: 1000/5000 (20.000%)
+
+12:48:04: Current learning rate: 0.1. Time taken for epoch: 65.30 seconds.
+
+12:48:04: Train Epoch: 31 [0/45056 (0%)]	Loss: 1.526018 Accuracy: 61/128 (47.656% 
+12:48:22: Train Epoch: 31 [12800/45056 (28%)]	Loss: 1.628214 Accuracy: 5219/12928 (40.370% 
+12:48:40: Train Epoch: 31 [25600/45056 (57%)]	Loss: 1.599736 Accuracy: 10344/25728 (40.205% 
+12:48:58: Train Epoch: 31 [38400/45056 (85%)]	Loss: 1.604250 Accuracy: 15509/38528 (40.254% 
+12:49:07: 
+Training summary: Average loss: 1.6408, Accuracy: 18168/45000 (40.373%)
+
+12:49:09: 
+Evaluation: Average loss: 1.8207, Accuracy: 1882/5000 (37.640%)
+
+12:49:09: Current learning rate: 0.1. Time taken for epoch: 65.25 seconds.
+
+12:49:09: Train Epoch: 32 [0/45056 (0%)]	Loss: 1.576963 Accuracy: 50/128 (39.062% 
+12:49:28: Train Epoch: 32 [12800/45056 (28%)]	Loss: 1.610975 Accuracy: 5239/12928 (40.524% 
+12:49:46: Train Epoch: 32 [25600/45056 (57%)]	Loss: 1.706706 Accuracy: 10404/25728 (40.438% 
+12:50:04: Train Epoch: 32 [38400/45056 (85%)]	Loss: 1.490836 Accuracy: 15793/38528 (40.991% 
+12:50:13: 
+Training summary: Average loss: 1.6175, Accuracy: 18466/45000 (41.036%)
+
+12:50:15: 
+Evaluation: Average loss: 1.7017, Accuracy: 1945/5000 (38.900%)
+
+12:50:15: Current learning rate: 0.1. Time taken for epoch: 66.06 seconds.
+
+12:50:16: Train Epoch: 33 [0/45056 (0%)]	Loss: 1.464154 Accuracy: 56/128 (43.750% 
+12:50:34: Train Epoch: 33 [12800/45056 (28%)]	Loss: 1.583741 Accuracy: 5412/12928 (41.863% 
+12:50:52: Train Epoch: 33 [25600/45056 (57%)]	Loss: 1.505583 Accuracy: 10713/25728 (41.639% 
+12:51:10: Train Epoch: 33 [38400/45056 (85%)]	Loss: 1.453180 Accuracy: 16099/38528 (41.785% 
+12:51:19: 
+Training summary: Average loss: 1.6015, Accuracy: 18815/45000 (41.811%)
+
+12:51:22: 
+Evaluation: Average loss: 1.9945, Accuracy: 1449/5000 (28.980%)
+
+12:51:22: Current learning rate: 0.1. Time taken for epoch: 66.40 seconds.
+
+12:51:22: Train Epoch: 34 [0/45056 (0%)]	Loss: 1.735709 Accuracy: 46/128 (35.938% 
+12:51:40: Train Epoch: 34 [12800/45056 (28%)]	Loss: 1.576523 Accuracy: 5464/12928 (42.265% 
+12:51:59: Train Epoch: 34 [25600/45056 (57%)]	Loss: 1.815353 Accuracy: 10877/25728 (42.277% 
+12:52:17: Train Epoch: 34 [38400/45056 (85%)]	Loss: 1.786805 Accuracy: 16265/38528 (42.216% 
+12:52:26: 
+Training summary: Average loss: 1.5892, Accuracy: 19067/45000 (42.371%)
+
+12:52:28: 
+Evaluation: Average loss: 2.1979, Accuracy: 1287/5000 (25.740%)
+
+12:52:28: Current learning rate: 0.1. Time taken for epoch: 66.48 seconds.
+
+12:52:28: Train Epoch: 35 [0/45056 (0%)]	Loss: 1.526039 Accuracy: 58/128 (45.312% 
+12:52:47: Train Epoch: 35 [12800/45056 (28%)]	Loss: 1.916981 Accuracy: 4157/12928 (32.155% 
+12:53:05: Train Epoch: 35 [25600/45056 (57%)]	Loss: 1.586742 Accuracy: 8485/25728 (32.980% 
+12:53:24: Train Epoch: 35 [38400/45056 (85%)]	Loss: 1.577603 Accuracy: 13283/38528 (34.476% 
+12:53:33: 
+Training summary: Average loss: 1.7625, Accuracy: 15780/45000 (35.067%)
+
+12:53:35: 
+Evaluation: Average loss: 1.7692, Accuracy: 1766/5000 (35.320%)
+
+12:53:35: Current learning rate: 0.1. Time taken for epoch: 67.08 seconds.
+
+12:53:35: Train Epoch: 36 [0/45056 (0%)]	Loss: 1.691867 Accuracy: 53/128 (41.406% 
+12:53:54: Train Epoch: 36 [12800/45056 (28%)]	Loss: 1.682439 Accuracy: 5041/12928 (38.993% 
+12:54:12: Train Epoch: 36 [25600/45056 (57%)]	Loss: 1.558184 Accuracy: 10239/25728 (39.797% 
+12:54:31: Train Epoch: 36 [38400/45056 (85%)]	Loss: 1.611667 Accuracy: 15495/38528 (40.218% 
+12:54:40: 
+Training summary: Average loss: 1.6308, Accuracy: 18192/45000 (40.427%)
+
+12:54:43: 
+Evaluation: Average loss: 1.6762, Accuracy: 1945/5000 (38.900%)
+
+12:54:43: Current learning rate: 0.1. Time taken for epoch: 67.39 seconds.
+
+12:54:43: Train Epoch: 37 [0/45056 (0%)]	Loss: 1.537046 Accuracy: 53/128 (41.406% 
+12:55:02: Train Epoch: 37 [12800/45056 (28%)]	Loss: 1.686620 Accuracy: 5438/12928 (42.064% 
+12:55:20: Train Epoch: 37 [25600/45056 (57%)]	Loss: 1.528332 Accuracy: 10910/25728 (42.405% 
+12:55:39: Train Epoch: 37 [38400/45056 (85%)]	Loss: 1.532770 Accuracy: 16494/38528 (42.810% 
+12:55:48: 
+Training summary: Average loss: 1.5638, Accuracy: 19348/45000 (42.996%)
+
+12:55:51: 
+Evaluation: Average loss: 1.7967, Accuracy: 1722/5000 (34.440%)
+
+12:55:51: Current learning rate: 0.1. Time taken for epoch: 68.23 seconds.
+
+12:55:51: Train Epoch: 38 [0/45056 (0%)]	Loss: 1.339664 Accuracy: 65/128 (50.781% 
+12:56:10: Train Epoch: 38 [12800/45056 (28%)]	Loss: 1.430913 Accuracy: 5673/12928 (43.881% 
+12:56:29: Train Epoch: 38 [25600/45056 (57%)]	Loss: 1.597379 Accuracy: 11299/25728 (43.917% 
+12:56:47: Train Epoch: 38 [38400/45056 (85%)]	Loss: 1.487868 Accuracy: 17161/38528 (44.542% 
+12:56:55: 
+Training summary: Average loss: 1.5280, Accuracy: 20141/45000 (44.758%)
+
+12:56:58: 
+Evaluation: Average loss: 1.6436, Accuracy: 2074/5000 (41.480%)
+
+12:56:58: Current learning rate: 0.1. Time taken for epoch: 67.11 seconds.
+
+12:56:58: Train Epoch: 39 [0/45056 (0%)]	Loss: 1.470335 Accuracy: 54/128 (42.188% 
+12:57:16: Train Epoch: 39 [12800/45056 (28%)]	Loss: 1.371765 Accuracy: 5859/12928 (45.320% 
+12:57:34: Train Epoch: 39 [25600/45056 (57%)]	Loss: 1.387275 Accuracy: 11698/25728 (45.468% 
+12:57:51: Train Epoch: 39 [38400/45056 (85%)]	Loss: 1.482346 Accuracy: 17571/38528 (45.606% 
+12:58:00: 
+Training summary: Average loss: 1.4996, Accuracy: 20525/45000 (45.611%)
+
+12:58:03: 
+Evaluation: Average loss: 1.7771, Accuracy: 1841/5000 (36.820%)
+
+12:58:03: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+12:58:03: Train Epoch: 40 [0/45056 (0%)]	Loss: 1.551868 Accuracy: 61/128 (47.656% 
+12:58:21: Train Epoch: 40 [12800/45056 (28%)]	Loss: 1.515707 Accuracy: 6013/12928 (46.511% 
+12:58:39: Train Epoch: 40 [25600/45056 (57%)]	Loss: 1.470606 Accuracy: 12067/25728 (46.902% 
+12:58:56: Train Epoch: 40 [38400/45056 (85%)]	Loss: 1.468793 Accuracy: 18049/38528 (46.846% 
+12:59:05: 
+Training summary: Average loss: 1.4703, Accuracy: 21129/45000 (46.953%)
+
+12:59:08: 
+Evaluation: Average loss: 1.5635, Accuracy: 2101/5000 (42.020%)
+
+12:59:08: Current learning rate: 0.1. Time taken for epoch: 64.94 seconds.
+
+12:59:08: Train Epoch: 41 [0/45056 (0%)]	Loss: 1.281523 Accuracy: 67/128 (52.344% 
+12:59:26: Train Epoch: 41 [12800/45056 (28%)]	Loss: 1.528258 Accuracy: 6106/12928 (47.231% 
+12:59:44: Train Epoch: 41 [25600/45056 (57%)]	Loss: 1.563957 Accuracy: 12125/25728 (47.128% 
+13:00:01: Train Epoch: 41 [38400/45056 (85%)]	Loss: 1.414225 Accuracy: 18271/38528 (47.423% 
+13:00:10: 
+Training summary: Average loss: 1.4525, Accuracy: 21367/45000 (47.482%)
+
+13:00:13: 
+Evaluation: Average loss: 1.4924, Accuracy: 2301/5000 (46.020%)
+
+13:00:13: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:00:13: Train Epoch: 42 [0/45056 (0%)]	Loss: 1.403917 Accuracy: 63/128 (49.219% 
+13:00:31: Train Epoch: 42 [12800/45056 (28%)]	Loss: 1.367750 Accuracy: 6205/12928 (47.997% 
+13:00:48: Train Epoch: 42 [25600/45056 (57%)]	Loss: 1.487916 Accuracy: 12415/25728 (48.255% 
+13:01:06: Train Epoch: 42 [38400/45056 (85%)]	Loss: 1.422134 Accuracy: 18672/38528 (48.463% 
+13:01:15: 
+Training summary: Average loss: 1.4293, Accuracy: 21794/45000 (48.431%)
+
+13:01:18: 
+Evaluation: Average loss: 1.5161, Accuracy: 2230/5000 (44.600%)
+
+13:01:18: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:01:18: Train Epoch: 43 [0/45056 (0%)]	Loss: 1.548120 Accuracy: 58/128 (45.312% 
+13:01:36: Train Epoch: 43 [12800/45056 (28%)]	Loss: 1.324975 Accuracy: 6381/12928 (49.358% 
+13:01:53: Train Epoch: 43 [25600/45056 (57%)]	Loss: 1.403503 Accuracy: 12555/25728 (48.799% 
+13:02:11: Train Epoch: 43 [38400/45056 (85%)]	Loss: 1.377361 Accuracy: 18878/38528 (48.998% 
+13:02:20: 
+Training summary: Average loss: 1.4087, Accuracy: 22058/45000 (49.018%)
+
+13:02:23: 
+Evaluation: Average loss: 1.3821, Accuracy: 2485/5000 (49.700%)
+
+13:02:23: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:02:23: Train Epoch: 44 [0/45056 (0%)]	Loss: 1.325120 Accuracy: 71/128 (55.469% 
+13:02:41: Train Epoch: 44 [12800/45056 (28%)]	Loss: 1.470008 Accuracy: 6478/12928 (50.108% 
+13:02:58: Train Epoch: 44 [25600/45056 (57%)]	Loss: 1.381425 Accuracy: 12886/25728 (50.086% 
+13:03:16: Train Epoch: 44 [38400/45056 (85%)]	Loss: 1.448933 Accuracy: 19358/38528 (50.244% 
+13:03:25: 
+Training summary: Average loss: 1.3840, Accuracy: 22594/45000 (50.209%)
+
+13:03:27: 
+Evaluation: Average loss: 1.5461, Accuracy: 2262/5000 (45.240%)
+
+13:03:27: Current learning rate: 0.1. Time taken for epoch: 64.94 seconds.
+
+13:03:28: Train Epoch: 45 [0/45056 (0%)]	Loss: 1.195432 Accuracy: 68/128 (53.125% 
+13:03:46: Train Epoch: 45 [12800/45056 (28%)]	Loss: 1.383687 Accuracy: 6583/12928 (50.920% 
+13:04:03: Train Epoch: 45 [25600/45056 (57%)]	Loss: 1.345713 Accuracy: 13088/25728 (50.871% 
+13:04:21: Train Epoch: 45 [38400/45056 (85%)]	Loss: 1.320411 Accuracy: 19557/38528 (50.760% 
+13:04:30: 
+Training summary: Average loss: 1.3614, Accuracy: 22954/45000 (51.009%)
+
+13:04:32: 
+Evaluation: Average loss: 1.7453, Accuracy: 1964/5000 (39.280%)
+
+13:04:32: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:04:33: Train Epoch: 46 [0/45056 (0%)]	Loss: 1.475315 Accuracy: 64/128 (50.000% 
+13:04:50: Train Epoch: 46 [12800/45056 (28%)]	Loss: 1.340908 Accuracy: 6744/12928 (52.166% 
+13:05:08: Train Epoch: 46 [25600/45056 (57%)]	Loss: 1.759046 Accuracy: 12085/25728 (46.972% 
+13:05:26: Train Epoch: 46 [38400/45056 (85%)]	Loss: 1.671785 Accuracy: 16974/38528 (44.056% 
+13:05:35: 
+Training summary: Average loss: 1.5581, Accuracy: 19588/45000 (43.529%)
+
+13:05:37: 
+Evaluation: Average loss: 1.6886, Accuracy: 1902/5000 (38.040%)
+
+13:05:37: Current learning rate: 0.1. Time taken for epoch: 64.98 seconds.
+
+13:05:38: Train Epoch: 47 [0/45056 (0%)]	Loss: 1.563842 Accuracy: 52/128 (40.625% 
+13:05:55: Train Epoch: 47 [12800/45056 (28%)]	Loss: 1.438856 Accuracy: 5506/12928 (42.590% 
+13:06:13: Train Epoch: 47 [25600/45056 (57%)]	Loss: 1.522425 Accuracy: 11094/25728 (43.120% 
+13:06:31: Train Epoch: 47 [38400/45056 (85%)]	Loss: 1.603149 Accuracy: 16926/38528 (43.932% 
+13:06:40: 
+Training summary: Average loss: 1.5273, Accuracy: 19924/45000 (44.276%)
+
+13:06:42: 
+Evaluation: Average loss: 1.4768, Accuracy: 2294/5000 (45.880%)
+
+13:06:42: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:06:43: Train Epoch: 48 [0/45056 (0%)]	Loss: 1.392140 Accuracy: 65/128 (50.781% 
+13:07:00: Train Epoch: 48 [12800/45056 (28%)]	Loss: 1.425294 Accuracy: 5976/12928 (46.225% 
+13:07:18: Train Epoch: 48 [25600/45056 (57%)]	Loss: 1.410115 Accuracy: 11980/25728 (46.564% 
+13:07:36: Train Epoch: 48 [38400/45056 (85%)]	Loss: 1.436372 Accuracy: 18063/38528 (46.883% 
+13:07:45: 
+Training summary: Average loss: 1.4637, Accuracy: 21064/45000 (46.809%)
+
+13:07:47: 
+Evaluation: Average loss: 1.5593, Accuracy: 2266/5000 (45.320%)
+
+13:07:47: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:07:48: Train Epoch: 49 [0/45056 (0%)]	Loss: 1.499250 Accuracy: 62/128 (48.438% 
+13:08:05: Train Epoch: 49 [12800/45056 (28%)]	Loss: 1.545423 Accuracy: 6237/12928 (48.244% 
+13:08:23: Train Epoch: 49 [25600/45056 (57%)]	Loss: 1.369067 Accuracy: 12459/25728 (48.426% 
+13:08:41: Train Epoch: 49 [38400/45056 (85%)]	Loss: 1.363825 Accuracy: 18660/38528 (48.432% 
+13:08:50: 
+Training summary: Average loss: 1.4333, Accuracy: 21832/45000 (48.516%)
+
+13:08:52: 
+Evaluation: Average loss: 1.4300, Accuracy: 2406/5000 (48.120%)
+
+13:08:52: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:08:52: Train Epoch: 50 [0/45056 (0%)]	Loss: 1.489621 Accuracy: 53/128 (41.406% 
+13:09:10: Train Epoch: 50 [12800/45056 (28%)]	Loss: 1.389912 Accuracy: 6322/12928 (48.902% 
+13:09:28: Train Epoch: 50 [25600/45056 (57%)]	Loss: 1.355911 Accuracy: 12654/25728 (49.184% 
+13:09:46: Train Epoch: 50 [38400/45056 (85%)]	Loss: 1.280885 Accuracy: 18994/38528 (49.299% 
+13:09:55: 
+Training summary: Average loss: 1.4081, Accuracy: 22189/45000 (49.309%)
+
+13:09:57: 
+Evaluation: Average loss: 1.5484, Accuracy: 2265/5000 (45.300%)
+
+13:09:57: Current learning rate: 0.1. Time taken for epoch: 64.94 seconds.
+
+13:09:57: Train Epoch: 51 [0/45056 (0%)]	Loss: 1.248246 Accuracy: 70/128 (54.688% 
+13:10:15: Train Epoch: 51 [12800/45056 (28%)]	Loss: 1.346829 Accuracy: 6449/12928 (49.884% 
+13:10:33: Train Epoch: 51 [25600/45056 (57%)]	Loss: 1.421857 Accuracy: 12750/25728 (49.557% 
+13:10:51: Train Epoch: 51 [38400/45056 (85%)]	Loss: 1.361263 Accuracy: 19180/38528 (49.782% 
+13:11:00: 
+Training summary: Average loss: 1.3897, Accuracy: 22380/45000 (49.733%)
+
+13:11:02: 
+Evaluation: Average loss: 1.4547, Accuracy: 2358/5000 (47.160%)
+
+13:11:02: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:11:02: Train Epoch: 52 [0/45056 (0%)]	Loss: 1.344227 Accuracy: 64/128 (50.000% 
+13:11:20: Train Epoch: 52 [12800/45056 (28%)]	Loss: 1.368359 Accuracy: 6671/12928 (51.601% 
+13:11:38: Train Epoch: 52 [25600/45056 (57%)]	Loss: 1.448475 Accuracy: 13142/25728 (51.081% 
+13:11:56: Train Epoch: 52 [38400/45056 (85%)]	Loss: 1.366710 Accuracy: 19558/38528 (50.763% 
+13:12:04: 
+Training summary: Average loss: 1.3731, Accuracy: 22817/45000 (50.704%)
+
+13:12:07: 
+Evaluation: Average loss: 1.5305, Accuracy: 2315/5000 (46.300%)
+
+13:12:07: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:12:07: Train Epoch: 53 [0/45056 (0%)]	Loss: 1.308275 Accuracy: 68/128 (53.125% 
+13:12:25: Train Epoch: 53 [12800/45056 (28%)]	Loss: 1.329149 Accuracy: 6608/12928 (51.114% 
+13:12:43: Train Epoch: 53 [25600/45056 (57%)]	Loss: 1.214456 Accuracy: 13155/25728 (51.131% 
+13:13:00: Train Epoch: 53 [38400/45056 (85%)]	Loss: 1.266085 Accuracy: 19725/38528 (51.197% 
+13:13:09: 
+Training summary: Average loss: 1.3611, Accuracy: 23001/45000 (51.113%)
+
+13:13:12: 
+Evaluation: Average loss: 1.4147, Accuracy: 2378/5000 (47.560%)
+
+13:13:12: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:13:12: Train Epoch: 54 [0/45056 (0%)]	Loss: 1.303605 Accuracy: 59/128 (46.094% 
+13:13:30: Train Epoch: 54 [12800/45056 (28%)]	Loss: 1.528231 Accuracy: 6704/12928 (51.856% 
+13:13:48: Train Epoch: 54 [25600/45056 (57%)]	Loss: 1.330163 Accuracy: 13261/25728 (51.543% 
+13:14:05: Train Epoch: 54 [38400/45056 (85%)]	Loss: 1.442938 Accuracy: 19914/38528 (51.687% 
+13:14:14: 
+Training summary: Average loss: 1.3417, Accuracy: 23250/45000 (51.667%)
+
+13:14:17: 
+Evaluation: Average loss: 1.4364, Accuracy: 2375/5000 (47.500%)
+
+13:14:17: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:14:17: Train Epoch: 55 [0/45056 (0%)]	Loss: 1.057436 Accuracy: 81/128 (63.281% 
+13:14:35: Train Epoch: 55 [12800/45056 (28%)]	Loss: 1.362906 Accuracy: 6772/12928 (52.382% 
+13:14:52: Train Epoch: 55 [25600/45056 (57%)]	Loss: 1.280155 Accuracy: 13349/25728 (51.885% 
+13:15:10: Train Epoch: 55 [38400/45056 (85%)]	Loss: 1.269934 Accuracy: 20104/38528 (52.180% 
+13:15:19: 
+Training summary: Average loss: 1.3264, Accuracy: 23473/45000 (52.162%)
+
+13:15:22: 
+Evaluation: Average loss: 1.4682, Accuracy: 2388/5000 (47.760%)
+
+13:15:22: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+13:15:22: Train Epoch: 56 [0/45056 (0%)]	Loss: 1.448862 Accuracy: 59/128 (46.094% 
+13:15:40: Train Epoch: 56 [12800/45056 (28%)]	Loss: 1.375642 Accuracy: 6746/12928 (52.181% 
+13:15:57: Train Epoch: 56 [25600/45056 (57%)]	Loss: 1.271311 Accuracy: 13449/25728 (52.274% 
+13:16:15: Train Epoch: 56 [38400/45056 (85%)]	Loss: 1.393927 Accuracy: 20191/38528 (52.406% 
+13:16:24: 
+Training summary: Average loss: 1.3170, Accuracy: 23523/45000 (52.273%)
+
+13:16:27: 
+Evaluation: Average loss: 1.4829, Accuracy: 2344/5000 (46.880%)
+
+13:16:27: Current learning rate: 0.1. Time taken for epoch: 64.95 seconds.
+
+13:16:27: Train Epoch: 57 [0/45056 (0%)]	Loss: 1.302004 Accuracy: 71/128 (55.469% 
+13:16:45: Train Epoch: 57 [12800/45056 (28%)]	Loss: 1.223294 Accuracy: 6846/12928 (52.955% 
+13:17:02: Train Epoch: 57 [25600/45056 (57%)]	Loss: 1.245228 Accuracy: 13605/25728 (52.880% 
+13:17:20: Train Epoch: 57 [38400/45056 (85%)]	Loss: 2.026193 Accuracy: 19771/38528 (51.316% 
+13:17:29: 
+Training summary: Average loss: 1.4202, Accuracy: 21719/45000 (48.264%)
+
+13:17:31: 
+Evaluation: Average loss: 2.0679, Accuracy: 1284/5000 (25.680%)
+
+13:17:31: Current learning rate: 0.1. Time taken for epoch: 64.94 seconds.
+
+13:17:32: Train Epoch: 58 [0/45056 (0%)]	Loss: 1.752935 Accuracy: 42/128 (32.812% 
+13:17:50: Train Epoch: 58 [12800/45056 (28%)]	Loss: 1.569288 Accuracy: 4758/12928 (36.804% 
+13:18:07: Train Epoch: 58 [25600/45056 (57%)]	Loss: 1.592078 Accuracy: 9927/25728 (38.584% 
+13:18:25: Train Epoch: 58 [38400/45056 (85%)]	Loss: 1.569507 Accuracy: 15294/38528 (39.696% 
+13:18:34: 
+Training summary: Average loss: 1.6278, Accuracy: 18150/45000 (40.333%)
+
+13:18:36: 
+Evaluation: Average loss: 1.6410, Accuracy: 1943/5000 (38.860%)
+
+13:18:36: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:18:37: Train Epoch: 59 [0/45056 (0%)]	Loss: 1.591750 Accuracy: 53/128 (41.406% 
+13:18:54: Train Epoch: 59 [12800/45056 (28%)]	Loss: 1.380469 Accuracy: 5590/12928 (43.239% 
+13:19:12: Train Epoch: 59 [25600/45056 (57%)]	Loss: 1.404409 Accuracy: 11372/25728 (44.201% 
+13:19:30: Train Epoch: 59 [38400/45056 (85%)]	Loss: 1.574280 Accuracy: 17130/38528 (44.461% 
+13:19:39: 
+Training summary: Average loss: 1.5226, Accuracy: 20093/45000 (44.651%)
+
+13:19:41: 
+Evaluation: Average loss: 1.6905, Accuracy: 1967/5000 (39.340%)
+
+13:19:41: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:19:42: Train Epoch: 60 [0/45056 (0%)]	Loss: 1.496138 Accuracy: 54/128 (42.188% 
+13:19:59: Train Epoch: 60 [12800/45056 (28%)]	Loss: 1.507236 Accuracy: 5863/12928 (45.351% 
+13:20:17: Train Epoch: 60 [25600/45056 (57%)]	Loss: 1.564425 Accuracy: 11775/25728 (45.767% 
+13:20:35: Train Epoch: 60 [38400/45056 (85%)]	Loss: 1.611384 Accuracy: 17761/38528 (46.099% 
+13:20:44: 
+Training summary: Average loss: 1.4758, Accuracy: 20748/45000 (46.107%)
+
+13:20:46: 
+Evaluation: Average loss: 1.5134, Accuracy: 2265/5000 (45.300%)
+
+13:20:46: Current learning rate: 0.1. Time taken for epoch: 64.94 seconds.
+
+13:20:47: Train Epoch: 61 [0/45056 (0%)]	Loss: 1.342073 Accuracy: 66/128 (51.562% 
+13:21:04: Train Epoch: 61 [12800/45056 (28%)]	Loss: 1.506308 Accuracy: 6120/12928 (47.339% 
+13:21:22: Train Epoch: 61 [25600/45056 (57%)]	Loss: 1.434828 Accuracy: 12143/25728 (47.198% 
+13:21:40: Train Epoch: 61 [38400/45056 (85%)]	Loss: 1.465516 Accuracy: 18232/38528 (47.321% 
+13:21:49: 
+Training summary: Average loss: 1.4414, Accuracy: 21395/45000 (47.544%)
+
+13:21:51: 
+Evaluation: Average loss: 1.5633, Accuracy: 2174/5000 (43.480%)
+
+13:21:51: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+13:21:51: Train Epoch: 62 [0/45056 (0%)]	Loss: 1.415292 Accuracy: 66/128 (51.562% 
+13:22:09: Train Epoch: 62 [12800/45056 (28%)]	Loss: 1.443868 Accuracy: 6299/12928 (48.724% 
+13:22:27: Train Epoch: 62 [25600/45056 (57%)]	Loss: 1.365453 Accuracy: 12545/25728 (48.760% 
+13:22:45: Train Epoch: 62 [38400/45056 (85%)]	Loss: 1.579180 Accuracy: 18792/38528 (48.775% 
+13:22:54: 
+Training summary: Average loss: 1.4137, Accuracy: 21969/45000 (48.820%)
+
+13:22:56: 
+Evaluation: Average loss: 2.0027, Accuracy: 1743/5000 (34.860%)
+
+13:22:56: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:22:56: Train Epoch: 63 [0/45056 (0%)]	Loss: 1.553444 Accuracy: 55/128 (42.969% 
+13:23:14: Train Epoch: 63 [12800/45056 (28%)]	Loss: 1.290386 Accuracy: 6343/12928 (49.064% 
+13:23:32: Train Epoch: 63 [25600/45056 (57%)]	Loss: 1.615008 Accuracy: 12632/25728 (49.098% 
+13:23:49: Train Epoch: 63 [38400/45056 (85%)]	Loss: 1.271146 Accuracy: 19105/38528 (49.587% 
+13:23:58: 
+Training summary: Average loss: 1.3935, Accuracy: 22354/45000 (49.676%)
+
+13:24:01: 
+Evaluation: Average loss: 1.7200, Accuracy: 2012/5000 (40.240%)
+
+13:24:01: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+13:24:01: Train Epoch: 64 [0/45056 (0%)]	Loss: 1.372656 Accuracy: 69/128 (53.906% 
+13:24:19: Train Epoch: 64 [12800/45056 (28%)]	Loss: 1.172467 Accuracy: 6473/12928 (50.070% 
+13:24:37: Train Epoch: 64 [25600/45056 (57%)]	Loss: 1.377899 Accuracy: 12842/25728 (49.914% 
+13:24:54: Train Epoch: 64 [38400/45056 (85%)]	Loss: 1.304171 Accuracy: 19393/38528 (50.335% 
+13:25:03: 
+Training summary: Average loss: 1.3765, Accuracy: 22674/45000 (50.387%)
+
+13:25:06: 
+Evaluation: Average loss: 1.4647, Accuracy: 2316/5000 (46.320%)
+
+13:25:06: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:25:06: Train Epoch: 65 [0/45056 (0%)]	Loss: 1.261547 Accuracy: 66/128 (51.562% 
+13:25:24: Train Epoch: 65 [12800/45056 (28%)]	Loss: 1.575345 Accuracy: 6419/12928 (49.652% 
+13:25:42: Train Epoch: 65 [25600/45056 (57%)]	Loss: 1.332047 Accuracy: 13052/25728 (50.731% 
+13:25:59: Train Epoch: 65 [38400/45056 (85%)]	Loss: 1.374453 Accuracy: 19677/38528 (51.072% 
+13:26:08: 
+Training summary: Average loss: 1.3562, Accuracy: 23026/45000 (51.169%)
+
+13:26:11: 
+Evaluation: Average loss: 1.4621, Accuracy: 2341/5000 (46.820%)
+
+13:26:11: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+13:26:11: Train Epoch: 66 [0/45056 (0%)]	Loss: 1.268526 Accuracy: 65/128 (50.781% 
+13:26:29: Train Epoch: 66 [12800/45056 (28%)]	Loss: 1.391444 Accuracy: 6699/12928 (51.818% 
+13:26:46: Train Epoch: 66 [25600/45056 (57%)]	Loss: 1.490342 Accuracy: 13143/25728 (51.084% 
+13:27:04: Train Epoch: 66 [38400/45056 (85%)]	Loss: 1.461895 Accuracy: 19751/38528 (51.264% 
+13:27:13: 
+Training summary: Average loss: 1.3413, Accuracy: 23158/45000 (51.462%)
+
+13:27:16: 
+Evaluation: Average loss: 1.3710, Accuracy: 2486/5000 (49.720%)
+
+13:27:16: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:27:16: Train Epoch: 67 [0/45056 (0%)]	Loss: 1.258155 Accuracy: 72/128 (56.250% 
+13:27:34: Train Epoch: 67 [12800/45056 (28%)]	Loss: 1.269353 Accuracy: 6762/12928 (52.305% 
+13:27:51: Train Epoch: 67 [25600/45056 (57%)]	Loss: 1.288882 Accuracy: 13411/25728 (52.126% 
+13:28:09: Train Epoch: 67 [38400/45056 (85%)]	Loss: 1.361249 Accuracy: 20072/38528 (52.097% 
+13:28:18: 
+Training summary: Average loss: 1.3279, Accuracy: 23453/45000 (52.118%)
+
+13:28:20: 
+Evaluation: Average loss: 1.5458, Accuracy: 2269/5000 (45.380%)
+
+13:28:20: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:28:21: Train Epoch: 68 [0/45056 (0%)]	Loss: 1.190281 Accuracy: 72/128 (56.250% 
+13:28:39: Train Epoch: 68 [12800/45056 (28%)]	Loss: 1.246205 Accuracy: 6851/12928 (52.994% 
+13:28:56: Train Epoch: 68 [25600/45056 (57%)]	Loss: 1.316194 Accuracy: 13524/25728 (52.565% 
+13:29:14: Train Epoch: 68 [38400/45056 (85%)]	Loss: 1.290494 Accuracy: 20350/38528 (52.819% 
+13:29:23: 
+Training summary: Average loss: 1.3090, Accuracy: 23771/45000 (52.824%)
+
+13:29:25: 
+Evaluation: Average loss: 1.4530, Accuracy: 2354/5000 (47.080%)
+
+13:29:25: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:29:26: Train Epoch: 69 [0/45056 (0%)]	Loss: 1.418769 Accuracy: 57/128 (44.531% 
+13:29:43: Train Epoch: 69 [12800/45056 (28%)]	Loss: 1.419355 Accuracy: 6306/12928 (48.778% 
+13:30:01: Train Epoch: 69 [25600/45056 (57%)]	Loss: 1.484097 Accuracy: 12399/25728 (48.193% 
+13:30:19: Train Epoch: 69 [38400/45056 (85%)]	Loss: 1.428330 Accuracy: 18599/38528 (48.274% 
+13:30:28: 
+Training summary: Average loss: 1.4306, Accuracy: 21805/45000 (48.456%)
+
+13:30:30: 
+Evaluation: Average loss: 1.4221, Accuracy: 2386/5000 (47.720%)
+
+13:30:30: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:30:31: Train Epoch: 70 [0/45056 (0%)]	Loss: 1.394226 Accuracy: 69/128 (53.906% 
+13:30:48: Train Epoch: 70 [12800/45056 (28%)]	Loss: 1.329297 Accuracy: 6572/12928 (50.835% 
+13:31:06: Train Epoch: 70 [25600/45056 (57%)]	Loss: 1.233616 Accuracy: 12978/25728 (50.443% 
+13:31:24: Train Epoch: 70 [38400/45056 (85%)]	Loss: 1.317194 Accuracy: 19403/38528 (50.361% 
+13:31:33: 
+Training summary: Average loss: 1.3619, Accuracy: 22707/45000 (50.460%)
+
+13:31:35: 
+Evaluation: Average loss: 1.4296, Accuracy: 2473/5000 (49.460%)
+
+13:31:35: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:31:36: Train Epoch: 71 [0/45056 (0%)]	Loss: 1.363089 Accuracy: 63/128 (49.219% 
+13:31:53: Train Epoch: 71 [12800/45056 (28%)]	Loss: 1.261705 Accuracy: 6711/12928 (51.911% 
+13:32:11: Train Epoch: 71 [25600/45056 (57%)]	Loss: 1.239051 Accuracy: 13478/25728 (52.387% 
+13:32:29: Train Epoch: 71 [38400/45056 (85%)]	Loss: 1.423068 Accuracy: 20242/38528 (52.538% 
+13:32:38: 
+Training summary: Average loss: 1.3182, Accuracy: 23642/45000 (52.538%)
+
+13:32:40: 
+Evaluation: Average loss: 1.4421, Accuracy: 2349/5000 (46.980%)
+
+13:32:40: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:32:40: Train Epoch: 72 [0/45056 (0%)]	Loss: 1.301863 Accuracy: 71/128 (55.469% 
+13:32:58: Train Epoch: 72 [12800/45056 (28%)]	Loss: 1.223885 Accuracy: 6751/12928 (52.220% 
+13:33:16: Train Epoch: 72 [25600/45056 (57%)]	Loss: 1.254688 Accuracy: 13492/25728 (52.441% 
+13:33:34: Train Epoch: 72 [38400/45056 (85%)]	Loss: 1.301615 Accuracy: 20362/38528 (52.850% 
+13:33:43: 
+Training summary: Average loss: 1.3044, Accuracy: 23824/45000 (52.942%)
+
+13:33:45: 
+Evaluation: Average loss: 1.5250, Accuracy: 2314/5000 (46.280%)
+
+13:33:45: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:33:45: Train Epoch: 73 [0/45056 (0%)]	Loss: 1.255300 Accuracy: 69/128 (53.906% 
+13:34:03: Train Epoch: 73 [12800/45056 (28%)]	Loss: 1.270903 Accuracy: 7096/12928 (54.889% 
+13:34:21: Train Epoch: 73 [25600/45056 (57%)]	Loss: 1.149817 Accuracy: 13994/25728 (54.392% 
+13:34:39: Train Epoch: 73 [38400/45056 (85%)]	Loss: 1.169531 Accuracy: 20855/38528 (54.129% 
+13:34:48: 
+Training summary: Average loss: 1.2745, Accuracy: 24317/45000 (54.038%)
+
+13:34:50: 
+Evaluation: Average loss: 1.5064, Accuracy: 2337/5000 (46.740%)
+
+13:34:50: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:34:50: Train Epoch: 74 [0/45056 (0%)]	Loss: 1.351586 Accuracy: 68/128 (53.125% 
+13:35:08: Train Epoch: 74 [12800/45056 (28%)]	Loss: 1.210062 Accuracy: 6968/12928 (53.899% 
+13:35:26: Train Epoch: 74 [25600/45056 (57%)]	Loss: 1.264434 Accuracy: 13912/25728 (54.073% 
+13:35:43: Train Epoch: 74 [38400/45056 (85%)]	Loss: 1.409189 Accuracy: 20920/38528 (54.298% 
+13:35:52: 
+Training summary: Average loss: 1.2664, Accuracy: 24461/45000 (54.358%)
+
+13:35:55: 
+Evaluation: Average loss: 1.4786, Accuracy: 2328/5000 (46.560%)
+
+13:35:55: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:35:55: Train Epoch: 75 [0/45056 (0%)]	Loss: 1.236124 Accuracy: 72/128 (56.250% 
+13:36:13: Train Epoch: 75 [12800/45056 (28%)]	Loss: 1.250539 Accuracy: 7066/12928 (54.657% 
+13:36:31: Train Epoch: 75 [25600/45056 (57%)]	Loss: 1.233553 Accuracy: 14183/25728 (55.127% 
+13:36:48: Train Epoch: 75 [38400/45056 (85%)]	Loss: 1.219974 Accuracy: 21324/38528 (55.347% 
+13:36:57: 
+Training summary: Average loss: 1.2474, Accuracy: 24832/45000 (55.182%)
+
+13:37:00: 
+Evaluation: Average loss: 1.3802, Accuracy: 2542/5000 (50.840%)
+
+13:37:00: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:37:00: Train Epoch: 76 [0/45056 (0%)]	Loss: 1.100118 Accuracy: 75/128 (58.594% 
+13:37:18: Train Epoch: 76 [12800/45056 (28%)]	Loss: 1.368609 Accuracy: 7162/12928 (55.399% 
+13:37:36: Train Epoch: 76 [25600/45056 (57%)]	Loss: 1.272859 Accuracy: 14238/25728 (55.340% 
+13:37:53: Train Epoch: 76 [38400/45056 (85%)]	Loss: 1.245020 Accuracy: 21398/38528 (55.539% 
+13:38:02: 
+Training summary: Average loss: 1.2378, Accuracy: 24964/45000 (55.476%)
+
+13:38:05: 
+Evaluation: Average loss: 1.4035, Accuracy: 2466/5000 (49.320%)
+
+13:38:05: Current learning rate: 0.1. Time taken for epoch: 64.95 seconds.
+
+13:38:05: Train Epoch: 77 [0/45056 (0%)]	Loss: 1.235832 Accuracy: 69/128 (53.906% 
+13:38:23: Train Epoch: 77 [12800/45056 (28%)]	Loss: 1.177525 Accuracy: 7246/12928 (56.049% 
+13:38:41: Train Epoch: 77 [25600/45056 (57%)]	Loss: 1.326501 Accuracy: 14391/25728 (55.935% 
+13:38:58: Train Epoch: 77 [38400/45056 (85%)]	Loss: 1.295843 Accuracy: 21445/38528 (55.661% 
+13:39:07: 
+Training summary: Average loss: 1.2227, Accuracy: 25084/45000 (55.742%)
+
+13:39:10: 
+Evaluation: Average loss: 1.2503, Accuracy: 2736/5000 (54.720%)
+
+13:39:10: Current learning rate: 0.1. Time taken for epoch: 65.08 seconds.
+
+13:39:10: Train Epoch: 78 [0/45056 (0%)]	Loss: 1.242530 Accuracy: 69/128 (53.906% 
+13:39:28: Train Epoch: 78 [12800/45056 (28%)]	Loss: 1.149636 Accuracy: 7246/12928 (56.049% 
+13:39:46: Train Epoch: 78 [25600/45056 (57%)]	Loss: 1.311833 Accuracy: 14440/25728 (56.126% 
+13:40:03: Train Epoch: 78 [38400/45056 (85%)]	Loss: 1.233284 Accuracy: 21704/38528 (56.333% 
+13:40:12: 
+Training summary: Average loss: 1.2143, Accuracy: 25439/45000 (56.531%)
+
+13:40:15: 
+Evaluation: Average loss: 1.3884, Accuracy: 2528/5000 (50.560%)
+
+13:40:15: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:40:15: Train Epoch: 79 [0/45056 (0%)]	Loss: 1.255065 Accuracy: 72/128 (56.250% 
+13:40:33: Train Epoch: 79 [12800/45056 (28%)]	Loss: 1.187791 Accuracy: 7337/12928 (56.753% 
+13:40:50: Train Epoch: 79 [25600/45056 (57%)]	Loss: 1.199401 Accuracy: 14624/25728 (56.841% 
+13:41:08: Train Epoch: 79 [38400/45056 (85%)]	Loss: 1.286416 Accuracy: 21802/38528 (56.587% 
+13:41:17: 
+Training summary: Average loss: 1.2043, Accuracy: 25467/45000 (56.593%)
+
+13:41:20: 
+Evaluation: Average loss: 1.3258, Accuracy: 2641/5000 (52.820%)
+
+13:41:20: Current learning rate: 0.1. Time taken for epoch: 64.89 seconds.
+
+13:41:20: Train Epoch: 80 [0/45056 (0%)]	Loss: 1.156461 Accuracy: 75/128 (58.594% 
+13:41:38: Train Epoch: 80 [12800/45056 (28%)]	Loss: 1.207632 Accuracy: 7359/12928 (56.923% 
+13:41:55: Train Epoch: 80 [25600/45056 (57%)]	Loss: 1.931463 Accuracy: 14297/25728 (55.570% 
+13:42:13: Train Epoch: 80 [38400/45056 (85%)]	Loss: 1.565446 Accuracy: 18798/38528 (48.790% 
+13:42:22: 
+Training summary: Average loss: 1.4481, Accuracy: 21380/45000 (47.511%)
+
+13:42:25: 
+Evaluation: Average loss: 1.6456, Accuracy: 1995/5000 (39.900%)
+
+13:42:25: Current learning rate: 0.1. Time taken for epoch: 64.95 seconds.
+
+13:42:25: Train Epoch: 81 [0/45056 (0%)]	Loss: 1.576038 Accuracy: 53/128 (41.406% 
+13:42:43: Train Epoch: 81 [12800/45056 (28%)]	Loss: 1.445355 Accuracy: 5486/12928 (42.435% 
+13:43:00: Train Epoch: 81 [25600/45056 (57%)]	Loss: 1.517151 Accuracy: 11154/25728 (43.354% 
+13:43:18: Train Epoch: 81 [38400/45056 (85%)]	Loss: 1.530638 Accuracy: 17145/38528 (44.500% 
+13:43:27: 
+Training summary: Average loss: 1.5238, Accuracy: 20253/45000 (45.007%)
+
+13:43:29: 
+Evaluation: Average loss: 1.5652, Accuracy: 2150/5000 (43.000%)
+
+13:43:29: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:43:30: Train Epoch: 82 [0/45056 (0%)]	Loss: 1.410152 Accuracy: 60/128 (46.875% 
+13:43:48: Train Epoch: 82 [12800/45056 (28%)]	Loss: 1.490884 Accuracy: 6251/12928 (48.352% 
+13:44:05: Train Epoch: 82 [25600/45056 (57%)]	Loss: 1.388902 Accuracy: 12649/25728 (49.164% 
+13:44:23: Train Epoch: 82 [38400/45056 (85%)]	Loss: 1.426349 Accuracy: 18946/38528 (49.175% 
+13:44:32: 
+Training summary: Average loss: 1.4147, Accuracy: 22203/45000 (49.340%)
+
+13:44:34: 
+Evaluation: Average loss: 1.7820, Accuracy: 1872/5000 (37.440%)
+
+13:44:34: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:44:35: Train Epoch: 83 [0/45056 (0%)]	Loss: 1.316764 Accuracy: 63/128 (49.219% 
+13:44:52: Train Epoch: 83 [12800/45056 (28%)]	Loss: 1.335199 Accuracy: 6470/12928 (50.046% 
+13:45:10: Train Epoch: 83 [25600/45056 (57%)]	Loss: 1.399966 Accuracy: 12887/25728 (50.089% 
+13:45:28: Train Epoch: 83 [38400/45056 (85%)]	Loss: 1.235750 Accuracy: 19600/38528 (50.872% 
+13:45:37: 
+Training summary: Average loss: 1.3705, Accuracy: 22947/45000 (50.993%)
+
+13:45:39: 
+Evaluation: Average loss: 1.4254, Accuracy: 2472/5000 (49.440%)
+
+13:45:39: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:45:40: Train Epoch: 84 [0/45056 (0%)]	Loss: 1.368338 Accuracy: 66/128 (51.562% 
+13:45:57: Train Epoch: 84 [12800/45056 (28%)]	Loss: 1.536304 Accuracy: 6656/12928 (51.485% 
+13:46:15: Train Epoch: 84 [25600/45056 (57%)]	Loss: 1.350038 Accuracy: 13324/25728 (51.788% 
+13:46:33: Train Epoch: 84 [38400/45056 (85%)]	Loss: 1.203324 Accuracy: 20066/38528 (52.082% 
+13:46:42: 
+Training summary: Average loss: 1.3306, Accuracy: 23425/45000 (52.056%)
+
+13:46:44: 
+Evaluation: Average loss: 1.4377, Accuracy: 2407/5000 (48.140%)
+
+13:46:44: Current learning rate: 0.1. Time taken for epoch: 64.89 seconds.
+
+13:46:45: Train Epoch: 85 [0/45056 (0%)]	Loss: 1.185207 Accuracy: 69/128 (53.906% 
+13:47:02: Train Epoch: 85 [12800/45056 (28%)]	Loss: 1.261013 Accuracy: 6760/12928 (52.290% 
+13:47:20: Train Epoch: 85 [25600/45056 (57%)]	Loss: 1.361223 Accuracy: 13520/25728 (52.550% 
+13:47:38: Train Epoch: 85 [38400/45056 (85%)]	Loss: 1.411626 Accuracy: 20314/38528 (52.725% 
+13:47:47: 
+Training summary: Average loss: 1.3123, Accuracy: 23821/45000 (52.936%)
+
+13:47:49: 
+Evaluation: Average loss: 1.3965, Accuracy: 2555/5000 (51.100%)
+
+13:47:49: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:47:49: Train Epoch: 86 [0/45056 (0%)]	Loss: 1.317392 Accuracy: 67/128 (52.344% 
+13:48:07: Train Epoch: 86 [12800/45056 (28%)]	Loss: 1.206959 Accuracy: 6940/12928 (53.682% 
+13:48:25: Train Epoch: 86 [25600/45056 (57%)]	Loss: 1.344306 Accuracy: 13735/25728 (53.385% 
+13:48:43: Train Epoch: 86 [38400/45056 (85%)]	Loss: 1.390519 Accuracy: 20630/38528 (53.545% 
+13:48:52: 
+Training summary: Average loss: 1.3032, Accuracy: 24043/45000 (53.429%)
+
+13:48:54: 
+Evaluation: Average loss: 1.5668, Accuracy: 2283/5000 (45.660%)
+
+13:48:54: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+13:48:54: Train Epoch: 87 [0/45056 (0%)]	Loss: 1.268378 Accuracy: 62/128 (48.438% 
+13:49:12: Train Epoch: 87 [12800/45056 (28%)]	Loss: 1.247168 Accuracy: 6970/12928 (53.914% 
+13:49:30: Train Epoch: 87 [25600/45056 (57%)]	Loss: 1.454529 Accuracy: 13908/25728 (54.058% 
+13:49:47: Train Epoch: 87 [38400/45056 (85%)]	Loss: 1.321365 Accuracy: 20829/38528 (54.062% 
+13:49:56: 
+Training summary: Average loss: 1.2841, Accuracy: 24336/45000 (54.080%)
+
+13:49:59: 
+Evaluation: Average loss: 1.2801, Accuracy: 2684/5000 (53.680%)
+
+13:49:59: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:49:59: Train Epoch: 88 [0/45056 (0%)]	Loss: 1.276599 Accuracy: 65/128 (50.781% 
+13:50:17: Train Epoch: 88 [12800/45056 (28%)]	Loss: 1.304621 Accuracy: 7115/12928 (55.036% 
+13:50:35: Train Epoch: 88 [25600/45056 (57%)]	Loss: 1.109555 Accuracy: 14052/25728 (54.618% 
+13:50:52: Train Epoch: 88 [38400/45056 (85%)]	Loss: 1.169746 Accuracy: 21077/38528 (54.706% 
+13:51:01: 
+Training summary: Average loss: 1.2640, Accuracy: 24628/45000 (54.729%)
+
+13:51:04: 
+Evaluation: Average loss: 1.3778, Accuracy: 2572/5000 (51.440%)
+
+13:51:04: Current learning rate: 0.1. Time taken for epoch: 64.89 seconds.
+
+13:51:04: Train Epoch: 89 [0/45056 (0%)]	Loss: 1.206790 Accuracy: 71/128 (55.469% 
+13:51:22: Train Epoch: 89 [12800/45056 (28%)]	Loss: 1.385163 Accuracy: 7090/12928 (54.842% 
+13:51:40: Train Epoch: 89 [25600/45056 (57%)]	Loss: 1.155031 Accuracy: 14152/25728 (55.006% 
+13:51:57: Train Epoch: 89 [38400/45056 (85%)]	Loss: 1.183359 Accuracy: 21235/38528 (55.116% 
+13:52:06: 
+Training summary: Average loss: 1.2567, Accuracy: 24834/45000 (55.187%)
+
+13:52:09: 
+Evaluation: Average loss: 1.5054, Accuracy: 2361/5000 (47.220%)
+
+13:52:09: Current learning rate: 0.1. Time taken for epoch: 64.93 seconds.
+
+13:52:09: Train Epoch: 90 [0/45056 (0%)]	Loss: 1.149372 Accuracy: 70/128 (54.688% 
+13:52:27: Train Epoch: 90 [12800/45056 (28%)]	Loss: 1.309107 Accuracy: 7066/12928 (54.657% 
+13:52:44: Train Epoch: 90 [25600/45056 (57%)]	Loss: 1.458062 Accuracy: 14158/25728 (55.030% 
+13:53:02: Train Epoch: 90 [38400/45056 (85%)]	Loss: 1.258655 Accuracy: 21333/38528 (55.370% 
+13:53:11: 
+Training summary: Average loss: 1.2447, Accuracy: 24898/45000 (55.329%)
+
+13:53:14: 
+Evaluation: Average loss: 1.3351, Accuracy: 2597/5000 (51.940%)
+
+13:53:14: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+13:53:14: Train Epoch: 91 [0/45056 (0%)]	Loss: 1.313281 Accuracy: 76/128 (59.375% 
+13:53:32: Train Epoch: 91 [12800/45056 (28%)]	Loss: 1.248186 Accuracy: 7207/12928 (55.747% 
+13:53:49: Train Epoch: 91 [25600/45056 (57%)]	Loss: 1.156742 Accuracy: 14364/25728 (55.830% 
+13:54:07: Train Epoch: 91 [38400/45056 (85%)]	Loss: 1.251378 Accuracy: 21674/38528 (56.255% 
+13:54:16: 
+Training summary: Average loss: 1.2571, Accuracy: 24829/45000 (55.176%)
+
+13:54:19: 
+Evaluation: Average loss: 2.6616, Accuracy: 1124/5000 (22.480%)
+
+13:54:19: Current learning rate: 0.1. Time taken for epoch: 64.98 seconds.
+
+13:54:19: Train Epoch: 92 [0/45056 (0%)]	Loss: 1.427694 Accuracy: 57/128 (44.531% 
+13:54:37: Train Epoch: 92 [12800/45056 (28%)]	Loss: 1.347646 Accuracy: 6743/12928 (52.158% 
+13:54:54: Train Epoch: 92 [25600/45056 (57%)]	Loss: 1.248652 Accuracy: 13592/25728 (52.830% 
+13:55:12: Train Epoch: 92 [38400/45056 (85%)]	Loss: 1.090453 Accuracy: 20466/38528 (53.120% 
+13:55:21: 
+Training summary: Average loss: 1.3115, Accuracy: 23950/45000 (53.222%)
+
+13:55:23: 
+Evaluation: Average loss: 1.4255, Accuracy: 2470/5000 (49.400%)
+
+13:55:23: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+13:55:24: Train Epoch: 93 [0/45056 (0%)]	Loss: 1.164026 Accuracy: 74/128 (57.812% 
+13:55:41: Train Epoch: 93 [12800/45056 (28%)]	Loss: 1.300117 Accuracy: 7053/12928 (54.556% 
+13:55:59: Train Epoch: 93 [25600/45056 (57%)]	Loss: 1.245800 Accuracy: 14047/25728 (54.598% 
+13:56:17: Train Epoch: 93 [38400/45056 (85%)]	Loss: 1.159211 Accuracy: 20987/38528 (54.472% 
+13:56:26: 
+Training summary: Average loss: 1.2632, Accuracy: 24572/45000 (54.604%)
+
+13:56:28: 
+Evaluation: Average loss: 1.3657, Accuracy: 2577/5000 (51.540%)
+
+13:56:28: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+13:56:29: Train Epoch: 94 [0/45056 (0%)]	Loss: 1.414583 Accuracy: 63/128 (49.219% 
+13:56:46: Train Epoch: 94 [12800/45056 (28%)]	Loss: 1.246298 Accuracy: 7268/12928 (56.219% 
+13:57:04: Train Epoch: 94 [25600/45056 (57%)]	Loss: 1.267723 Accuracy: 14435/25728 (56.106% 
+13:57:22: Train Epoch: 94 [38400/45056 (85%)]	Loss: 1.267064 Accuracy: 21572/38528 (55.990% 
+13:57:31: 
+Training summary: Average loss: 1.2407, Accuracy: 25188/45000 (55.973%)
+
+13:57:33: 
+Evaluation: Average loss: 1.2918, Accuracy: 2679/5000 (53.580%)
+
+13:57:33: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+13:57:34: Train Epoch: 95 [0/45056 (0%)]	Loss: 1.281826 Accuracy: 70/128 (54.688% 
+13:57:51: Train Epoch: 95 [12800/45056 (28%)]	Loss: 1.079236 Accuracy: 7326/12928 (56.668% 
+13:58:09: Train Epoch: 95 [25600/45056 (57%)]	Loss: 1.259777 Accuracy: 14469/25728 (56.238% 
+13:58:27: Train Epoch: 95 [38400/45056 (85%)]	Loss: 1.093344 Accuracy: 21652/38528 (56.198% 
+13:58:36: 
+Training summary: Average loss: 1.2281, Accuracy: 25358/45000 (56.351%)
+
+13:58:38: 
+Evaluation: Average loss: 1.4434, Accuracy: 2408/5000 (48.160%)
+
+13:58:38: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+13:58:38: Train Epoch: 96 [0/45056 (0%)]	Loss: 1.190111 Accuracy: 78/128 (60.938% 
+13:58:56: Train Epoch: 96 [12800/45056 (28%)]	Loss: 1.122745 Accuracy: 7323/12928 (56.644% 
+13:59:14: Train Epoch: 96 [25600/45056 (57%)]	Loss: 1.275722 Accuracy: 14603/25728 (56.759% 
+13:59:32: Train Epoch: 96 [38400/45056 (85%)]	Loss: 1.105168 Accuracy: 21822/38528 (56.639% 
+13:59:41: 
+Training summary: Average loss: 1.2143, Accuracy: 25507/45000 (56.682%)
+
+13:59:43: 
+Evaluation: Average loss: 1.2721, Accuracy: 2656/5000 (53.120%)
+
+13:59:43: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+13:59:43: Train Epoch: 97 [0/45056 (0%)]	Loss: 1.265008 Accuracy: 67/128 (52.344% 
+14:00:01: Train Epoch: 97 [12800/45056 (28%)]	Loss: 1.197110 Accuracy: 7244/12928 (56.033% 
+14:00:19: Train Epoch: 97 [25600/45056 (57%)]	Loss: 1.146612 Accuracy: 14663/25728 (56.992% 
+14:00:37: Train Epoch: 97 [38400/45056 (85%)]	Loss: 1.215083 Accuracy: 22041/38528 (57.208% 
+14:00:46: 
+Training summary: Average loss: 1.1998, Accuracy: 25816/45000 (57.369%)
+
+14:00:48: 
+Evaluation: Average loss: 1.3146, Accuracy: 2662/5000 (53.240%)
+
+14:00:48: Current learning rate: 0.1. Time taken for epoch: 64.95 seconds.
+
+14:00:48: Train Epoch: 98 [0/45056 (0%)]	Loss: 1.134596 Accuracy: 77/128 (60.156% 
+14:01:06: Train Epoch: 98 [12800/45056 (28%)]	Loss: 1.173354 Accuracy: 7519/12928 (58.161% 
+14:01:24: Train Epoch: 98 [25600/45056 (57%)]	Loss: 1.219524 Accuracy: 14788/25728 (57.478% 
+14:01:41: Train Epoch: 98 [38400/45056 (85%)]	Loss: 1.217669 Accuracy: 22183/38528 (57.576% 
+14:01:50: 
+Training summary: Average loss: 1.1942, Accuracy: 25884/45000 (57.520%)
+
+14:01:53: 
+Evaluation: Average loss: 1.8406, Accuracy: 2179/5000 (43.580%)
+
+14:01:53: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+14:01:53: Train Epoch: 99 [0/45056 (0%)]	Loss: 1.120148 Accuracy: 79/128 (61.719% 
+14:02:11: Train Epoch: 99 [12800/45056 (28%)]	Loss: 1.126356 Accuracy: 7428/12928 (57.457% 
+14:02:29: Train Epoch: 99 [25600/45056 (57%)]	Loss: 1.305851 Accuracy: 14860/25728 (57.758% 
+14:02:46: Train Epoch: 99 [38400/45056 (85%)]	Loss: 1.322965 Accuracy: 22190/38528 (57.594% 
+14:02:55: 
+Training summary: Average loss: 1.1894, Accuracy: 25859/45000 (57.464%)
+
+14:02:58: 
+Evaluation: Average loss: 1.3018, Accuracy: 2696/5000 (53.920%)
+
+14:02:58: Current learning rate: 0.1. Time taken for epoch: 64.94 seconds.
+
+14:02:58: Train Epoch: 100 [0/45056 (0%)]	Loss: 1.214970 Accuracy: 71/128 (55.469% 
+14:03:16: Train Epoch: 100 [12800/45056 (28%)]	Loss: 1.201017 Accuracy: 7571/12928 (58.563% 
+14:03:34: Train Epoch: 100 [25600/45056 (57%)]	Loss: 1.189766 Accuracy: 14957/25728 (58.135% 
+14:03:51: Train Epoch: 100 [38400/45056 (85%)]	Loss: 1.226496 Accuracy: 22320/38528 (57.932% 
+14:04:00: 
+Training summary: Average loss: 1.1798, Accuracy: 26072/45000 (57.938%)
+
+14:04:03: 
+Evaluation: Average loss: 1.2405, Accuracy: 2773/5000 (55.460%)
+
+14:04:03: Current learning rate: 0.1. Time taken for epoch: 65.05 seconds.
+
+14:04:03: Train Epoch: 101 [0/45056 (0%)]	Loss: 1.025712 Accuracy: 80/128 (62.500% 
+14:04:21: Train Epoch: 101 [12800/45056 (28%)]	Loss: 0.998124 Accuracy: 7585/12928 (58.671% 
+14:04:39: Train Epoch: 101 [25600/45056 (57%)]	Loss: 1.217332 Accuracy: 14961/25728 (58.151% 
+14:04:56: Train Epoch: 101 [38400/45056 (85%)]	Loss: 0.926969 Accuracy: 22451/38528 (58.272% 
+14:05:05: 
+Training summary: Average loss: 1.1727, Accuracy: 26215/45000 (58.256%)
+
+14:05:08: 
+Evaluation: Average loss: 1.2420, Accuracy: 2799/5000 (55.980%)
+
+14:05:08: Current learning rate: 0.1. Time taken for epoch: 65.07 seconds.
+
+14:05:08: Train Epoch: 102 [0/45056 (0%)]	Loss: 1.133999 Accuracy: 82/128 (64.062% 
+14:05:26: Train Epoch: 102 [12800/45056 (28%)]	Loss: 1.251677 Accuracy: 7473/12928 (57.805% 
+14:05:44: Train Epoch: 102 [25600/45056 (57%)]	Loss: 1.171840 Accuracy: 14962/25728 (58.155% 
+14:06:01: Train Epoch: 102 [38400/45056 (85%)]	Loss: 1.201163 Accuracy: 22512/38528 (58.430% 
+14:06:10: 
+Training summary: Average loss: 1.1672, Accuracy: 26258/45000 (58.351%)
+
+14:06:13: 
+Evaluation: Average loss: 1.3326, Accuracy: 2638/5000 (52.760%)
+
+14:06:13: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+14:06:13: Train Epoch: 103 [0/45056 (0%)]	Loss: 1.156909 Accuracy: 74/128 (57.812% 
+14:06:31: Train Epoch: 103 [12800/45056 (28%)]	Loss: 1.791577 Accuracy: 7437/12928 (57.526% 
+14:06:49: Train Epoch: 103 [25600/45056 (57%)]	Loss: 1.419101 Accuracy: 13464/25728 (52.332% 
+14:07:06: Train Epoch: 103 [38400/45056 (85%)]	Loss: 1.309808 Accuracy: 20223/38528 (52.489% 
+14:07:15: 
+Training summary: Average loss: 1.3281, Accuracy: 23695/45000 (52.656%)
+
+14:07:18: 
+Evaluation: Average loss: 1.2757, Accuracy: 2730/5000 (54.600%)
+
+14:07:18: Current learning rate: 0.1. Time taken for epoch: 64.97 seconds.
+
+14:07:18: Train Epoch: 104 [0/45056 (0%)]	Loss: 1.264588 Accuracy: 70/128 (54.688% 
+14:07:36: Train Epoch: 104 [12800/45056 (28%)]	Loss: 1.206856 Accuracy: 7048/12928 (54.517% 
+14:07:54: Train Epoch: 104 [25600/45056 (57%)]	Loss: 1.445222 Accuracy: 14125/25728 (54.901% 
+14:08:11: Train Epoch: 104 [38400/45056 (85%)]	Loss: 1.187032 Accuracy: 21226/38528 (55.092% 
+14:08:20: 
+Training summary: Average loss: 1.2535, Accuracy: 24944/45000 (55.431%)
+
+14:08:23: 
+Evaluation: Average loss: 1.3359, Accuracy: 2598/5000 (51.960%)
+
+14:08:23: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+14:08:23: Train Epoch: 105 [0/45056 (0%)]	Loss: 1.284899 Accuracy: 71/128 (55.469% 
+14:08:41: Train Epoch: 105 [12800/45056 (28%)]	Loss: 1.121919 Accuracy: 7263/12928 (56.180% 
+14:08:59: Train Epoch: 105 [25600/45056 (57%)]	Loss: 1.337447 Accuracy: 14488/25728 (56.312% 
+14:09:16: Train Epoch: 105 [38400/45056 (85%)]	Loss: 1.159010 Accuracy: 21734/38528 (56.411% 
+14:09:25: 
+Training summary: Average loss: 1.2208, Accuracy: 25424/45000 (56.498%)
+
+14:09:28: 
+Evaluation: Average loss: 1.3021, Accuracy: 2683/5000 (53.660%)
+
+14:09:28: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+14:09:28: Train Epoch: 106 [0/45056 (0%)]	Loss: 1.234457 Accuracy: 73/128 (57.031% 
+14:09:46: Train Epoch: 106 [12800/45056 (28%)]	Loss: 1.091422 Accuracy: 7366/12928 (56.977% 
+14:10:03: Train Epoch: 106 [25600/45056 (57%)]	Loss: 1.171948 Accuracy: 14726/25728 (57.237% 
+14:10:21: Train Epoch: 106 [38400/45056 (85%)]	Loss: 1.137045 Accuracy: 22034/38528 (57.190% 
+14:10:30: 
+Training summary: Average loss: 1.2007, Accuracy: 25684/45000 (57.076%)
+
+14:10:32: 
+Evaluation: Average loss: 1.3565, Accuracy: 2611/5000 (52.220%)
+
+14:10:32: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+14:10:33: Train Epoch: 107 [0/45056 (0%)]	Loss: 1.198438 Accuracy: 77/128 (60.156% 
+14:10:51: Train Epoch: 107 [12800/45056 (28%)]	Loss: 1.347393 Accuracy: 7473/12928 (57.805% 
+14:11:08: Train Epoch: 107 [25600/45056 (57%)]	Loss: 1.256924 Accuracy: 14820/25728 (57.603% 
+14:11:26: Train Epoch: 107 [38400/45056 (85%)]	Loss: 1.170945 Accuracy: 22224/38528 (57.683% 
+14:11:35: 
+Training summary: Average loss: 1.1888, Accuracy: 25922/45000 (57.604%)
+
+14:11:37: 
+Evaluation: Average loss: 1.2966, Accuracy: 2688/5000 (53.760%)
+
+14:11:37: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+14:11:38: Train Epoch: 108 [0/45056 (0%)]	Loss: 1.250989 Accuracy: 70/128 (54.688% 
+14:11:55: Train Epoch: 108 [12800/45056 (28%)]	Loss: 1.149089 Accuracy: 7526/12928 (58.215% 
+14:12:13: Train Epoch: 108 [25600/45056 (57%)]	Loss: 1.315736 Accuracy: 14908/25728 (57.945% 
+14:12:31: Train Epoch: 108 [38400/45056 (85%)]	Loss: 1.280526 Accuracy: 22435/38528 (58.230% 
+14:12:40: 
+Training summary: Average loss: 1.1747, Accuracy: 26163/45000 (58.140%)
+
+14:12:42: 
+Evaluation: Average loss: 1.2459, Accuracy: 2754/5000 (55.080%)
+
+14:12:42: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+14:12:43: Train Epoch: 109 [0/45056 (0%)]	Loss: 1.145888 Accuracy: 73/128 (57.031% 
+14:13:00: Train Epoch: 109 [12800/45056 (28%)]	Loss: 1.284044 Accuracy: 7492/12928 (57.952% 
+14:13:18: Train Epoch: 109 [25600/45056 (57%)]	Loss: 1.192518 Accuracy: 14956/25728 (58.131% 
+14:13:36: Train Epoch: 109 [38400/45056 (85%)]	Loss: 1.141060 Accuracy: 22401/38528 (58.142% 
+14:13:45: 
+Training summary: Average loss: 1.1740, Accuracy: 26243/45000 (58.318%)
+
+14:13:47: 
+Evaluation: Average loss: 1.2408, Accuracy: 2778/5000 (55.560%)
+
+14:13:47: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+14:13:48: Train Epoch: 110 [0/45056 (0%)]	Loss: 1.111081 Accuracy: 73/128 (57.031% 
+14:14:05: Train Epoch: 110 [12800/45056 (28%)]	Loss: 0.955675 Accuracy: 7609/12928 (58.857% 
+14:14:23: Train Epoch: 110 [25600/45056 (57%)]	Loss: 1.189157 Accuracy: 15113/25728 (58.741% 
+14:14:41: Train Epoch: 110 [38400/45056 (85%)]	Loss: 1.173864 Accuracy: 22607/38528 (58.677% 
+14:14:50: 
+Training summary: Average loss: 1.1731, Accuracy: 26334/45000 (58.520%)
+
+14:14:52: 
+Evaluation: Average loss: 1.5270, Accuracy: 2416/5000 (48.320%)
+
+14:14:52: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+14:14:52: Train Epoch: 111 [0/45056 (0%)]	Loss: 1.113707 Accuracy: 79/128 (61.719% 
+14:15:10: Train Epoch: 111 [12800/45056 (28%)]	Loss: 1.222621 Accuracy: 7523/12928 (58.192% 
+14:15:28: Train Epoch: 111 [25600/45056 (57%)]	Loss: 1.059467 Accuracy: 15039/25728 (58.454% 
+14:15:46: Train Epoch: 111 [38400/45056 (85%)]	Loss: 1.096198 Accuracy: 22537/38528 (58.495% 
+14:15:55: 
+Training summary: Average loss: 1.1679, Accuracy: 26323/45000 (58.496%)
+
+14:15:57: 
+Evaluation: Average loss: 1.2540, Accuracy: 2761/5000 (55.220%)
+
+14:15:57: Current learning rate: 0.1. Time taken for epoch: 64.98 seconds.
+
+14:15:57: Train Epoch: 112 [0/45056 (0%)]	Loss: 1.230202 Accuracy: 71/128 (55.469% 
+14:16:15: Train Epoch: 112 [12800/45056 (28%)]	Loss: 1.296595 Accuracy: 7490/12928 (57.936% 
+14:16:33: Train Epoch: 112 [25600/45056 (57%)]	Loss: 1.108274 Accuracy: 15013/25728 (58.353% 
+14:16:51: Train Epoch: 112 [38400/45056 (85%)]	Loss: 1.279789 Accuracy: 22518/38528 (58.446% 
+14:17:00: 
+Training summary: Average loss: 1.1617, Accuracy: 26381/45000 (58.624%)
+
+14:17:02: 
+Evaluation: Average loss: 1.8361, Accuracy: 2045/5000 (40.900%)
+
+14:17:02: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+14:17:02: Train Epoch: 113 [0/45056 (0%)]	Loss: 1.117828 Accuracy: 82/128 (64.062% 
+14:17:20: Train Epoch: 113 [12800/45056 (28%)]	Loss: 1.244116 Accuracy: 7671/12928 (59.336% 
+14:17:38: Train Epoch: 113 [25600/45056 (57%)]	Loss: 1.213216 Accuracy: 15239/25728 (59.231% 
+14:17:55: Train Epoch: 113 [38400/45056 (85%)]	Loss: 1.189986 Accuracy: 22754/38528 (59.058% 
+14:18:04: 
+Training summary: Average loss: 1.1593, Accuracy: 26547/45000 (58.993%)
+
+14:18:07: 
+Evaluation: Average loss: 1.2941, Accuracy: 2720/5000 (54.400%)
+
+14:18:07: Current learning rate: 0.1. Time taken for epoch: 64.89 seconds.
+
+14:18:07: Train Epoch: 114 [0/45056 (0%)]	Loss: 1.098408 Accuracy: 87/128 (67.969% 
+14:18:25: Train Epoch: 114 [12800/45056 (28%)]	Loss: 1.227909 Accuracy: 7564/12928 (58.509% 
+14:18:43: Train Epoch: 114 [25600/45056 (57%)]	Loss: 1.188776 Accuracy: 15127/25728 (58.796% 
+14:19:00: Train Epoch: 114 [38400/45056 (85%)]	Loss: 1.207954 Accuracy: 22117/38528 (57.405% 
+14:19:09: 
+Training summary: Average loss: 1.1992, Accuracy: 25791/45000 (57.313%)
+
+14:19:12: 
+Evaluation: Average loss: 2.4522, Accuracy: 1721/5000 (34.420%)
+
+14:19:12: Current learning rate: 0.1. Time taken for epoch: 64.91 seconds.
+
+14:19:12: Train Epoch: 115 [0/45056 (0%)]	Loss: 1.421082 Accuracy: 60/128 (46.875% 
+14:19:30: Train Epoch: 115 [12800/45056 (28%)]	Loss: 1.094235 Accuracy: 7205/12928 (55.732% 
+14:19:48: Train Epoch: 115 [25600/45056 (57%)]	Loss: 1.211538 Accuracy: 14592/25728 (56.716% 
+14:20:05: Train Epoch: 115 [38400/45056 (85%)]	Loss: 1.120412 Accuracy: 21922/38528 (56.899% 
+14:20:14: 
+Training summary: Average loss: 1.2033, Accuracy: 25673/45000 (57.051%)
+
+14:20:17: 
+Evaluation: Average loss: 1.3094, Accuracy: 2695/5000 (53.900%)
+
+14:20:17: Current learning rate: 0.1. Time taken for epoch: 64.89 seconds.
+
+14:20:17: Train Epoch: 116 [0/45056 (0%)]	Loss: 1.227941 Accuracy: 73/128 (57.031% 
+14:20:35: Train Epoch: 116 [12800/45056 (28%)]	Loss: 1.234195 Accuracy: 7439/12928 (57.542% 
+14:20:52: Train Epoch: 116 [25600/45056 (57%)]	Loss: 1.111736 Accuracy: 14903/25728 (57.925% 
+14:21:10: Train Epoch: 116 [38400/45056 (85%)]	Loss: 1.239543 Accuracy: 22335/38528 (57.971% 
+14:21:19: 
+Training summary: Average loss: 1.1872, Accuracy: 26003/45000 (57.784%)
+
+14:21:22: 
+Evaluation: Average loss: 1.8152, Accuracy: 2063/5000 (41.260%)
+
+14:21:22: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+14:21:22: Train Epoch: 117 [0/45056 (0%)]	Loss: 1.216402 Accuracy: 76/128 (59.375% 
+14:21:40: Train Epoch: 117 [12800/45056 (28%)]	Loss: 1.234010 Accuracy: 7436/12928 (57.519% 
+14:21:57: Train Epoch: 117 [25600/45056 (57%)]	Loss: 1.203739 Accuracy: 14919/25728 (57.987% 
+14:22:15: Train Epoch: 117 [38400/45056 (85%)]	Loss: 1.270214 Accuracy: 22395/38528 (58.127% 
+14:22:24: 
+Training summary: Average loss: 1.1754, Accuracy: 26179/45000 (58.176%)
+
+14:22:26: 
+Evaluation: Average loss: 1.3810, Accuracy: 2591/5000 (51.820%)
+
+14:22:26: Current learning rate: 0.1. Time taken for epoch: 64.92 seconds.
+
+14:22:27: Train Epoch: 118 [0/45056 (0%)]	Loss: 1.455637 Accuracy: 59/128 (46.094% 
+14:22:45: Train Epoch: 118 [12800/45056 (28%)]	Loss: 1.223608 Accuracy: 7446/12928 (57.596% 
+14:23:02: Train Epoch: 118 [25600/45056 (57%)]	Loss: 1.211926 Accuracy: 14848/25728 (57.711% 
+14:23:20: Train Epoch: 118 [38400/45056 (85%)]	Loss: 1.144618 Accuracy: 22231/38528 (57.701% 
+14:23:29: 
+Training summary: Average loss: 1.1825, Accuracy: 26026/45000 (57.836%)
+
+14:23:31: 
+Evaluation: Average loss: 1.2293, Accuracy: 2821/5000 (56.420%)
+
+14:23:32: Current learning rate: 0.1. Time taken for epoch: 65.07 seconds.
+
+14:23:32: Train Epoch: 119 [0/45056 (0%)]	Loss: 1.108104 Accuracy: 75/128 (58.594% 
+14:23:50: Train Epoch: 119 [12800/45056 (28%)]	Loss: 1.156636 Accuracy: 7508/12928 (58.075% 
+14:24:07: Train Epoch: 119 [25600/45056 (57%)]	Loss: 1.218198 Accuracy: 14893/25728 (57.886% 
+14:24:25: Train Epoch: 119 [38400/45056 (85%)]	Loss: 1.270138 Accuracy: 22295/38528 (57.867% 
+14:24:34: 
+Training summary: Average loss: 1.1831, Accuracy: 26020/45000 (57.822%)
+
+14:24:36: 
+Evaluation: Average loss: 1.3941, Accuracy: 2477/5000 (49.540%)
+
+14:24:36: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+14:24:37: Train Epoch: 120 [0/45056 (0%)]	Loss: 1.242829 Accuracy: 76/128 (59.375% 
+14:24:54: Train Epoch: 120 [12800/45056 (28%)]	Loss: 1.105278 Accuracy: 7395/12928 (57.201% 
+14:25:12: Train Epoch: 120 [25600/45056 (57%)]	Loss: 1.203978 Accuracy: 14755/25728 (57.350% 
+14:25:30: Train Epoch: 120 [38400/45056 (85%)]	Loss: 1.083872 Accuracy: 22105/38528 (57.374% 
+14:25:39: 
+Training summary: Average loss: 1.1903, Accuracy: 25878/45000 (57.507%)
+
+14:25:41: 
+Evaluation: Average loss: 1.3541, Accuracy: 2634/5000 (52.680%)
+
+14:25:41: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+14:25:42: Train Epoch: 121 [0/45056 (0%)]	Loss: 1.289945 Accuracy: 83/128 (64.844% 
+14:25:59: Train Epoch: 121 [12800/45056 (28%)]	Loss: 1.084173 Accuracy: 7240/12928 (56.002% 
+14:26:17: Train Epoch: 121 [25600/45056 (57%)]	Loss: 1.116091 Accuracy: 14578/25728 (56.662% 
+14:26:35: Train Epoch: 121 [38400/45056 (85%)]	Loss: 1.269763 Accuracy: 21913/38528 (56.876% 
+14:26:44: 
+Training summary: Average loss: 1.2108, Accuracy: 25579/45000 (56.842%)
+
+14:26:46: 
+Evaluation: Average loss: 1.3281, Accuracy: 2631/5000 (52.620%)
+
+14:26:46: Current learning rate: 0.1. Time taken for epoch: 64.88 seconds.
+
+14:26:47: Train Epoch: 122 [0/45056 (0%)]	Loss: 1.284582 Accuracy: 66/128 (51.562% 
+14:27:04: Train Epoch: 122 [12800/45056 (28%)]	Loss: 1.120000 Accuracy: 7229/12928 (55.917% 
+14:27:22: Train Epoch: 122 [25600/45056 (57%)]	Loss: 1.257889 Accuracy: 14447/25728 (56.153% 
+14:27:40: Train Epoch: 122 [38400/45056 (85%)]	Loss: 1.440638 Accuracy: 21677/38528 (56.263% 
+14:27:49: 
+Training summary: Average loss: 1.2297, Accuracy: 25371/45000 (56.380%)
+
+14:27:51: 
+Evaluation: Average loss: 1.4791, Accuracy: 2457/5000 (49.140%)
+
+14:27:51: Current learning rate: 0.1. Time taken for epoch: 64.90 seconds.
+
+14:27:51: Train Epoch: 123 [0/45056 (0%)]	Loss: 1.422786 Accuracy: 68/128 (53.125% 
+14:28:09: Train Epoch: 123 [12800/45056 (28%)]	Loss: 1.285070 Accuracy: 7020/12928 (54.301% 
+14:28:27: Train Epoch: 123 [25600/45056 (57%)]	Loss: 1.258713 Accuracy: 14007/25728 (54.443% 
+14:28:45: Train Epoch: 123 [38400/45056 (85%)]	Loss: 1.302180 Accuracy: 21084/38528 (54.724% 
+14:28:53: 
+Training summary: Average loss: 1.2685, Accuracy: 24634/45000 (54.742%)
+
+14:28:56: 
+Evaluation: Average loss: 1.3932, Accuracy: 2491/5000 (49.820%)
+
+14:28:56: Current learning rate: 0.1. Time taken for epoch: 64.87 seconds.
+
+14:28:56: Train Epoch: 124 [0/45056 (0%)]	Loss: 2.205990 Accuracy: 39/128 (30.469% 
+14:29:14: Train Epoch: 124 [12800/45056 (28%)]	Loss: 1.358347 Accuracy: 5760/12928 (44.554% 
+14:29:32: Train Epoch: 124 [25600/45056 (57%)]	Loss: 1.394604 Accuracy: 12010/25728 (46.681% 
+14:29:49: Train Epoch: 124 [38400/45056 (85%)]	Loss: 1.445618 Accuracy: 18391/38528 (47.734% 
+14:29:58: 
+Training summary: Average loss: 1.4671, Accuracy: 21486/45000 (47.747%)
+
+14:30:01: 
+Evaluation: Average loss: 2.1738, Accuracy: 1462/5000 (29.240%)
+
+14:30:01: Current learning rate: 0.1. Time taken for epoch: 64.81 seconds.
+
+14:30:01: Train Epoch: 125 [0/45056 (0%)]	Loss: 1.410993 Accuracy: 59/128 (46.094% 
+14:30:19: Train Epoch: 125 [12800/45056 (28%)]	Loss: 1.494376 Accuracy: 6453/12928 (49.915% 
+14:30:36: Train Epoch: 125 [25600/45056 (57%)]	Loss: 1.358803 Accuracy: 12980/25728 (50.451% 
+14:30:54: Train Epoch: 125 [38400/45056 (85%)]	Loss: 1.354874 Accuracy: 19672/38528 (51.059% 
+14:31:03: 
+Training summary: Average loss: 1.3837, Accuracy: 22993/45000 (51.096%)
+
+14:31:06: 
+Evaluation: Average loss: 3.7817, Accuracy: 502/5000 (10.040%)
+
+14:31:06: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+14:31:06: Train Epoch: 126 [0/45056 (0%)]	Loss: 1.837486 Accuracy: 43/128 (33.594% 
+14:31:24: Train Epoch: 126 [12800/45056 (28%)]	Loss: 1.657580 Accuracy: 5441/12928 (42.087% 
+14:31:41: Train Epoch: 126 [25600/45056 (57%)]	Loss: 1.418307 Accuracy: 11534/25728 (44.831% 
+14:31:59: Train Epoch: 126 [38400/45056 (85%)]	Loss: 1.244346 Accuracy: 17951/38528 (46.592% 
+14:32:08: 
+Training summary: Average loss: 1.5029, Accuracy: 21191/45000 (47.091%)
+
+14:32:10: 
+Evaluation: Average loss: 1.4480, Accuracy: 2450/5000 (49.000%)
+
+14:32:10: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+14:32:11: Train Epoch: 127 [0/45056 (0%)]	Loss: 1.432216 Accuracy: 61/128 (47.656% 
+14:32:28: Train Epoch: 127 [12800/45056 (28%)]	Loss: 1.480575 Accuracy: 6478/12928 (50.108% 
+14:32:46: Train Epoch: 127 [25600/45056 (57%)]	Loss: 1.517666 Accuracy: 13040/25728 (50.684% 
+14:33:04: Train Epoch: 127 [38400/45056 (85%)]	Loss: 1.380153 Accuracy: 19704/38528 (51.142% 
+14:33:13: 
+Training summary: Average loss: 1.3750, Accuracy: 23093/45000 (51.318%)
+
+14:33:15: 
+Evaluation: Average loss: 1.3302, Accuracy: 2633/5000 (52.660%)
+
+14:33:15: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+14:33:16: Train Epoch: 128 [0/45056 (0%)]	Loss: 1.333044 Accuracy: 66/128 (51.562% 
+14:33:33: Train Epoch: 128 [12800/45056 (28%)]	Loss: 1.328463 Accuracy: 6721/12928 (51.988% 
+14:33:51: Train Epoch: 128 [25600/45056 (57%)]	Loss: 1.284142 Accuracy: 13450/25728 (52.278% 
+14:34:09: Train Epoch: 128 [38400/45056 (85%)]	Loss: 1.217751 Accuracy: 20195/38528 (52.416% 
+14:34:18: 
+Training summary: Average loss: 1.3461, Accuracy: 23595/45000 (52.433%)
+
+14:34:20: 
+Evaluation: Average loss: 1.3492, Accuracy: 2648/5000 (52.960%)
+
+14:34:20: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.83 seconds.
+
+14:34:20: Train Epoch: 129 [0/45056 (0%)]	Loss: 1.323000 Accuracy: 67/128 (52.344% 
+14:34:38: Train Epoch: 129 [12800/45056 (28%)]	Loss: 1.460806 Accuracy: 6881/12928 (53.226% 
+14:34:56: Train Epoch: 129 [25600/45056 (57%)]	Loss: 1.332162 Accuracy: 13754/25728 (53.459% 
+14:35:13: Train Epoch: 129 [38400/45056 (85%)]	Loss: 1.329709 Accuracy: 20572/38528 (53.395% 
+14:35:22: 
+Training summary: Average loss: 1.3210, Accuracy: 24008/45000 (53.351%)
+
+14:35:25: 
+Evaluation: Average loss: 1.3021, Accuracy: 2710/5000 (54.200%)
+
+14:35:25: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+14:35:25: Train Epoch: 130 [0/45056 (0%)]	Loss: 1.435797 Accuracy: 60/128 (46.875% 
+14:35:43: Train Epoch: 130 [12800/45056 (28%)]	Loss: 1.510518 Accuracy: 6898/12928 (53.357% 
+14:36:01: Train Epoch: 130 [25600/45056 (57%)]	Loss: 1.380398 Accuracy: 13815/25728 (53.696% 
+14:36:18: Train Epoch: 130 [38400/45056 (85%)]	Loss: 1.369134 Accuracy: 20748/38528 (53.852% 
+14:36:27: 
+Training summary: Average loss: 1.3067, Accuracy: 24205/45000 (53.789%)
+
+14:36:30: 
+Evaluation: Average loss: 1.4376, Accuracy: 2506/5000 (50.120%)
+
+14:36:30: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.84 seconds.
+
+14:36:30: Train Epoch: 131 [0/45056 (0%)]	Loss: 1.286162 Accuracy: 70/128 (54.688% 
+14:36:48: Train Epoch: 131 [12800/45056 (28%)]	Loss: 1.302639 Accuracy: 6962/12928 (53.852% 
+14:37:05: Train Epoch: 131 [25600/45056 (57%)]	Loss: 1.309984 Accuracy: 13875/25728 (53.930% 
+14:37:23: Train Epoch: 131 [38400/45056 (85%)]	Loss: 1.189998 Accuracy: 20784/38528 (53.945% 
+14:37:32: 
+Training summary: Average loss: 1.2991, Accuracy: 24285/45000 (53.967%)
+
+14:37:34: 
+Evaluation: Average loss: 1.2809, Accuracy: 2706/5000 (54.120%)
+
+14:37:34: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+14:37:35: Train Epoch: 132 [0/45056 (0%)]	Loss: 1.353531 Accuracy: 75/128 (58.594% 
+14:37:53: Train Epoch: 132 [12800/45056 (28%)]	Loss: 1.245292 Accuracy: 7107/12928 (54.974% 
+14:38:10: Train Epoch: 132 [25600/45056 (57%)]	Loss: 1.234553 Accuracy: 14029/25728 (54.528% 
+14:38:28: Train Epoch: 132 [38400/45056 (85%)]	Loss: 1.318367 Accuracy: 21008/38528 (54.527% 
+14:38:37: 
+Training summary: Average loss: 1.2871, Accuracy: 24569/45000 (54.598%)
+
+14:38:39: 
+Evaluation: Average loss: 1.2747, Accuracy: 2750/5000 (55.000%)
+
+14:38:39: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.84 seconds.
+
+14:38:40: Train Epoch: 133 [0/45056 (0%)]	Loss: 1.234761 Accuracy: 73/128 (57.031% 
+14:38:57: Train Epoch: 133 [12800/45056 (28%)]	Loss: 1.280529 Accuracy: 7074/12928 (54.718% 
+14:39:15: Train Epoch: 133 [25600/45056 (57%)]	Loss: 1.218030 Accuracy: 14059/25728 (54.645% 
+14:39:33: Train Epoch: 133 [38400/45056 (85%)]	Loss: 1.111369 Accuracy: 21076/38528 (54.703% 
+14:39:42: 
+Training summary: Average loss: 1.2828, Accuracy: 24600/45000 (54.667%)
+
+14:39:44: 
+Evaluation: Average loss: 1.2633, Accuracy: 2766/5000 (55.320%)
+
+14:39:44: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.82 seconds.
+
+14:39:44: Train Epoch: 134 [0/45056 (0%)]	Loss: 1.324269 Accuracy: 67/128 (52.344% 
+14:40:02: Train Epoch: 134 [12800/45056 (28%)]	Loss: 1.167105 Accuracy: 7140/12928 (55.229% 
+14:40:20: Train Epoch: 134 [25600/45056 (57%)]	Loss: 1.383470 Accuracy: 14171/25728 (55.080% 
+14:40:38: Train Epoch: 134 [38400/45056 (85%)]	Loss: 1.348754 Accuracy: 21160/38528 (54.921% 
+14:40:47: 
+Training summary: Average loss: 1.2736, Accuracy: 24656/45000 (54.791%)
+
+14:40:49: 
+Evaluation: Average loss: 1.2677, Accuracy: 2739/5000 (54.780%)
+
+14:40:49: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.83 seconds.
+
+14:40:49: Train Epoch: 135 [0/45056 (0%)]	Loss: 1.209983 Accuracy: 71/128 (55.469% 
+14:41:07: Train Epoch: 135 [12800/45056 (28%)]	Loss: 1.092121 Accuracy: 7078/12928 (54.749% 
+14:41:25: Train Epoch: 135 [25600/45056 (57%)]	Loss: 1.269621 Accuracy: 14178/25728 (55.107% 
+14:41:42: Train Epoch: 135 [38400/45056 (85%)]	Loss: 1.272034 Accuracy: 21237/38528 (55.121% 
+14:41:51: 
+Training summary: Average loss: 1.2674, Accuracy: 24745/45000 (54.989%)
+
+14:41:54: 
+Evaluation: Average loss: 1.2468, Accuracy: 2801/5000 (56.020%)
+
+14:41:54: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.77 seconds.
+
+14:41:54: Train Epoch: 136 [0/45056 (0%)]	Loss: 1.335452 Accuracy: 68/128 (53.125% 
+14:42:12: Train Epoch: 136 [12800/45056 (28%)]	Loss: 1.463741 Accuracy: 7156/12928 (55.353% 
+14:42:29: Train Epoch: 136 [25600/45056 (57%)]	Loss: 1.272615 Accuracy: 14167/25728 (55.065% 
+14:42:47: Train Epoch: 136 [38400/45056 (85%)]	Loss: 1.278921 Accuracy: 21299/38528 (55.282% 
+14:42:56: 
+Training summary: Average loss: 1.2611, Accuracy: 24898/45000 (55.329%)
+
+14:42:59: 
+Evaluation: Average loss: 1.2571, Accuracy: 2729/5000 (54.580%)
+
+14:42:59: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.84 seconds.
+
+14:42:59: Train Epoch: 137 [0/45056 (0%)]	Loss: 1.168211 Accuracy: 75/128 (58.594% 
+14:43:17: Train Epoch: 137 [12800/45056 (28%)]	Loss: 1.156468 Accuracy: 7270/12928 (56.235% 
+14:43:34: Train Epoch: 137 [25600/45056 (57%)]	Loss: 1.329547 Accuracy: 14102/25728 (54.812% 
+14:43:52: Train Epoch: 137 [38400/45056 (85%)]	Loss: 1.537500 Accuracy: 20996/38528 (54.495% 
+14:44:01: 
+Training summary: Average loss: 1.2938, Accuracy: 24426/45000 (54.280%)
+
+14:44:03: 
+Evaluation: Average loss: 1.2815, Accuracy: 2690/5000 (53.800%)
+
+14:44:03: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.87 seconds.
+
+14:44:04: Train Epoch: 138 [0/45056 (0%)]	Loss: 1.478400 Accuracy: 57/128 (44.531% 
+14:44:21: Train Epoch: 138 [12800/45056 (28%)]	Loss: 1.299306 Accuracy: 7086/12928 (54.811% 
+14:44:39: Train Epoch: 138 [25600/45056 (57%)]	Loss: 1.323386 Accuracy: 14046/25728 (54.594% 
+14:44:57: Train Epoch: 138 [38400/45056 (85%)]	Loss: 1.299899 Accuracy: 21183/38528 (54.981% 
+14:45:06: 
+Training summary: Average loss: 1.2770, Accuracy: 24790/45000 (55.089%)
+
+14:45:08: 
+Evaluation: Average loss: 1.3423, Accuracy: 2680/5000 (53.600%)
+
+14:45:08: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+14:45:09: Train Epoch: 139 [0/45056 (0%)]	Loss: 1.329121 Accuracy: 61/128 (47.656% 
+14:45:26: Train Epoch: 139 [12800/45056 (28%)]	Loss: 1.095510 Accuracy: 7074/12928 (54.718% 
+14:45:44: Train Epoch: 139 [25600/45056 (57%)]	Loss: 1.215498 Accuracy: 14220/25728 (55.271% 
+14:46:02: Train Epoch: 139 [38400/45056 (85%)]	Loss: 1.152622 Accuracy: 21277/38528 (55.225% 
+14:46:11: 
+Training summary: Average loss: 1.2652, Accuracy: 24889/45000 (55.309%)
+
+14:46:13: 
+Evaluation: Average loss: 1.2955, Accuracy: 2739/5000 (54.780%)
+
+14:46:13: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.77 seconds.
+
+14:46:13: Train Epoch: 140 [0/45056 (0%)]	Loss: 1.259686 Accuracy: 68/128 (53.125% 
+14:46:31: Train Epoch: 140 [12800/45056 (28%)]	Loss: 1.276535 Accuracy: 7113/12928 (55.020% 
+14:46:49: Train Epoch: 140 [25600/45056 (57%)]	Loss: 1.242924 Accuracy: 14247/25728 (55.375% 
+14:47:06: Train Epoch: 140 [38400/45056 (85%)]	Loss: 1.285872 Accuracy: 21480/38528 (55.752% 
+14:47:15: 
+Training summary: Average loss: 1.2540, Accuracy: 25061/45000 (55.691%)
+
+14:47:18: 
+Evaluation: Average loss: 1.2476, Accuracy: 2783/5000 (55.660%)
+
+14:47:18: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+14:47:18: Train Epoch: 141 [0/45056 (0%)]	Loss: 1.235538 Accuracy: 70/128 (54.688% 
+14:47:36: Train Epoch: 141 [12800/45056 (28%)]	Loss: 1.266586 Accuracy: 7202/12928 (55.709% 
+14:47:54: Train Epoch: 141 [25600/45056 (57%)]	Loss: 1.264160 Accuracy: 14454/25728 (56.180% 
+14:48:11: Train Epoch: 141 [38400/45056 (85%)]	Loss: 1.137908 Accuracy: 21521/38528 (55.858% 
+14:48:20: 
+Training summary: Average loss: 1.2402, Accuracy: 25218/45000 (56.040%)
+
+14:48:23: 
+Evaluation: Average loss: 1.3670, Accuracy: 2631/5000 (52.620%)
+
+14:48:23: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+14:48:23: Train Epoch: 142 [0/45056 (0%)]	Loss: 1.242653 Accuracy: 68/128 (53.125% 
+14:48:41: Train Epoch: 142 [12800/45056 (28%)]	Loss: 1.177432 Accuracy: 7249/12928 (56.072% 
+14:48:58: Train Epoch: 142 [25600/45056 (57%)]	Loss: 1.184950 Accuracy: 14443/25728 (56.137% 
+14:49:16: Train Epoch: 142 [38400/45056 (85%)]	Loss: 1.312135 Accuracy: 21668/38528 (56.240% 
+14:49:25: 
+Training summary: Average loss: 1.2350, Accuracy: 25279/45000 (56.176%)
+
+14:49:27: 
+Evaluation: Average loss: 1.2232, Accuracy: 2854/5000 (57.080%)
+
+14:49:28: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.97 seconds.
+
+14:49:28: Train Epoch: 143 [0/45056 (0%)]	Loss: 1.066697 Accuracy: 82/128 (64.062% 
+14:49:46: Train Epoch: 143 [12800/45056 (28%)]	Loss: 1.170649 Accuracy: 7280/12928 (56.312% 
+14:50:03: Train Epoch: 143 [25600/45056 (57%)]	Loss: 1.135084 Accuracy: 14511/25728 (56.402% 
+14:50:21: Train Epoch: 143 [38400/45056 (85%)]	Loss: 1.268955 Accuracy: 21683/38528 (56.279% 
+14:50:30: 
+Training summary: Average loss: 1.2290, Accuracy: 25436/45000 (56.524%)
+
+14:50:32: 
+Evaluation: Average loss: 1.2305, Accuracy: 2837/5000 (56.740%)
+
+14:50:32: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.69 seconds.
+
+14:50:33: Train Epoch: 144 [0/45056 (0%)]	Loss: 1.321686 Accuracy: 65/128 (50.781% 
+14:50:50: Train Epoch: 144 [12800/45056 (28%)]	Loss: 1.170486 Accuracy: 7283/12928 (56.335% 
+14:51:08: Train Epoch: 144 [25600/45056 (57%)]	Loss: 1.257235 Accuracy: 14612/25728 (56.794% 
+14:51:26: Train Epoch: 144 [38400/45056 (85%)]	Loss: 1.362507 Accuracy: 21884/38528 (56.800% 
+14:51:35: 
+Training summary: Average loss: 1.2230, Accuracy: 25511/45000 (56.691%)
+
+14:51:37: 
+Evaluation: Average loss: 1.2033, Accuracy: 2842/5000 (56.840%)
+
+14:51:37: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+14:51:37: Train Epoch: 145 [0/45056 (0%)]	Loss: 1.276598 Accuracy: 72/128 (56.250% 
+14:51:55: Train Epoch: 145 [12800/45056 (28%)]	Loss: 1.242766 Accuracy: 7338/12928 (56.761% 
+14:52:13: Train Epoch: 145 [25600/45056 (57%)]	Loss: 1.252085 Accuracy: 14631/25728 (56.868% 
+14:52:30: Train Epoch: 145 [38400/45056 (85%)]	Loss: 1.138521 Accuracy: 21939/38528 (56.943% 
+14:52:39: 
+Training summary: Average loss: 1.2155, Accuracy: 25652/45000 (57.004%)
+
+14:52:42: 
+Evaluation: Average loss: 1.1915, Accuracy: 2878/5000 (57.560%)
+
+14:52:42: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.94 seconds.
+
+14:52:42: Train Epoch: 146 [0/45056 (0%)]	Loss: 1.376972 Accuracy: 63/128 (49.219% 
+14:53:00: Train Epoch: 146 [12800/45056 (28%)]	Loss: 1.145092 Accuracy: 7344/12928 (56.807% 
+14:53:18: Train Epoch: 146 [25600/45056 (57%)]	Loss: 1.240438 Accuracy: 14647/25728 (56.930% 
+14:53:35: Train Epoch: 146 [38400/45056 (85%)]	Loss: 1.238985 Accuracy: 21925/38528 (56.907% 
+14:53:44: 
+Training summary: Average loss: 1.2126, Accuracy: 25632/45000 (56.960%)
+
+14:53:47: 
+Evaluation: Average loss: 1.2052, Accuracy: 2832/5000 (56.640%)
+
+14:53:47: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.73 seconds.
+
+14:53:47: Train Epoch: 147 [0/45056 (0%)]	Loss: 1.174582 Accuracy: 74/128 (57.812% 
+14:54:05: Train Epoch: 147 [12800/45056 (28%)]	Loss: 1.307416 Accuracy: 7402/12928 (57.256% 
+14:54:22: Train Epoch: 147 [25600/45056 (57%)]	Loss: 1.300224 Accuracy: 14748/25728 (57.323% 
+14:54:40: Train Epoch: 147 [38400/45056 (85%)]	Loss: 1.160763 Accuracy: 22101/38528 (57.363% 
+14:54:49: 
+Training summary: Average loss: 1.2050, Accuracy: 25875/45000 (57.500%)
+
+14:54:52: 
+Evaluation: Average loss: 1.1961, Accuracy: 2878/5000 (57.560%)
+
+14:54:52: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.82 seconds.
+
+14:54:52: Train Epoch: 148 [0/45056 (0%)]	Loss: 1.173369 Accuracy: 76/128 (59.375% 
+14:55:10: Train Epoch: 148 [12800/45056 (28%)]	Loss: 1.220349 Accuracy: 7417/12928 (57.372% 
+14:55:27: Train Epoch: 148 [25600/45056 (57%)]	Loss: 1.195482 Accuracy: 14745/25728 (57.311% 
+14:55:45: Train Epoch: 148 [38400/45056 (85%)]	Loss: 1.241511 Accuracy: 21657/38528 (56.211% 
+14:55:54: 
+Training summary: Average loss: 1.2490, Accuracy: 25187/45000 (55.971%)
+
+14:55:56: 
+Evaluation: Average loss: 1.3115, Accuracy: 2694/5000 (53.880%)
+
+14:55:56: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.83 seconds.
+
+14:55:57: Train Epoch: 149 [0/45056 (0%)]	Loss: 1.118388 Accuracy: 75/128 (58.594% 
+14:56:14: Train Epoch: 149 [12800/45056 (28%)]	Loss: 1.351828 Accuracy: 7257/12928 (56.134% 
+14:56:32: Train Epoch: 149 [25600/45056 (57%)]	Loss: 1.330643 Accuracy: 14466/25728 (56.227% 
+14:56:50: Train Epoch: 149 [38400/45056 (85%)]	Loss: 1.172704 Accuracy: 21757/38528 (56.471% 
+14:56:59: 
+Training summary: Average loss: 1.2298, Accuracy: 25463/45000 (56.584%)
+
+14:57:01: 
+Evaluation: Average loss: 1.2067, Accuracy: 2860/5000 (57.200%)
+
+14:57:01: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.78 seconds.
+
+14:57:02: Train Epoch: 150 [0/45056 (0%)]	Loss: 1.182863 Accuracy: 74/128 (57.812% 
+14:57:19: Train Epoch: 150 [12800/45056 (28%)]	Loss: 1.173722 Accuracy: 7401/12928 (57.248% 
+14:57:37: Train Epoch: 150 [25600/45056 (57%)]	Loss: 1.050090 Accuracy: 14821/25728 (57.606% 
+14:57:55: Train Epoch: 150 [38400/45056 (85%)]	Loss: 1.156356 Accuracy: 22106/38528 (57.376% 
+14:58:04: 
+Training summary: Average loss: 1.2065, Accuracy: 25843/45000 (57.429%)
+
+14:58:06: 
+Evaluation: Average loss: 1.2555, Accuracy: 2773/5000 (55.460%)
+
+14:58:06: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.82 seconds.
+
+14:58:06: Train Epoch: 151 [0/45056 (0%)]	Loss: 1.102766 Accuracy: 79/128 (61.719% 
+14:58:24: Train Epoch: 151 [12800/45056 (28%)]	Loss: 1.413053 Accuracy: 7514/12928 (58.122% 
+14:58:42: Train Epoch: 151 [25600/45056 (57%)]	Loss: 1.184176 Accuracy: 14899/25728 (57.910% 
+14:58:59: Train Epoch: 151 [38400/45056 (85%)]	Loss: 1.253168 Accuracy: 22244/38528 (57.735% 
+14:59:08: 
+Training summary: Average loss: 1.1983, Accuracy: 25946/45000 (57.658%)
+
+14:59:11: 
+Evaluation: Average loss: 1.2164, Accuracy: 2834/5000 (56.680%)
+
+14:59:11: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.78 seconds.
+
+14:59:11: Train Epoch: 152 [0/45056 (0%)]	Loss: 1.440697 Accuracy: 62/128 (48.438% 
+14:59:29: Train Epoch: 152 [12800/45056 (28%)]	Loss: 1.241932 Accuracy: 7485/12928 (57.898% 
+14:59:47: Train Epoch: 152 [25600/45056 (57%)]	Loss: 1.145642 Accuracy: 14895/25728 (57.894% 
+15:00:04: Train Epoch: 152 [38400/45056 (85%)]	Loss: 1.103270 Accuracy: 22415/38528 (58.178% 
+15:00:13: 
+Training summary: Average loss: 1.1949, Accuracy: 26161/45000 (58.136%)
+
+15:00:16: 
+Evaluation: Average loss: 1.1955, Accuracy: 2873/5000 (57.460%)
+
+15:00:16: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.84 seconds.
+
+15:00:16: Train Epoch: 153 [0/45056 (0%)]	Loss: 1.230603 Accuracy: 75/128 (58.594% 
+15:00:34: Train Epoch: 153 [12800/45056 (28%)]	Loss: 1.288015 Accuracy: 7544/12928 (58.354% 
+15:00:51: Train Epoch: 153 [25600/45056 (57%)]	Loss: 1.211695 Accuracy: 14949/25728 (58.104% 
+15:01:09: Train Epoch: 153 [38400/45056 (85%)]	Loss: 1.116292 Accuracy: 22365/38528 (58.049% 
+15:01:18: 
+Training summary: Average loss: 1.1913, Accuracy: 26110/45000 (58.022%)
+
+15:01:20: 
+Evaluation: Average loss: 1.1675, Accuracy: 2944/5000 (58.880%)
+
+15:01:21: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.98 seconds.
+
+15:01:21: Train Epoch: 154 [0/45056 (0%)]	Loss: 1.132886 Accuracy: 74/128 (57.812% 
+15:01:39: Train Epoch: 154 [12800/45056 (28%)]	Loss: 1.348877 Accuracy: 7539/12928 (58.315% 
+15:01:56: Train Epoch: 154 [25600/45056 (57%)]	Loss: 1.226106 Accuracy: 14962/25728 (58.155% 
+15:02:14: Train Epoch: 154 [38400/45056 (85%)]	Loss: 1.174522 Accuracy: 22415/38528 (58.178% 
+15:02:23: 
+Training summary: Average loss: 1.1830, Accuracy: 26199/45000 (58.220%)
+
+15:02:25: 
+Evaluation: Average loss: 1.1767, Accuracy: 2909/5000 (58.180%)
+
+15:02:25: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.76 seconds.
+
+15:02:26: Train Epoch: 155 [0/45056 (0%)]	Loss: 1.287815 Accuracy: 68/128 (53.125% 
+15:02:43: Train Epoch: 155 [12800/45056 (28%)]	Loss: 1.265491 Accuracy: 7576/12928 (58.601% 
+15:03:01: Train Epoch: 155 [25600/45056 (57%)]	Loss: 1.295155 Accuracy: 14955/25728 (58.127% 
+15:03:19: Train Epoch: 155 [38400/45056 (85%)]	Loss: 1.260842 Accuracy: 22414/38528 (58.176% 
+15:03:28: 
+Training summary: Average loss: 1.1790, Accuracy: 26150/45000 (58.111%)
+
+15:03:30: 
+Evaluation: Average loss: 1.1476, Accuracy: 2966/5000 (59.320%)
+
+15:03:30: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.95 seconds.
+
+15:03:31: Train Epoch: 156 [0/45056 (0%)]	Loss: 1.199618 Accuracy: 80/128 (62.500% 
+15:03:48: Train Epoch: 156 [12800/45056 (28%)]	Loss: 1.017726 Accuracy: 7639/12928 (59.089% 
+15:04:06: Train Epoch: 156 [25600/45056 (57%)]	Loss: 1.199786 Accuracy: 15064/25728 (58.551% 
+15:04:24: Train Epoch: 156 [38400/45056 (85%)]	Loss: 1.205443 Accuracy: 22581/38528 (58.609% 
+15:04:33: 
+Training summary: Average loss: 1.1706, Accuracy: 26296/45000 (58.436%)
+
+15:04:35: 
+Evaluation: Average loss: 1.2674, Accuracy: 2762/5000 (55.240%)
+
+15:04:35: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.75 seconds.
+
+15:04:35: Train Epoch: 157 [0/45056 (0%)]	Loss: 1.048001 Accuracy: 81/128 (63.281% 
+15:04:53: Train Epoch: 157 [12800/45056 (28%)]	Loss: 1.070462 Accuracy: 7526/12928 (58.215% 
+15:05:11: Train Epoch: 157 [25600/45056 (57%)]	Loss: 1.193444 Accuracy: 15013/25728 (58.353% 
+15:05:28: Train Epoch: 157 [38400/45056 (85%)]	Loss: 1.026404 Accuracy: 22480/38528 (58.347% 
+15:05:37: 
+Training summary: Average loss: 1.1698, Accuracy: 26239/45000 (58.309%)
+
+15:05:40: 
+Evaluation: Average loss: 1.1349, Accuracy: 2957/5000 (59.140%)
+
+15:05:40: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.77 seconds.
+
+15:05:40: Train Epoch: 158 [0/45056 (0%)]	Loss: 1.129820 Accuracy: 73/128 (57.031% 
+15:05:58: Train Epoch: 158 [12800/45056 (28%)]	Loss: 1.182495 Accuracy: 7622/12928 (58.957% 
+15:06:16: Train Epoch: 158 [25600/45056 (57%)]	Loss: 1.263128 Accuracy: 15102/25728 (58.699% 
+15:06:33: Train Epoch: 158 [38400/45056 (85%)]	Loss: 1.293425 Accuracy: 22600/38528 (58.659% 
+15:06:42: 
+Training summary: Average loss: 1.1602, Accuracy: 26425/45000 (58.722%)
+
+15:06:45: 
+Evaluation: Average loss: 1.1903, Accuracy: 2885/5000 (57.700%)
+
+15:06:45: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.82 seconds.
+
+15:06:45: Train Epoch: 159 [0/45056 (0%)]	Loss: 1.130197 Accuracy: 85/128 (66.406% 
+15:07:03: Train Epoch: 159 [12800/45056 (28%)]	Loss: 1.060712 Accuracy: 7618/12928 (58.926% 
+15:07:20: Train Epoch: 159 [25600/45056 (57%)]	Loss: 1.265136 Accuracy: 15093/25728 (58.664% 
+15:07:38: Train Epoch: 159 [38400/45056 (85%)]	Loss: 1.101390 Accuracy: 22685/38528 (58.879% 
+15:07:47: 
+Training summary: Average loss: 1.1588, Accuracy: 26551/45000 (59.002%)
+
+15:07:49: 
+Evaluation: Average loss: 1.1490, Accuracy: 2943/5000 (58.860%)
+
+15:07:49: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.79 seconds.
+
+15:07:50: Train Epoch: 160 [0/45056 (0%)]	Loss: 0.947041 Accuracy: 84/128 (65.625% 
+15:08:07: Train Epoch: 160 [12800/45056 (28%)]	Loss: 1.215464 Accuracy: 7527/12928 (58.222% 
+15:08:25: Train Epoch: 160 [25600/45056 (57%)]	Loss: 1.051787 Accuracy: 15045/25728 (58.477% 
+15:08:43: Train Epoch: 160 [38400/45056 (85%)]	Loss: 1.163716 Accuracy: 22552/38528 (58.534% 
+15:08:52: 
+Training summary: Average loss: 1.1697, Accuracy: 26373/45000 (58.607%)
+
+15:08:54: 
+Evaluation: Average loss: 1.1325, Accuracy: 2971/5000 (59.420%)
+
+15:08:54: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.99 seconds.
+
+15:08:55: Train Epoch: 161 [0/45056 (0%)]	Loss: 1.068982 Accuracy: 80/128 (62.500% 
+15:09:12: Train Epoch: 161 [12800/45056 (28%)]	Loss: 1.253341 Accuracy: 7567/12928 (58.532% 
+15:09:30: Train Epoch: 161 [25600/45056 (57%)]	Loss: 1.164660 Accuracy: 15119/25728 (58.765% 
+15:09:48: Train Epoch: 161 [38400/45056 (85%)]	Loss: 1.234941 Accuracy: 22669/38528 (58.838% 
+15:09:57: 
+Training summary: Average loss: 1.1541, Accuracy: 26502/45000 (58.893%)
+
+15:09:59: 
+Evaluation: Average loss: 1.1550, Accuracy: 2957/5000 (59.140%)
+
+15:09:59: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.82 seconds.
+
+15:10:00: Train Epoch: 162 [0/45056 (0%)]	Loss: 1.117491 Accuracy: 78/128 (60.938% 
+15:10:17: Train Epoch: 162 [12800/45056 (28%)]	Loss: 1.254679 Accuracy: 7649/12928 (59.166% 
+15:10:35: Train Epoch: 162 [25600/45056 (57%)]	Loss: 0.871362 Accuracy: 15316/25728 (59.530% 
+15:10:53: Train Epoch: 162 [38400/45056 (85%)]	Loss: 1.279018 Accuracy: 22924/38528 (59.500% 
+15:11:02: 
+Training summary: Average loss: 1.1480, Accuracy: 26699/45000 (59.331%)
+
+15:11:04: 
+Evaluation: Average loss: 1.1462, Accuracy: 2942/5000 (58.840%)
+
+15:11:04: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:11:04: Train Epoch: 163 [0/45056 (0%)]	Loss: 1.087789 Accuracy: 86/128 (67.188% 
+15:11:22: Train Epoch: 163 [12800/45056 (28%)]	Loss: 1.227472 Accuracy: 7707/12928 (59.615% 
+15:11:40: Train Epoch: 163 [25600/45056 (57%)]	Loss: 1.302738 Accuracy: 15315/25728 (59.527% 
+15:11:57: Train Epoch: 163 [38400/45056 (85%)]	Loss: 1.016366 Accuracy: 22835/38528 (59.269% 
+15:12:06: 
+Training summary: Average loss: 1.1455, Accuracy: 26741/45000 (59.424%)
+
+15:12:09: 
+Evaluation: Average loss: 1.1563, Accuracy: 2967/5000 (59.340%)
+
+15:12:09: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:12:09: Train Epoch: 164 [0/45056 (0%)]	Loss: 1.125632 Accuracy: 75/128 (58.594% 
+15:12:27: Train Epoch: 164 [12800/45056 (28%)]	Loss: 1.137696 Accuracy: 7788/12928 (60.241% 
+15:12:45: Train Epoch: 164 [25600/45056 (57%)]	Loss: 1.082587 Accuracy: 15440/25728 (60.012% 
+15:13:02: Train Epoch: 164 [38400/45056 (85%)]	Loss: 1.278381 Accuracy: 23040/38528 (59.801% 
+15:13:11: 
+Training summary: Average loss: 1.1381, Accuracy: 26891/45000 (59.758%)
+
+15:13:14: 
+Evaluation: Average loss: 1.1570, Accuracy: 2941/5000 (58.820%)
+
+15:13:14: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.77 seconds.
+
+15:13:14: Train Epoch: 165 [0/45056 (0%)]	Loss: 1.151417 Accuracy: 75/128 (58.594% 
+15:13:32: Train Epoch: 165 [12800/45056 (28%)]	Loss: 1.015237 Accuracy: 7775/12928 (60.141% 
+15:13:49: Train Epoch: 165 [25600/45056 (57%)]	Loss: 1.198027 Accuracy: 15444/25728 (60.028% 
+15:14:07: Train Epoch: 165 [38400/45056 (85%)]	Loss: 1.287539 Accuracy: 23183/38528 (60.172% 
+15:14:16: 
+Training summary: Average loss: 1.1298, Accuracy: 27075/45000 (60.167%)
+
+15:14:18: 
+Evaluation: Average loss: 1.1294, Accuracy: 2966/5000 (59.320%)
+
+15:14:18: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.78 seconds.
+
+15:14:19: Train Epoch: 166 [0/45056 (0%)]	Loss: 1.182215 Accuracy: 76/128 (59.375% 
+15:14:36: Train Epoch: 166 [12800/45056 (28%)]	Loss: 1.196313 Accuracy: 7699/12928 (59.553% 
+15:14:54: Train Epoch: 166 [25600/45056 (57%)]	Loss: 1.170050 Accuracy: 15491/25728 (60.211% 
+15:15:12: Train Epoch: 166 [38400/45056 (85%)]	Loss: 1.194489 Accuracy: 23112/38528 (59.988% 
+15:15:21: 
+Training summary: Average loss: 1.1292, Accuracy: 27047/45000 (60.104%)
+
+15:15:23: 
+Evaluation: Average loss: 1.1251, Accuracy: 2969/5000 (59.380%)
+
+15:15:23: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:15:24: Train Epoch: 167 [0/45056 (0%)]	Loss: 1.281418 Accuracy: 67/128 (52.344% 
+15:15:41: Train Epoch: 167 [12800/45056 (28%)]	Loss: 1.178586 Accuracy: 7788/12928 (60.241% 
+15:15:59: Train Epoch: 167 [25600/45056 (57%)]	Loss: 1.161577 Accuracy: 15497/25728 (60.234% 
+15:16:17: Train Epoch: 167 [38400/45056 (85%)]	Loss: 1.132655 Accuracy: 23169/38528 (60.135% 
+15:16:26: 
+Training summary: Average loss: 1.1256, Accuracy: 27075/45000 (60.167%)
+
+15:16:28: 
+Evaluation: Average loss: 1.1361, Accuracy: 2956/5000 (59.120%)
+
+15:16:28: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.82 seconds.
+
+15:16:28: Train Epoch: 168 [0/45056 (0%)]	Loss: 1.077499 Accuracy: 77/128 (60.156% 
+15:16:46: Train Epoch: 168 [12800/45056 (28%)]	Loss: 1.097489 Accuracy: 7761/12928 (60.032% 
+15:17:04: Train Epoch: 168 [25600/45056 (57%)]	Loss: 1.117408 Accuracy: 15573/25728 (60.529% 
+15:17:21: Train Epoch: 168 [38400/45056 (85%)]	Loss: 1.122995 Accuracy: 23271/38528 (60.400% 
+15:17:30: 
+Training summary: Average loss: 1.1220, Accuracy: 27172/45000 (60.382%)
+
+15:17:33: 
+Evaluation: Average loss: 1.1299, Accuracy: 2980/5000 (59.600%)
+
+15:17:33: Current learning rate: 0.010000000000000002. Time taken for epoch: 65.00 seconds.
+
+15:17:33: Train Epoch: 169 [0/45056 (0%)]	Loss: 1.107530 Accuracy: 75/128 (58.594% 
+15:17:51: Train Epoch: 169 [12800/45056 (28%)]	Loss: 1.113706 Accuracy: 7823/12928 (60.512% 
+15:18:09: Train Epoch: 169 [25600/45056 (57%)]	Loss: 1.089512 Accuracy: 15512/25728 (60.292% 
+15:18:26: Train Epoch: 169 [38400/45056 (85%)]	Loss: 1.271855 Accuracy: 23190/38528 (60.190% 
+15:18:35: 
+Training summary: Average loss: 1.1200, Accuracy: 27125/45000 (60.278%)
+
+15:18:38: 
+Evaluation: Average loss: 1.1178, Accuracy: 2991/5000 (59.820%)
+
+15:18:38: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.98 seconds.
+
+15:18:38: Train Epoch: 170 [0/45056 (0%)]	Loss: 1.162803 Accuracy: 73/128 (57.031% 
+15:18:56: Train Epoch: 170 [12800/45056 (28%)]	Loss: 0.892008 Accuracy: 7864/12928 (60.829% 
+15:19:14: Train Epoch: 170 [25600/45056 (57%)]	Loss: 1.109235 Accuracy: 15566/25728 (60.502% 
+15:19:31: Train Epoch: 170 [38400/45056 (85%)]	Loss: 1.063307 Accuracy: 23307/38528 (60.494% 
+15:19:40: 
+Training summary: Average loss: 1.1155, Accuracy: 27154/45000 (60.342%)
+
+15:19:43: 
+Evaluation: Average loss: 1.1142, Accuracy: 3008/5000 (60.160%)
+
+15:19:43: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.96 seconds.
+
+15:19:43: Train Epoch: 171 [0/45056 (0%)]	Loss: 1.159110 Accuracy: 78/128 (60.938% 
+15:20:01: Train Epoch: 171 [12800/45056 (28%)]	Loss: 1.256334 Accuracy: 7756/12928 (59.994% 
+15:20:19: Train Epoch: 171 [25600/45056 (57%)]	Loss: 1.182313 Accuracy: 15444/25728 (60.028% 
+15:20:36: Train Epoch: 171 [38400/45056 (85%)]	Loss: 1.131402 Accuracy: 23154/38528 (60.097% 
+15:20:45: 
+Training summary: Average loss: 1.1304, Accuracy: 27060/45000 (60.133%)
+
+15:20:48: 
+Evaluation: Average loss: 1.1312, Accuracy: 2979/5000 (59.580%)
+
+15:20:48: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.85 seconds.
+
+15:20:48: Train Epoch: 172 [0/45056 (0%)]	Loss: 1.281836 Accuracy: 62/128 (48.438% 
+15:21:06: Train Epoch: 172 [12800/45056 (28%)]	Loss: 1.065816 Accuracy: 7744/12928 (59.901% 
+15:21:24: Train Epoch: 172 [25600/45056 (57%)]	Loss: 1.167638 Accuracy: 15510/25728 (60.285% 
+15:21:41: Train Epoch: 172 [38400/45056 (85%)]	Loss: 0.998601 Accuracy: 23237/38528 (60.312% 
+15:21:50: 
+Training summary: Average loss: 1.1233, Accuracy: 27145/45000 (60.322%)
+
+15:21:53: 
+Evaluation: Average loss: 1.1271, Accuracy: 2976/5000 (59.520%)
+
+15:21:53: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.79 seconds.
+
+15:21:53: Train Epoch: 173 [0/45056 (0%)]	Loss: 0.962122 Accuracy: 78/128 (60.938% 
+15:22:11: Train Epoch: 173 [12800/45056 (28%)]	Loss: 1.169479 Accuracy: 7875/12928 (60.914% 
+15:22:28: Train Epoch: 173 [25600/45056 (57%)]	Loss: 1.092570 Accuracy: 15643/25728 (60.801% 
+15:22:46: Train Epoch: 173 [38400/45056 (85%)]	Loss: 1.008925 Accuracy: 23345/38528 (60.592% 
+15:22:55: 
+Training summary: Average loss: 1.1152, Accuracy: 27300/45000 (60.667%)
+
+15:22:57: 
+Evaluation: Average loss: 1.1097, Accuracy: 3032/5000 (60.640%)
+
+15:22:58: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.97 seconds.
+
+15:22:58: Train Epoch: 174 [0/45056 (0%)]	Loss: 1.241072 Accuracy: 73/128 (57.031% 
+15:23:16: Train Epoch: 174 [12800/45056 (28%)]	Loss: 1.043923 Accuracy: 7928/12928 (61.324% 
+15:23:33: Train Epoch: 174 [25600/45056 (57%)]	Loss: 1.243089 Accuracy: 15682/25728 (60.953% 
+15:23:51: Train Epoch: 174 [38400/45056 (85%)]	Loss: 1.299237 Accuracy: 23434/38528 (60.823% 
+15:24:00: 
+Training summary: Average loss: 1.1085, Accuracy: 27388/45000 (60.862%)
+
+15:24:02: 
+Evaluation: Average loss: 1.1052, Accuracy: 3035/5000 (60.700%)
+
+15:24:02: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.94 seconds.
+
+15:24:03: Train Epoch: 175 [0/45056 (0%)]	Loss: 1.083175 Accuracy: 72/128 (56.250% 
+15:24:21: Train Epoch: 175 [12800/45056 (28%)]	Loss: 1.029933 Accuracy: 7920/12928 (61.262% 
+15:24:38: Train Epoch: 175 [25600/45056 (57%)]	Loss: 1.175908 Accuracy: 15689/25728 (60.980% 
+15:24:56: Train Epoch: 175 [38400/45056 (85%)]	Loss: 1.139800 Accuracy: 23477/38528 (60.935% 
+15:25:05: 
+Training summary: Average loss: 1.1100, Accuracy: 27358/45000 (60.796%)
+
+15:25:07: 
+Evaluation: Average loss: 1.1301, Accuracy: 2953/5000 (59.060%)
+
+15:25:07: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.78 seconds.
+
+15:25:08: Train Epoch: 176 [0/45056 (0%)]	Loss: 1.131163 Accuracy: 79/128 (61.719% 
+15:25:25: Train Epoch: 176 [12800/45056 (28%)]	Loss: 1.035728 Accuracy: 7899/12928 (61.100% 
+15:25:43: Train Epoch: 176 [25600/45056 (57%)]	Loss: 1.114248 Accuracy: 15795/25728 (61.392% 
+15:26:01: Train Epoch: 176 [38400/45056 (85%)]	Loss: 1.115884 Accuracy: 23552/38528 (61.130% 
+15:26:10: 
+Training summary: Average loss: 1.1050, Accuracy: 27465/45000 (61.033%)
+
+15:26:12: 
+Evaluation: Average loss: 1.0986, Accuracy: 3049/5000 (60.980%)
+
+15:26:12: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.96 seconds.
+
+15:26:13: Train Epoch: 177 [0/45056 (0%)]	Loss: 1.189427 Accuracy: 72/128 (56.250% 
+15:26:30: Train Epoch: 177 [12800/45056 (28%)]	Loss: 1.112663 Accuracy: 7853/12928 (60.744% 
+15:26:48: Train Epoch: 177 [25600/45056 (57%)]	Loss: 1.072287 Accuracy: 15738/25728 (61.171% 
+15:27:06: Train Epoch: 177 [38400/45056 (85%)]	Loss: 1.335857 Accuracy: 23542/38528 (61.104% 
+15:27:15: 
+Training summary: Average loss: 1.0974, Accuracy: 27487/45000 (61.082%)
+
+15:27:17: 
+Evaluation: Average loss: 1.1230, Accuracy: 3001/5000 (60.020%)
+
+15:27:17: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+15:27:17: Train Epoch: 178 [0/45056 (0%)]	Loss: 1.013497 Accuracy: 83/128 (64.844% 
+15:27:35: Train Epoch: 178 [12800/45056 (28%)]	Loss: 1.203286 Accuracy: 7950/12928 (61.494% 
+15:27:53: Train Epoch: 178 [25600/45056 (57%)]	Loss: 1.100779 Accuracy: 15768/25728 (61.287% 
+15:28:10: Train Epoch: 178 [38400/45056 (85%)]	Loss: 1.167056 Accuracy: 23592/38528 (61.233% 
+15:28:19: 
+Training summary: Average loss: 1.0983, Accuracy: 27487/45000 (61.082%)
+
+15:28:22: 
+Evaluation: Average loss: 1.1115, Accuracy: 2969/5000 (59.380%)
+
+15:28:22: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+15:28:22: Train Epoch: 179 [0/45056 (0%)]	Loss: 1.080764 Accuracy: 79/128 (61.719% 
+15:28:40: Train Epoch: 179 [12800/45056 (28%)]	Loss: 0.993335 Accuracy: 7970/12928 (61.649% 
+15:28:58: Train Epoch: 179 [25600/45056 (57%)]	Loss: 1.052204 Accuracy: 15855/25728 (61.625% 
+15:29:15: Train Epoch: 179 [38400/45056 (85%)]	Loss: 0.983530 Accuracy: 23676/38528 (61.451% 
+15:29:24: 
+Training summary: Average loss: 1.0935, Accuracy: 27612/45000 (61.360%)
+
+15:29:27: 
+Evaluation: Average loss: 1.0777, Accuracy: 3087/5000 (61.740%)
+
+15:29:27: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.92 seconds.
+
+15:29:27: Train Epoch: 180 [0/45056 (0%)]	Loss: 1.094661 Accuracy: 78/128 (60.938% 
+15:29:45: Train Epoch: 180 [12800/45056 (28%)]	Loss: 1.124518 Accuracy: 7830/12928 (60.566% 
+15:30:03: Train Epoch: 180 [25600/45056 (57%)]	Loss: 1.212090 Accuracy: 15643/25728 (60.801% 
+15:30:20: Train Epoch: 180 [38400/45056 (85%)]	Loss: 0.996832 Accuracy: 23548/38528 (61.119% 
+15:30:29: 
+Training summary: Average loss: 1.0916, Accuracy: 27562/45000 (61.249%)
+
+15:30:32: 
+Evaluation: Average loss: 1.0913, Accuracy: 3080/5000 (61.600%)
+
+15:30:32: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.79 seconds.
+
+15:30:32: Train Epoch: 181 [0/45056 (0%)]	Loss: 1.239000 Accuracy: 69/128 (53.906% 
+15:30:50: Train Epoch: 181 [12800/45056 (28%)]	Loss: 1.084624 Accuracy: 7967/12928 (61.626% 
+15:31:07: Train Epoch: 181 [25600/45056 (57%)]	Loss: 1.119551 Accuracy: 15755/25728 (61.237% 
+15:31:25: Train Epoch: 181 [38400/45056 (85%)]	Loss: 1.156224 Accuracy: 23627/38528 (61.324% 
+15:31:34: 
+Training summary: Average loss: 1.0921, Accuracy: 27602/45000 (61.338%)
+
+15:31:36: 
+Evaluation: Average loss: 1.0952, Accuracy: 3055/5000 (61.100%)
+
+15:31:36: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.81 seconds.
+
+15:31:37: Train Epoch: 182 [0/45056 (0%)]	Loss: 1.047471 Accuracy: 80/128 (62.500% 
+15:31:54: Train Epoch: 182 [12800/45056 (28%)]	Loss: 1.213418 Accuracy: 7934/12928 (61.371% 
+15:32:12: Train Epoch: 182 [25600/45056 (57%)]	Loss: 0.926364 Accuracy: 15824/25728 (61.505% 
+15:32:30: Train Epoch: 182 [38400/45056 (85%)]	Loss: 1.116970 Accuracy: 23627/38528 (61.324% 
+15:32:39: 
+Training summary: Average loss: 1.0991, Accuracy: 27545/45000 (61.211%)
+
+15:32:41: 
+Evaluation: Average loss: 1.0758, Accuracy: 3053/5000 (61.060%)
+
+15:32:41: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.85 seconds.
+
+15:32:42: Train Epoch: 183 [0/45056 (0%)]	Loss: 1.143190 Accuracy: 72/128 (56.250% 
+15:32:59: Train Epoch: 183 [12800/45056 (28%)]	Loss: 1.259479 Accuracy: 7905/12928 (61.146% 
+15:33:17: Train Epoch: 183 [25600/45056 (57%)]	Loss: 1.072290 Accuracy: 15708/25728 (61.054% 
+15:33:35: Train Epoch: 183 [38400/45056 (85%)]	Loss: 1.144906 Accuracy: 23537/38528 (61.091% 
+15:33:44: 
+Training summary: Average loss: 1.0895, Accuracy: 27538/45000 (61.196%)
+
+15:33:46: 
+Evaluation: Average loss: 1.0943, Accuracy: 3053/5000 (61.060%)
+
+15:33:46: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:33:46: Train Epoch: 184 [0/45056 (0%)]	Loss: 1.008669 Accuracy: 81/128 (63.281% 
+15:34:04: Train Epoch: 184 [12800/45056 (28%)]	Loss: 1.264897 Accuracy: 7976/12928 (61.696% 
+15:34:22: Train Epoch: 184 [25600/45056 (57%)]	Loss: 0.959272 Accuracy: 15906/25728 (61.824% 
+15:34:39: Train Epoch: 184 [38400/45056 (85%)]	Loss: 1.015565 Accuracy: 23810/38528 (61.799% 
+15:34:48: 
+Training summary: Average loss: 1.0854, Accuracy: 27795/45000 (61.767%)
+
+15:34:51: 
+Evaluation: Average loss: 1.0836, Accuracy: 3097/5000 (61.940%)
+
+15:34:51: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.96 seconds.
+
+15:34:51: Train Epoch: 185 [0/45056 (0%)]	Loss: 1.264876 Accuracy: 71/128 (55.469% 
+15:35:09: Train Epoch: 185 [12800/45056 (28%)]	Loss: 1.210728 Accuracy: 7980/12928 (61.726% 
+15:35:27: Train Epoch: 185 [25600/45056 (57%)]	Loss: 1.119144 Accuracy: 15909/25728 (61.835% 
+15:35:44: Train Epoch: 185 [38400/45056 (85%)]	Loss: 1.075807 Accuracy: 23802/38528 (61.778% 
+15:35:53: 
+Training summary: Average loss: 1.0799, Accuracy: 27769/45000 (61.709%)
+
+15:35:56: 
+Evaluation: Average loss: 1.0870, Accuracy: 3044/5000 (60.880%)
+
+15:35:56: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.76 seconds.
+
+15:35:56: Train Epoch: 186 [0/45056 (0%)]	Loss: 1.079232 Accuracy: 77/128 (60.156% 
+15:36:14: Train Epoch: 186 [12800/45056 (28%)]	Loss: 0.980582 Accuracy: 7985/12928 (61.765% 
+15:36:31: Train Epoch: 186 [25600/45056 (57%)]	Loss: 1.100452 Accuracy: 15965/25728 (62.053% 
+15:36:49: Train Epoch: 186 [38400/45056 (85%)]	Loss: 1.027137 Accuracy: 23851/38528 (61.906% 
+15:36:58: 
+Training summary: Average loss: 1.0779, Accuracy: 27881/45000 (61.958%)
+
+15:37:01: 
+Evaluation: Average loss: 1.0520, Accuracy: 3140/5000 (62.800%)
+
+15:37:01: Current learning rate: 0.010000000000000002. Time taken for epoch: 64.94 seconds.
+
+15:37:01: Train Epoch: 187 [0/45056 (0%)]	Loss: 1.086868 Accuracy: 71/128 (55.469% 
+15:37:19: Train Epoch: 187 [12800/45056 (28%)]	Loss: 0.921781 Accuracy: 8054/12928 (62.299% 
+15:37:36: Train Epoch: 187 [25600/45056 (57%)]	Loss: 1.108384 Accuracy: 15868/25728 (61.676% 
+15:37:54: Train Epoch: 187 [38400/45056 (85%)]	Loss: 0.958167 Accuracy: 23758/38528 (61.664% 
+15:38:03: 
+Training summary: Average loss: 1.0766, Accuracy: 27799/45000 (61.776%)
+
+15:38:05: 
+Evaluation: Average loss: 1.1324, Accuracy: 2986/5000 (59.720%)
+
+15:38:05: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.79 seconds.
+
+15:38:06: Train Epoch: 188 [0/45056 (0%)]	Loss: 1.074906 Accuracy: 79/128 (61.719% 
+15:38:24: Train Epoch: 188 [12800/45056 (28%)]	Loss: 1.088858 Accuracy: 8114/12928 (62.763% 
+15:38:41: Train Epoch: 188 [25600/45056 (57%)]	Loss: 0.898592 Accuracy: 16179/25728 (62.885% 
+15:38:59: Train Epoch: 188 [38400/45056 (85%)]	Loss: 1.044977 Accuracy: 24223/38528 (62.871% 
+15:39:08: 
+Training summary: Average loss: 1.0458, Accuracy: 28308/45000 (62.907%)
+
+15:39:10: 
+Evaluation: Average loss: 1.0289, Accuracy: 3171/5000 (63.420%)
+
+15:39:10: Current learning rate: 0.0010000000000000002. Time taken for epoch: 65.00 seconds.
+
+15:39:11: Train Epoch: 189 [0/45056 (0%)]	Loss: 1.131899 Accuracy: 72/128 (56.250% 
+15:39:29: Train Epoch: 189 [12800/45056 (28%)]	Loss: 0.922738 Accuracy: 8236/12928 (63.707% 
+15:39:46: Train Epoch: 189 [25600/45056 (57%)]	Loss: 0.984545 Accuracy: 16330/25728 (63.472% 
+15:40:04: Train Epoch: 189 [38400/45056 (85%)]	Loss: 0.961865 Accuracy: 24351/38528 (63.203% 
+15:40:13: 
+Training summary: Average loss: 1.0375, Accuracy: 28499/45000 (63.331%)
+
+15:40:15: 
+Evaluation: Average loss: 1.0031, Accuracy: 3211/5000 (64.220%)
+
+15:40:15: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.93 seconds.
+
+15:40:16: Train Epoch: 190 [0/45056 (0%)]	Loss: 1.160312 Accuracy: 82/128 (64.062% 
+15:40:33: Train Epoch: 190 [12800/45056 (28%)]	Loss: 0.998235 Accuracy: 8157/12928 (63.096% 
+15:40:51: Train Epoch: 190 [25600/45056 (57%)]	Loss: 1.056470 Accuracy: 16189/25728 (62.924% 
+15:41:09: Train Epoch: 190 [38400/45056 (85%)]	Loss: 1.117918 Accuracy: 24288/38528 (63.040% 
+15:41:18: 
+Training summary: Average loss: 1.0435, Accuracy: 28403/45000 (63.118%)
+
+15:41:20: 
+Evaluation: Average loss: 1.0232, Accuracy: 3170/5000 (63.400%)
+
+15:41:20: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+15:41:21: Train Epoch: 191 [0/45056 (0%)]	Loss: 1.116434 Accuracy: 80/128 (62.500% 
+15:41:38: Train Epoch: 191 [12800/45056 (28%)]	Loss: 1.029890 Accuracy: 8166/12928 (63.165% 
+15:41:56: Train Epoch: 191 [25600/45056 (57%)]	Loss: 1.205120 Accuracy: 16250/25728 (63.161% 
+15:42:14: Train Epoch: 191 [38400/45056 (85%)]	Loss: 0.881715 Accuracy: 24410/38528 (63.357% 
+15:42:23: 
+Training summary: Average loss: 1.0377, Accuracy: 28505/45000 (63.344%)
+
+15:42:25: 
+Evaluation: Average loss: 1.0291, Accuracy: 3188/5000 (63.760%)
+
+15:42:25: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.81 seconds.
+
+15:42:25: Train Epoch: 192 [0/45056 (0%)]	Loss: 1.091706 Accuracy: 81/128 (63.281% 
+15:42:43: Train Epoch: 192 [12800/45056 (28%)]	Loss: 0.809055 Accuracy: 8199/12928 (63.420% 
+15:43:01: Train Epoch: 192 [25600/45056 (57%)]	Loss: 1.080262 Accuracy: 16304/25728 (63.371% 
+15:43:18: Train Epoch: 192 [38400/45056 (85%)]	Loss: 1.079550 Accuracy: 24456/38528 (63.476% 
+15:43:27: 
+Training summary: Average loss: 1.0363, Accuracy: 28564/45000 (63.476%)
+
+15:43:30: 
+Evaluation: Average loss: 1.0193, Accuracy: 3166/5000 (63.320%)
+
+15:43:30: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:43:30: Train Epoch: 193 [0/45056 (0%)]	Loss: 0.921913 Accuracy: 91/128 (71.094% 
+15:43:48: Train Epoch: 193 [12800/45056 (28%)]	Loss: 1.026276 Accuracy: 8248/12928 (63.800% 
+15:44:06: Train Epoch: 193 [25600/45056 (57%)]	Loss: 1.124475 Accuracy: 16277/25728 (63.266% 
+15:44:23: Train Epoch: 193 [38400/45056 (85%)]	Loss: 1.121918 Accuracy: 24328/38528 (63.144% 
+15:44:32: 
+Training summary: Average loss: 1.0404, Accuracy: 28398/45000 (63.107%)
+
+15:44:35: 
+Evaluation: Average loss: 1.0165, Accuracy: 3187/5000 (63.740%)
+
+15:44:35: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.81 seconds.
+
+15:44:35: Train Epoch: 194 [0/45056 (0%)]	Loss: 1.175936 Accuracy: 72/128 (56.250% 
+15:44:53: Train Epoch: 194 [12800/45056 (28%)]	Loss: 1.116453 Accuracy: 8198/12928 (63.413% 
+15:45:10: Train Epoch: 194 [25600/45056 (57%)]	Loss: 1.130765 Accuracy: 16221/25728 (63.048% 
+15:45:28: Train Epoch: 194 [38400/45056 (85%)]	Loss: 1.245719 Accuracy: 24270/38528 (62.993% 
+15:45:37: 
+Training summary: Average loss: 1.0441, Accuracy: 28340/45000 (62.978%)
+
+15:45:39: 
+Evaluation: Average loss: 1.0088, Accuracy: 3197/5000 (63.940%)
+
+15:45:39: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+15:45:40: Train Epoch: 195 [0/45056 (0%)]	Loss: 1.080255 Accuracy: 72/128 (56.250% 
+15:45:57: Train Epoch: 195 [12800/45056 (28%)]	Loss: 0.955082 Accuracy: 8204/12928 (63.459% 
+15:46:15: Train Epoch: 195 [25600/45056 (57%)]	Loss: 0.975233 Accuracy: 16293/25728 (63.328% 
+15:46:33: Train Epoch: 195 [38400/45056 (85%)]	Loss: 1.150396 Accuracy: 24300/38528 (63.071% 
+15:46:42: 
+Training summary: Average loss: 1.0406, Accuracy: 28423/45000 (63.162%)
+
+15:46:44: 
+Evaluation: Average loss: 1.0000, Accuracy: 3245/5000 (64.900%)
+
+15:46:44: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.98 seconds.
+
+15:46:45: Train Epoch: 196 [0/45056 (0%)]	Loss: 0.889897 Accuracy: 89/128 (69.531% 
+15:47:02: Train Epoch: 196 [12800/45056 (28%)]	Loss: 1.075666 Accuracy: 8215/12928 (63.544% 
+15:47:20: Train Epoch: 196 [25600/45056 (57%)]	Loss: 1.004845 Accuracy: 16302/25728 (63.363% 
+15:47:38: Train Epoch: 196 [38400/45056 (85%)]	Loss: 1.135459 Accuracy: 24356/38528 (63.216% 
+15:47:47: 
+Training summary: Average loss: 1.0384, Accuracy: 28467/45000 (63.260%)
+
+15:47:49: 
+Evaluation: Average loss: 1.0174, Accuracy: 3204/5000 (64.080%)
+
+15:47:49: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.77 seconds.
+
+15:47:50: Train Epoch: 197 [0/45056 (0%)]	Loss: 0.988706 Accuracy: 82/128 (64.062% 
+15:48:07: Train Epoch: 197 [12800/45056 (28%)]	Loss: 1.071833 Accuracy: 8045/12928 (62.229% 
+15:48:25: Train Epoch: 197 [25600/45056 (57%)]	Loss: 1.011889 Accuracy: 16207/25728 (62.994% 
+15:48:43: Train Epoch: 197 [38400/45056 (85%)]	Loss: 1.027126 Accuracy: 24426/38528 (63.398% 
+15:48:52: 
+Training summary: Average loss: 1.0390, Accuracy: 28439/45000 (63.198%)
+
+15:48:54: 
+Evaluation: Average loss: 1.0004, Accuracy: 3216/5000 (64.320%)
+
+15:48:54: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+15:48:54: Train Epoch: 198 [0/45056 (0%)]	Loss: 1.102727 Accuracy: 83/128 (64.844% 
+15:49:12: Train Epoch: 198 [12800/45056 (28%)]	Loss: 1.065103 Accuracy: 8205/12928 (63.467% 
+15:49:30: Train Epoch: 198 [25600/45056 (57%)]	Loss: 0.982301 Accuracy: 16212/25728 (63.013% 
+15:49:47: Train Epoch: 198 [38400/45056 (85%)]	Loss: 0.952938 Accuracy: 24283/38528 (63.027% 
+15:49:56: 
+Training summary: Average loss: 1.0408, Accuracy: 28393/45000 (63.096%)
+
+15:49:59: 
+Evaluation: Average loss: 1.0119, Accuracy: 3205/5000 (64.100%)
+
+15:49:59: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+15:49:59: Train Epoch: 199 [0/45056 (0%)]	Loss: 0.949938 Accuracy: 81/128 (63.281% 
+15:50:17: Train Epoch: 199 [12800/45056 (28%)]	Loss: 1.127128 Accuracy: 8255/12928 (63.854% 
+15:50:35: Train Epoch: 199 [25600/45056 (57%)]	Loss: 1.067264 Accuracy: 16345/25728 (63.530% 
+15:50:52: Train Epoch: 199 [38400/45056 (85%)]	Loss: 1.111174 Accuracy: 24517/38528 (63.634% 
+15:51:01: 
+Training summary: Average loss: 1.0317, Accuracy: 28596/45000 (63.547%)
+
+15:51:04: 
+Evaluation: Average loss: 1.0141, Accuracy: 3199/5000 (63.980%)
+
+15:51:04: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.77 seconds.
+
+15:51:04: Train Epoch: 200 [0/45056 (0%)]	Loss: 0.962356 Accuracy: 83/128 (64.844% 
+15:51:22: Train Epoch: 200 [12800/45056 (28%)]	Loss: 1.106264 Accuracy: 8164/12928 (63.150% 
+15:51:39: Train Epoch: 200 [25600/45056 (57%)]	Loss: 1.016679 Accuracy: 16256/25728 (63.184% 
+15:51:57: Train Epoch: 200 [38400/45056 (85%)]	Loss: 1.091486 Accuracy: 24409/38528 (63.354% 
+15:52:06: 
+Training summary: Average loss: 1.0370, Accuracy: 28495/45000 (63.322%)
+
+15:52:08: 
+Evaluation: Average loss: 1.0172, Accuracy: 3186/5000 (63.720%)
+
+15:52:08: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+15:52:09: Train Epoch: 201 [0/45056 (0%)]	Loss: 0.938348 Accuracy: 88/128 (68.750% 
+15:52:26: Train Epoch: 201 [12800/45056 (28%)]	Loss: 0.963073 Accuracy: 8277/12928 (64.024% 
+15:52:44: Train Epoch: 201 [25600/45056 (57%)]	Loss: 0.889402 Accuracy: 16386/25728 (63.689% 
+15:53:02: Train Epoch: 201 [38400/45056 (85%)]	Loss: 1.169494 Accuracy: 24476/38528 (63.528% 
+15:53:11: 
+Training summary: Average loss: 1.0335, Accuracy: 28571/45000 (63.491%)
+
+15:53:13: 
+Evaluation: Average loss: 1.0076, Accuracy: 3192/5000 (63.840%)
+
+15:53:13: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:53:14: Train Epoch: 202 [0/45056 (0%)]	Loss: 1.085376 Accuracy: 84/128 (65.625% 
+15:53:31: Train Epoch: 202 [12800/45056 (28%)]	Loss: 0.911164 Accuracy: 8203/12928 (63.451% 
+15:53:49: Train Epoch: 202 [25600/45056 (57%)]	Loss: 0.924237 Accuracy: 16317/25728 (63.421% 
+15:54:07: Train Epoch: 202 [38400/45056 (85%)]	Loss: 1.085886 Accuracy: 24399/38528 (63.328% 
+15:54:16: 
+Training summary: Average loss: 1.0312, Accuracy: 28509/45000 (63.353%)
+
+15:54:18: 
+Evaluation: Average loss: 1.0132, Accuracy: 3156/5000 (63.120%)
+
+15:54:18: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+15:54:18: Train Epoch: 203 [0/45056 (0%)]	Loss: 1.074349 Accuracy: 83/128 (64.844% 
+15:54:36: Train Epoch: 203 [12800/45056 (28%)]	Loss: 1.072102 Accuracy: 8324/12928 (64.387% 
+15:54:54: Train Epoch: 203 [25600/45056 (57%)]	Loss: 1.136869 Accuracy: 16422/25728 (63.829% 
+15:55:11: Train Epoch: 203 [38400/45056 (85%)]	Loss: 1.086586 Accuracy: 24536/38528 (63.684% 
+15:55:20: 
+Training summary: Average loss: 1.0290, Accuracy: 28639/45000 (63.642%)
+
+15:55:23: 
+Evaluation: Average loss: 1.0089, Accuracy: 3192/5000 (63.840%)
+
+15:55:23: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.82 seconds.
+
+15:55:23: Train Epoch: 204 [0/45056 (0%)]	Loss: 0.984815 Accuracy: 88/128 (68.750% 
+15:55:41: Train Epoch: 204 [12800/45056 (28%)]	Loss: 1.010126 Accuracy: 8178/12928 (63.258% 
+15:55:59: Train Epoch: 204 [25600/45056 (57%)]	Loss: 1.030461 Accuracy: 16396/25728 (63.728% 
+15:56:16: Train Epoch: 204 [38400/45056 (85%)]	Loss: 1.141328 Accuracy: 24555/38528 (63.733% 
+15:56:25: 
+Training summary: Average loss: 1.0282, Accuracy: 28723/45000 (63.829%)
+
+15:56:28: 
+Evaluation: Average loss: 1.0048, Accuracy: 3195/5000 (63.900%)
+
+15:56:28: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.82 seconds.
+
+15:56:28: Train Epoch: 205 [0/45056 (0%)]	Loss: 0.851379 Accuracy: 92/128 (71.875% 
+15:56:46: Train Epoch: 205 [12800/45056 (28%)]	Loss: 0.990272 Accuracy: 8216/12928 (63.552% 
+15:57:03: Train Epoch: 205 [25600/45056 (57%)]	Loss: 1.052627 Accuracy: 16325/25728 (63.452% 
+15:57:21: Train Epoch: 205 [38400/45056 (85%)]	Loss: 0.957782 Accuracy: 24565/38528 (63.759% 
+15:57:30: 
+Training summary: Average loss: 1.0315, Accuracy: 28638/45000 (63.640%)
+
+15:57:32: 
+Evaluation: Average loss: 1.0205, Accuracy: 3220/5000 (64.400%)
+
+15:57:32: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:57:33: Train Epoch: 206 [0/45056 (0%)]	Loss: 0.993289 Accuracy: 80/128 (62.500% 
+15:57:50: Train Epoch: 206 [12800/45056 (28%)]	Loss: 0.977744 Accuracy: 8070/12928 (62.423% 
+15:58:08: Train Epoch: 206 [25600/45056 (57%)]	Loss: 0.867514 Accuracy: 16192/25728 (62.935% 
+15:58:26: Train Epoch: 206 [38400/45056 (85%)]	Loss: 1.222104 Accuracy: 24326/38528 (63.138% 
+15:58:35: 
+Training summary: Average loss: 1.0345, Accuracy: 28463/45000 (63.251%)
+
+15:58:37: 
+Evaluation: Average loss: 1.0016, Accuracy: 3189/5000 (63.780%)
+
+15:58:37: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+15:58:38: Train Epoch: 207 [0/45056 (0%)]	Loss: 0.862157 Accuracy: 92/128 (71.875% 
+15:58:55: Train Epoch: 207 [12800/45056 (28%)]	Loss: 1.091341 Accuracy: 8315/12928 (64.318% 
+15:59:13: Train Epoch: 207 [25600/45056 (57%)]	Loss: 0.795091 Accuracy: 16446/25728 (63.923% 
+15:59:31: Train Epoch: 207 [38400/45056 (85%)]	Loss: 1.013409 Accuracy: 24533/38528 (63.676% 
+15:59:40: 
+Training summary: Average loss: 1.0295, Accuracy: 28669/45000 (63.709%)
+
+15:59:42: 
+Evaluation: Average loss: 1.0082, Accuracy: 3189/5000 (63.780%)
+
+15:59:42: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.75 seconds.
+
+15:59:42: Train Epoch: 208 [0/45056 (0%)]	Loss: 1.169767 Accuracy: 71/128 (55.469% 
+16:00:00: Train Epoch: 208 [12800/45056 (28%)]	Loss: 0.992207 Accuracy: 8210/12928 (63.506% 
+16:00:18: Train Epoch: 208 [25600/45056 (57%)]	Loss: 1.020439 Accuracy: 16336/25728 (63.495% 
+16:00:35: Train Epoch: 208 [38400/45056 (85%)]	Loss: 1.022830 Accuracy: 24467/38528 (63.504% 
+16:00:44: 
+Training summary: Average loss: 1.0297, Accuracy: 28571/45000 (63.491%)
+
+16:00:47: 
+Evaluation: Average loss: 1.0064, Accuracy: 3211/5000 (64.220%)
+
+16:00:47: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+16:00:47: Train Epoch: 209 [0/45056 (0%)]	Loss: 0.980210 Accuracy: 84/128 (65.625% 
+16:01:05: Train Epoch: 209 [12800/45056 (28%)]	Loss: 1.117894 Accuracy: 8231/12928 (63.668% 
+16:01:23: Train Epoch: 209 [25600/45056 (57%)]	Loss: 0.958373 Accuracy: 16397/25728 (63.732% 
+16:01:40: Train Epoch: 209 [38400/45056 (85%)]	Loss: 1.098920 Accuracy: 24525/38528 (63.655% 
+16:01:49: 
+Training summary: Average loss: 1.0262, Accuracy: 28610/45000 (63.578%)
+
+16:01:52: 
+Evaluation: Average loss: 0.9978, Accuracy: 3202/5000 (64.040%)
+
+16:01:52: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.76 seconds.
+
+16:01:52: Train Epoch: 210 [0/45056 (0%)]	Loss: 0.996276 Accuracy: 79/128 (61.719% 
+16:02:10: Train Epoch: 210 [12800/45056 (28%)]	Loss: 1.024172 Accuracy: 8142/12928 (62.980% 
+16:02:27: Train Epoch: 210 [25600/45056 (57%)]	Loss: 0.776268 Accuracy: 16297/25728 (63.343% 
+16:02:45: Train Epoch: 210 [38400/45056 (85%)]	Loss: 0.984144 Accuracy: 24435/38528 (63.421% 
+16:02:54: 
+Training summary: Average loss: 1.0295, Accuracy: 28567/45000 (63.482%)
+
+16:02:56: 
+Evaluation: Average loss: 1.0041, Accuracy: 3183/5000 (63.660%)
+
+16:02:56: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:02:57: Train Epoch: 211 [0/45056 (0%)]	Loss: 1.017617 Accuracy: 86/128 (67.188% 
+16:03:14: Train Epoch: 211 [12800/45056 (28%)]	Loss: 0.810804 Accuracy: 8275/12928 (64.008% 
+16:03:32: Train Epoch: 211 [25600/45056 (57%)]	Loss: 0.997404 Accuracy: 16404/25728 (63.759% 
+16:03:50: Train Epoch: 211 [38400/45056 (85%)]	Loss: 1.060312 Accuracy: 24563/38528 (63.754% 
+16:03:59: 
+Training summary: Average loss: 1.0244, Accuracy: 28651/45000 (63.669%)
+
+16:04:01: 
+Evaluation: Average loss: 0.9993, Accuracy: 3215/5000 (64.300%)
+
+16:04:01: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+16:04:01: Train Epoch: 212 [0/45056 (0%)]	Loss: 0.849609 Accuracy: 88/128 (68.750% 
+16:04:19: Train Epoch: 212 [12800/45056 (28%)]	Loss: 0.982542 Accuracy: 8259/12928 (63.885% 
+16:04:37: Train Epoch: 212 [25600/45056 (57%)]	Loss: 0.983676 Accuracy: 16388/25728 (63.697% 
+16:04:55: Train Epoch: 212 [38400/45056 (85%)]	Loss: 1.010805 Accuracy: 24681/38528 (64.060% 
+16:05:04: 
+Training summary: Average loss: 1.0232, Accuracy: 28825/45000 (64.056%)
+
+16:05:06: 
+Evaluation: Average loss: 0.9946, Accuracy: 3252/5000 (65.040%)
+
+16:05:06: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.95 seconds.
+
+16:05:06: Train Epoch: 213 [0/45056 (0%)]	Loss: 0.942319 Accuracy: 85/128 (66.406% 
+16:05:24: Train Epoch: 213 [12800/45056 (28%)]	Loss: 1.059715 Accuracy: 8136/12928 (62.933% 
+16:05:42: Train Epoch: 213 [25600/45056 (57%)]	Loss: 1.043864 Accuracy: 16313/25728 (63.406% 
+16:06:00: Train Epoch: 213 [38400/45056 (85%)]	Loss: 1.056567 Accuracy: 24434/38528 (63.419% 
+16:06:08: 
+Training summary: Average loss: 1.0278, Accuracy: 28639/45000 (63.642%)
+
+16:06:11: 
+Evaluation: Average loss: 1.0050, Accuracy: 3223/5000 (64.460%)
+
+16:06:11: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.79 seconds.
+
+16:06:11: Train Epoch: 214 [0/45056 (0%)]	Loss: 1.161800 Accuracy: 83/128 (64.844% 
+16:06:29: Train Epoch: 214 [12800/45056 (28%)]	Loss: 1.048243 Accuracy: 8168/12928 (63.181% 
+16:06:47: Train Epoch: 214 [25600/45056 (57%)]	Loss: 1.133943 Accuracy: 16258/25728 (63.192% 
+16:07:04: Train Epoch: 214 [38400/45056 (85%)]	Loss: 1.065229 Accuracy: 24425/38528 (63.395% 
+16:07:13: 
+Training summary: Average loss: 1.0280, Accuracy: 28612/45000 (63.582%)
+
+16:07:16: 
+Evaluation: Average loss: 0.9938, Accuracy: 3233/5000 (64.660%)
+
+16:07:16: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.81 seconds.
+
+16:07:16: Train Epoch: 215 [0/45056 (0%)]	Loss: 0.975398 Accuracy: 83/128 (64.844% 
+16:07:34: Train Epoch: 215 [12800/45056 (28%)]	Loss: 0.927171 Accuracy: 8231/12928 (63.668% 
+16:07:51: Train Epoch: 215 [25600/45056 (57%)]	Loss: 0.993586 Accuracy: 16425/25728 (63.841% 
+16:08:09: Train Epoch: 215 [38400/45056 (85%)]	Loss: 1.023809 Accuracy: 24563/38528 (63.754% 
+16:08:18: 
+Training summary: Average loss: 1.0230, Accuracy: 28657/45000 (63.682%)
+
+16:08:20: 
+Evaluation: Average loss: 1.0112, Accuracy: 3178/5000 (63.560%)
+
+16:08:20: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.76 seconds.
+
+16:08:21: Train Epoch: 216 [0/45056 (0%)]	Loss: 1.160406 Accuracy: 81/128 (63.281% 
+16:08:39: Train Epoch: 216 [12800/45056 (28%)]	Loss: 1.156825 Accuracy: 8265/12928 (63.931% 
+16:08:56: Train Epoch: 216 [25600/45056 (57%)]	Loss: 0.940730 Accuracy: 16358/25728 (63.581% 
+16:09:14: Train Epoch: 216 [38400/45056 (85%)]	Loss: 0.899283 Accuracy: 24533/38528 (63.676% 
+16:09:23: 
+Training summary: Average loss: 1.0287, Accuracy: 28572/45000 (63.493%)
+
+16:09:25: 
+Evaluation: Average loss: 0.9996, Accuracy: 3243/5000 (64.860%)
+
+16:09:25: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+16:09:26: Train Epoch: 217 [0/45056 (0%)]	Loss: 1.077706 Accuracy: 82/128 (64.062% 
+16:09:43: Train Epoch: 217 [12800/45056 (28%)]	Loss: 0.979941 Accuracy: 8210/12928 (63.506% 
+16:10:01: Train Epoch: 217 [25600/45056 (57%)]	Loss: 1.130025 Accuracy: 16327/25728 (63.460% 
+16:10:19: Train Epoch: 217 [38400/45056 (85%)]	Loss: 1.135325 Accuracy: 24551/38528 (63.722% 
+16:10:28: 
+Training summary: Average loss: 1.0252, Accuracy: 28643/45000 (63.651%)
+
+16:10:30: 
+Evaluation: Average loss: 0.9994, Accuracy: 3228/5000 (64.560%)
+
+16:10:30: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+16:10:30: Train Epoch: 218 [0/45056 (0%)]	Loss: 0.932429 Accuracy: 89/128 (69.531% 
+16:10:48: Train Epoch: 218 [12800/45056 (28%)]	Loss: 0.918747 Accuracy: 8318/12928 (64.341% 
+16:11:06: Train Epoch: 218 [25600/45056 (57%)]	Loss: 0.947331 Accuracy: 16516/25728 (64.195% 
+16:11:23: Train Epoch: 218 [38400/45056 (85%)]	Loss: 0.902167 Accuracy: 24670/38528 (64.031% 
+16:11:32: 
+Training summary: Average loss: 1.0265, Accuracy: 28683/45000 (63.740%)
+
+16:11:35: 
+Evaluation: Average loss: 1.0038, Accuracy: 3195/5000 (63.900%)
+
+16:11:35: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:11:35: Train Epoch: 219 [0/45056 (0%)]	Loss: 1.113113 Accuracy: 80/128 (62.500% 
+16:11:53: Train Epoch: 219 [12800/45056 (28%)]	Loss: 0.943864 Accuracy: 8308/12928 (64.264% 
+16:12:11: Train Epoch: 219 [25600/45056 (57%)]	Loss: 1.052160 Accuracy: 16475/25728 (64.035% 
+16:12:28: Train Epoch: 219 [38400/45056 (85%)]	Loss: 0.970780 Accuracy: 24730/38528 (64.187% 
+16:12:37: 
+Training summary: Average loss: 1.0245, Accuracy: 28854/45000 (64.120%)
+
+16:12:40: 
+Evaluation: Average loss: 0.9972, Accuracy: 3227/5000 (64.540%)
+
+16:12:40: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.81 seconds.
+
+16:12:40: Train Epoch: 220 [0/45056 (0%)]	Loss: 0.910325 Accuracy: 91/128 (71.094% 
+16:12:58: Train Epoch: 220 [12800/45056 (28%)]	Loss: 0.957762 Accuracy: 8296/12928 (64.171% 
+16:13:15: Train Epoch: 220 [25600/45056 (57%)]	Loss: 0.846973 Accuracy: 16426/25728 (63.845% 
+16:13:33: Train Epoch: 220 [38400/45056 (85%)]	Loss: 1.159998 Accuracy: 24517/38528 (63.634% 
+16:13:42: 
+Training summary: Average loss: 1.0242, Accuracy: 28669/45000 (63.709%)
+
+16:13:44: 
+Evaluation: Average loss: 0.9995, Accuracy: 3202/5000 (64.040%)
+
+16:13:44: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.76 seconds.
+
+16:13:45: Train Epoch: 221 [0/45056 (0%)]	Loss: 1.106070 Accuracy: 82/128 (64.062% 
+16:14:02: Train Epoch: 221 [12800/45056 (28%)]	Loss: 0.960616 Accuracy: 8253/12928 (63.838% 
+16:14:20: Train Epoch: 221 [25600/45056 (57%)]	Loss: 1.180432 Accuracy: 16448/25728 (63.930% 
+16:14:38: Train Epoch: 221 [38400/45056 (85%)]	Loss: 1.135226 Accuracy: 24644/38528 (63.964% 
+16:14:47: 
+Training summary: Average loss: 1.0218, Accuracy: 28759/45000 (63.909%)
+
+16:14:49: 
+Evaluation: Average loss: 1.0141, Accuracy: 3194/5000 (63.880%)
+
+16:14:49: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.77 seconds.
+
+16:14:50: Train Epoch: 222 [0/45056 (0%)]	Loss: 1.002947 Accuracy: 84/128 (65.625% 
+16:15:07: Train Epoch: 222 [12800/45056 (28%)]	Loss: 1.170336 Accuracy: 8232/12928 (63.676% 
+16:15:25: Train Epoch: 222 [25600/45056 (57%)]	Loss: 1.045679 Accuracy: 16294/25728 (63.332% 
+16:15:43: Train Epoch: 222 [38400/45056 (85%)]	Loss: 1.022210 Accuracy: 24511/38528 (63.619% 
+16:15:52: 
+Training summary: Average loss: 1.0253, Accuracy: 28641/45000 (63.647%)
+
+16:15:54: 
+Evaluation: Average loss: 0.9985, Accuracy: 3234/5000 (64.680%)
+
+16:15:54: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+16:15:54: Train Epoch: 223 [0/45056 (0%)]	Loss: 1.015572 Accuracy: 75/128 (58.594% 
+16:16:12: Train Epoch: 223 [12800/45056 (28%)]	Loss: 1.066783 Accuracy: 8156/12928 (63.088% 
+16:16:30: Train Epoch: 223 [25600/45056 (57%)]	Loss: 1.041212 Accuracy: 16285/25728 (63.297% 
+16:16:47: Train Epoch: 223 [38400/45056 (85%)]	Loss: 1.142771 Accuracy: 24500/38528 (63.590% 
+16:16:56: 
+Training summary: Average loss: 1.0240, Accuracy: 28604/45000 (63.564%)
+
+16:16:59: 
+Evaluation: Average loss: 0.9993, Accuracy: 3214/5000 (64.280%)
+
+16:16:59: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.84 seconds.
+
+16:16:59: Train Epoch: 224 [0/45056 (0%)]	Loss: 0.975965 Accuracy: 86/128 (67.188% 
+16:17:17: Train Epoch: 224 [12800/45056 (28%)]	Loss: 0.970935 Accuracy: 8160/12928 (63.119% 
+16:17:35: Train Epoch: 224 [25600/45056 (57%)]	Loss: 0.959557 Accuracy: 16285/25728 (63.297% 
+16:17:52: Train Epoch: 224 [38400/45056 (85%)]	Loss: 0.832149 Accuracy: 24577/38528 (63.790% 
+16:18:01: 
+Training summary: Average loss: 1.0176, Accuracy: 28760/45000 (63.911%)
+
+16:18:04: 
+Evaluation: Average loss: 1.0078, Accuracy: 3192/5000 (63.840%)
+
+16:18:04: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.77 seconds.
+
+16:18:04: Train Epoch: 225 [0/45056 (0%)]	Loss: 1.019885 Accuracy: 74/128 (57.812% 
+16:18:22: Train Epoch: 225 [12800/45056 (28%)]	Loss: 1.048980 Accuracy: 8225/12928 (63.622% 
+16:18:39: Train Epoch: 225 [25600/45056 (57%)]	Loss: 1.003216 Accuracy: 16441/25728 (63.903% 
+16:18:57: Train Epoch: 225 [38400/45056 (85%)]	Loss: 1.154652 Accuracy: 24601/38528 (63.852% 
+16:19:06: 
+Training summary: Average loss: 1.0238, Accuracy: 28686/45000 (63.747%)
+
+16:19:08: 
+Evaluation: Average loss: 0.9952, Accuracy: 3245/5000 (64.900%)
+
+16:19:08: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:19:09: Train Epoch: 226 [0/45056 (0%)]	Loss: 1.112872 Accuracy: 78/128 (60.938% 
+16:19:26: Train Epoch: 226 [12800/45056 (28%)]	Loss: 0.903826 Accuracy: 8199/12928 (63.420% 
+16:19:44: Train Epoch: 226 [25600/45056 (57%)]	Loss: 0.968625 Accuracy: 16428/25728 (63.853% 
+16:20:02: Train Epoch: 226 [38400/45056 (85%)]	Loss: 1.022852 Accuracy: 24547/38528 (63.712% 
+16:20:11: 
+Training summary: Average loss: 1.0186, Accuracy: 28719/45000 (63.820%)
+
+16:20:13: 
+Evaluation: Average loss: 0.9994, Accuracy: 3222/5000 (64.440%)
+
+16:20:13: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.77 seconds.
+
+16:20:14: Train Epoch: 227 [0/45056 (0%)]	Loss: 1.037256 Accuracy: 78/128 (60.938% 
+16:20:31: Train Epoch: 227 [12800/45056 (28%)]	Loss: 1.199340 Accuracy: 8282/12928 (64.062% 
+16:20:49: Train Epoch: 227 [25600/45056 (57%)]	Loss: 1.027264 Accuracy: 16501/25728 (64.136% 
+16:21:07: Train Epoch: 227 [38400/45056 (85%)]	Loss: 0.992888 Accuracy: 24659/38528 (64.003% 
+16:21:16: 
+Training summary: Average loss: 1.0197, Accuracy: 28811/45000 (64.024%)
+
+16:21:18: 
+Evaluation: Average loss: 1.0048, Accuracy: 3220/5000 (64.400%)
+
+16:21:18: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.81 seconds.
+
+16:21:18: Train Epoch: 228 [0/45056 (0%)]	Loss: 1.002635 Accuracy: 73/128 (57.031% 
+16:21:36: Train Epoch: 228 [12800/45056 (28%)]	Loss: 0.883815 Accuracy: 8253/12928 (63.838% 
+16:21:54: Train Epoch: 228 [25600/45056 (57%)]	Loss: 1.058870 Accuracy: 16443/25728 (63.911% 
+16:22:11: Train Epoch: 228 [38400/45056 (85%)]	Loss: 0.965362 Accuracy: 24633/38528 (63.935% 
+16:22:20: 
+Training summary: Average loss: 1.0193, Accuracy: 28755/45000 (63.900%)
+
+16:22:23: 
+Evaluation: Average loss: 0.9917, Accuracy: 3232/5000 (64.640%)
+
+16:22:23: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+16:22:23: Train Epoch: 229 [0/45056 (0%)]	Loss: 1.020009 Accuracy: 81/128 (63.281% 
+16:22:41: Train Epoch: 229 [12800/45056 (28%)]	Loss: 1.034734 Accuracy: 8275/12928 (64.008% 
+16:22:59: Train Epoch: 229 [25600/45056 (57%)]	Loss: 0.934236 Accuracy: 16473/25728 (64.028% 
+16:23:16: Train Epoch: 229 [38400/45056 (85%)]	Loss: 0.980511 Accuracy: 24607/38528 (63.868% 
+16:23:25: 
+Training summary: Average loss: 1.0224, Accuracy: 28756/45000 (63.902%)
+
+16:23:28: 
+Evaluation: Average loss: 0.9989, Accuracy: 3223/5000 (64.460%)
+
+16:23:28: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+16:23:28: Train Epoch: 230 [0/45056 (0%)]	Loss: 1.135293 Accuracy: 78/128 (60.938% 
+16:23:46: Train Epoch: 230 [12800/45056 (28%)]	Loss: 0.942099 Accuracy: 8224/12928 (63.614% 
+16:24:03: Train Epoch: 230 [25600/45056 (57%)]	Loss: 1.032910 Accuracy: 16349/25728 (63.546% 
+16:24:21: Train Epoch: 230 [38400/45056 (85%)]	Loss: 0.929501 Accuracy: 24523/38528 (63.650% 
+16:24:30: 
+Training summary: Average loss: 1.0199, Accuracy: 28675/45000 (63.722%)
+
+16:24:32: 
+Evaluation: Average loss: 0.9849, Accuracy: 3261/5000 (65.220%)
+
+16:24:33: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.93 seconds.
+
+16:24:33: Train Epoch: 231 [0/45056 (0%)]	Loss: 0.911871 Accuracy: 82/128 (64.062% 
+16:24:51: Train Epoch: 231 [12800/45056 (28%)]	Loss: 0.882102 Accuracy: 8247/12928 (63.792% 
+16:25:08: Train Epoch: 231 [25600/45056 (57%)]	Loss: 1.044422 Accuracy: 16383/25728 (63.678% 
+16:25:26: Train Epoch: 231 [38400/45056 (85%)]	Loss: 0.950096 Accuracy: 24642/38528 (63.959% 
+16:25:35: 
+Training summary: Average loss: 1.0171, Accuracy: 28724/45000 (63.831%)
+
+16:25:37: 
+Evaluation: Average loss: 0.9888, Accuracy: 3223/5000 (64.460%)
+
+16:25:37: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.79 seconds.
+
+16:25:38: Train Epoch: 232 [0/45056 (0%)]	Loss: 0.888679 Accuracy: 87/128 (67.969% 
+16:25:55: Train Epoch: 232 [12800/45056 (28%)]	Loss: 0.957499 Accuracy: 8311/12928 (64.287% 
+16:26:13: Train Epoch: 232 [25600/45056 (57%)]	Loss: 1.011994 Accuracy: 16550/25728 (64.327% 
+16:26:31: Train Epoch: 232 [38400/45056 (85%)]	Loss: 1.195459 Accuracy: 24685/38528 (64.070% 
+16:26:40: 
+Training summary: Average loss: 1.0132, Accuracy: 28886/45000 (64.191%)
+
+16:26:42: 
+Evaluation: Average loss: 0.9972, Accuracy: 3249/5000 (64.980%)
+
+16:26:42: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+16:26:42: Train Epoch: 233 [0/45056 (0%)]	Loss: 0.892213 Accuracy: 87/128 (67.969% 
+16:27:00: Train Epoch: 233 [12800/45056 (28%)]	Loss: 0.976175 Accuracy: 8323/12928 (64.380% 
+16:27:18: Train Epoch: 233 [25600/45056 (57%)]	Loss: 1.135353 Accuracy: 16524/25728 (64.226% 
+16:27:36: Train Epoch: 233 [38400/45056 (85%)]	Loss: 1.023232 Accuracy: 24701/38528 (64.112% 
+16:27:45: 
+Training summary: Average loss: 1.0163, Accuracy: 28869/45000 (64.153%)
+
+16:27:47: 
+Evaluation: Average loss: 0.9953, Accuracy: 3228/5000 (64.560%)
+
+16:27:47: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.82 seconds.
+
+16:27:47: Train Epoch: 234 [0/45056 (0%)]	Loss: 0.989299 Accuracy: 85/128 (66.406% 
+16:28:05: Train Epoch: 234 [12800/45056 (28%)]	Loss: 1.199604 Accuracy: 8305/12928 (64.240% 
+16:28:23: Train Epoch: 234 [25600/45056 (57%)]	Loss: 0.949404 Accuracy: 16441/25728 (63.903% 
+16:28:40: Train Epoch: 234 [38400/45056 (85%)]	Loss: 0.862877 Accuracy: 24607/38528 (63.868% 
+16:28:49: 
+Training summary: Average loss: 1.0172, Accuracy: 28750/45000 (63.889%)
+
+16:28:52: 
+Evaluation: Average loss: 0.9887, Accuracy: 3231/5000 (64.620%)
+
+16:28:52: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:28:52: Train Epoch: 235 [0/45056 (0%)]	Loss: 1.004573 Accuracy: 87/128 (67.969% 
+16:29:10: Train Epoch: 235 [12800/45056 (28%)]	Loss: 1.020686 Accuracy: 8307/12928 (64.256% 
+16:29:27: Train Epoch: 235 [25600/45056 (57%)]	Loss: 1.092162 Accuracy: 16495/25728 (64.113% 
+16:29:45: Train Epoch: 235 [38400/45056 (85%)]	Loss: 1.058617 Accuracy: 24681/38528 (64.060% 
+16:29:54: 
+Training summary: Average loss: 1.0197, Accuracy: 28797/45000 (63.993%)
+
+16:29:57: 
+Evaluation: Average loss: 0.9853, Accuracy: 3211/5000 (64.220%)
+
+16:29:57: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.79 seconds.
+
+16:29:57: Train Epoch: 236 [0/45056 (0%)]	Loss: 0.762487 Accuracy: 93/128 (72.656% 
+16:30:15: Train Epoch: 236 [12800/45056 (28%)]	Loss: 1.099561 Accuracy: 8215/12928 (63.544% 
+16:30:32: Train Epoch: 236 [25600/45056 (57%)]	Loss: 1.058262 Accuracy: 16500/25728 (64.132% 
+16:30:50: Train Epoch: 236 [38400/45056 (85%)]	Loss: 1.004205 Accuracy: 24660/38528 (64.005% 
+16:30:59: 
+Training summary: Average loss: 1.0166, Accuracy: 28845/45000 (64.100%)
+
+16:31:01: 
+Evaluation: Average loss: 1.0165, Accuracy: 3186/5000 (63.720%)
+
+16:31:01: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:31:02: Train Epoch: 237 [0/45056 (0%)]	Loss: 1.148632 Accuracy: 74/128 (57.812% 
+16:31:19: Train Epoch: 237 [12800/45056 (28%)]	Loss: 0.985875 Accuracy: 8355/12928 (64.627% 
+16:31:37: Train Epoch: 237 [25600/45056 (57%)]	Loss: 0.970295 Accuracy: 16503/25728 (64.144% 
+16:31:55: Train Epoch: 237 [38400/45056 (85%)]	Loss: 1.019337 Accuracy: 24711/38528 (64.138% 
+16:32:04: 
+Training summary: Average loss: 1.0115, Accuracy: 28856/45000 (64.124%)
+
+16:32:06: 
+Evaluation: Average loss: 0.9862, Accuracy: 3249/5000 (64.980%)
+
+16:32:06: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.80 seconds.
+
+16:32:06: Train Epoch: 238 [0/45056 (0%)]	Loss: 0.941252 Accuracy: 86/128 (67.188% 
+16:32:24: Train Epoch: 238 [12800/45056 (28%)]	Loss: 1.015388 Accuracy: 8339/12928 (64.503% 
+16:32:42: Train Epoch: 238 [25600/45056 (57%)]	Loss: 0.974874 Accuracy: 16527/25728 (64.237% 
+16:33:00: Train Epoch: 238 [38400/45056 (85%)]	Loss: 0.992274 Accuracy: 24704/38528 (64.120% 
+16:33:08: 
+Training summary: Average loss: 1.0140, Accuracy: 28880/45000 (64.178%)
+
+16:33:11: 
+Evaluation: Average loss: 0.9954, Accuracy: 3231/5000 (64.620%)
+
+16:33:11: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.79 seconds.
+
+16:33:11: Train Epoch: 239 [0/45056 (0%)]	Loss: 1.177911 Accuracy: 76/128 (59.375% 
+16:33:29: Train Epoch: 239 [12800/45056 (28%)]	Loss: 1.066418 Accuracy: 8198/12928 (63.413% 
+16:33:47: Train Epoch: 239 [25600/45056 (57%)]	Loss: 0.944905 Accuracy: 16410/25728 (63.783% 
+16:34:04: Train Epoch: 239 [38400/45056 (85%)]	Loss: 1.079224 Accuracy: 24617/38528 (63.894% 
+16:34:13: 
+Training summary: Average loss: 1.0113, Accuracy: 28763/45000 (63.918%)
+
+16:34:16: 
+Evaluation: Average loss: 0.9828, Accuracy: 3251/5000 (65.020%)
+
+16:34:16: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.86 seconds.
+
+16:34:16: Train Epoch: 240 [0/45056 (0%)]	Loss: 0.953665 Accuracy: 86/128 (67.188% 
+16:34:34: Train Epoch: 240 [12800/45056 (28%)]	Loss: 1.022896 Accuracy: 8289/12928 (64.117% 
+16:34:51: Train Epoch: 240 [25600/45056 (57%)]	Loss: 1.062635 Accuracy: 16625/25728 (64.618% 
+16:35:09: Train Epoch: 240 [38400/45056 (85%)]	Loss: 1.056290 Accuracy: 24870/38528 (64.550% 
+16:35:18: 
+Training summary: Average loss: 1.0110, Accuracy: 28970/45000 (64.378%)
+
+16:35:21: 
+Evaluation: Average loss: 0.9830, Accuracy: 3281/5000 (65.620%)
+
+16:35:21: Current learning rate: 0.0010000000000000002. Time taken for epoch: 65.00 seconds.
+
+16:35:21: Train Epoch: 241 [0/45056 (0%)]	Loss: 0.913355 Accuracy: 89/128 (69.531% 
+16:35:39: Train Epoch: 241 [12800/45056 (28%)]	Loss: 0.877214 Accuracy: 8189/12928 (63.343% 
+16:35:57: Train Epoch: 241 [25600/45056 (57%)]	Loss: 0.979817 Accuracy: 16378/25728 (63.658% 
+16:36:14: Train Epoch: 241 [38400/45056 (85%)]	Loss: 1.045907 Accuracy: 24554/38528 (63.730% 
+16:36:23: 
+Training summary: Average loss: 1.0161, Accuracy: 28711/45000 (63.802%)
+
+16:36:26: 
+Evaluation: Average loss: 0.9863, Accuracy: 3264/5000 (65.280%)
+
+16:36:26: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.82 seconds.
+
+16:36:26: Train Epoch: 242 [0/45056 (0%)]	Loss: 0.996267 Accuracy: 78/128 (60.938% 
+16:36:44: Train Epoch: 242 [12800/45056 (28%)]	Loss: 1.022658 Accuracy: 8252/12928 (63.830% 
+16:37:01: Train Epoch: 242 [25600/45056 (57%)]	Loss: 1.141187 Accuracy: 16395/25728 (63.724% 
+16:37:19: Train Epoch: 242 [38400/45056 (85%)]	Loss: 1.001673 Accuracy: 24610/38528 (63.876% 
+16:37:28: 
+Training summary: Average loss: 1.0144, Accuracy: 28750/45000 (63.889%)
+
+16:37:30: 
+Evaluation: Average loss: 0.9870, Accuracy: 3251/5000 (65.020%)
+
+16:37:30: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.82 seconds.
+
+16:37:31: Train Epoch: 243 [0/45056 (0%)]	Loss: 0.987739 Accuracy: 82/128 (64.062% 
+16:37:48: Train Epoch: 243 [12800/45056 (28%)]	Loss: 0.996172 Accuracy: 8219/12928 (63.575% 
+16:38:06: Train Epoch: 243 [25600/45056 (57%)]	Loss: 1.053720 Accuracy: 16445/25728 (63.919% 
+16:38:24: Train Epoch: 243 [38400/45056 (85%)]	Loss: 0.915011 Accuracy: 24669/38528 (64.029% 
+16:38:33: 
+Training summary: Average loss: 1.0166, Accuracy: 28769/45000 (63.931%)
+
+16:38:35: 
+Evaluation: Average loss: 0.9790, Accuracy: 3255/5000 (65.100%)
+
+16:38:35: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.83 seconds.
+
+16:38:36: Train Epoch: 244 [0/45056 (0%)]	Loss: 0.998021 Accuracy: 83/128 (64.844% 
+16:38:53: Train Epoch: 244 [12800/45056 (28%)]	Loss: 0.983799 Accuracy: 8310/12928 (64.279% 
+16:39:11: Train Epoch: 244 [25600/45056 (57%)]	Loss: 0.920021 Accuracy: 16536/25728 (64.272% 
+16:39:29: Train Epoch: 244 [38400/45056 (85%)]	Loss: 0.941924 Accuracy: 24769/38528 (64.288% 
+16:39:38: 
+Training summary: Average loss: 1.0137, Accuracy: 28861/45000 (64.136%)
+
+16:39:40: 
+Evaluation: Average loss: 0.9817, Accuracy: 3259/5000 (65.180%)
+
+16:39:40: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:39:40: Train Epoch: 245 [0/45056 (0%)]	Loss: 0.949584 Accuracy: 90/128 (70.312% 
+16:39:58: Train Epoch: 245 [12800/45056 (28%)]	Loss: 0.906666 Accuracy: 8365/12928 (64.705% 
+16:40:16: Train Epoch: 245 [25600/45056 (57%)]	Loss: 0.981963 Accuracy: 16547/25728 (64.315% 
+16:40:33: Train Epoch: 245 [38400/45056 (85%)]	Loss: 1.047332 Accuracy: 24787/38528 (64.335% 
+16:40:42: 
+Training summary: Average loss: 1.0117, Accuracy: 28855/45000 (64.122%)
+
+16:40:45: 
+Evaluation: Average loss: 0.9898, Accuracy: 3216/5000 (64.320%)
+
+16:40:45: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.81 seconds.
+
+16:40:45: Train Epoch: 246 [0/45056 (0%)]	Loss: 0.895753 Accuracy: 82/128 (64.062% 
+16:41:03: Train Epoch: 246 [12800/45056 (28%)]	Loss: 1.005608 Accuracy: 8359/12928 (64.658% 
+16:41:21: Train Epoch: 246 [25600/45056 (57%)]	Loss: 1.137152 Accuracy: 16628/25728 (64.630% 
+16:41:38: Train Epoch: 246 [38400/45056 (85%)]	Loss: 0.980397 Accuracy: 24813/38528 (64.403% 
+16:41:47: 
+Training summary: Average loss: 1.0088, Accuracy: 28955/45000 (64.344%)
+
+16:41:50: 
+Evaluation: Average loss: 0.9885, Accuracy: 3248/5000 (64.960%)
+
+16:41:50: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.77 seconds.
+
+16:41:50: Train Epoch: 247 [0/45056 (0%)]	Loss: 0.945483 Accuracy: 89/128 (69.531% 
+16:42:08: Train Epoch: 247 [12800/45056 (28%)]	Loss: 0.799769 Accuracy: 8295/12928 (64.163% 
+16:42:25: Train Epoch: 247 [25600/45056 (57%)]	Loss: 0.972931 Accuracy: 16399/25728 (63.740% 
+16:42:43: Train Epoch: 247 [38400/45056 (85%)]	Loss: 1.148525 Accuracy: 24592/38528 (63.829% 
+16:42:52: 
+Training summary: Average loss: 1.0125, Accuracy: 28797/45000 (63.993%)
+
+16:42:54: 
+Evaluation: Average loss: 0.9820, Accuracy: 3245/5000 (64.900%)
+
+16:42:54: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.79 seconds.
+
+16:42:55: Train Epoch: 248 [0/45056 (0%)]	Loss: 0.953172 Accuracy: 84/128 (65.625% 
+16:43:12: Train Epoch: 248 [12800/45056 (28%)]	Loss: 1.035304 Accuracy: 8294/12928 (64.155% 
+16:43:30: Train Epoch: 248 [25600/45056 (57%)]	Loss: 1.130031 Accuracy: 16545/25728 (64.307% 
+16:43:48: Train Epoch: 248 [38400/45056 (85%)]	Loss: 1.268753 Accuracy: 24765/38528 (64.278% 
+16:43:57: 
+Training summary: Average loss: 1.0108, Accuracy: 28930/45000 (64.289%)
+
+16:43:59: 
+Evaluation: Average loss: 1.0001, Accuracy: 3233/5000 (64.660%)
+
+16:43:59: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.78 seconds.
+
+16:43:59: Train Epoch: 249 [0/45056 (0%)]	Loss: 0.935228 Accuracy: 83/128 (64.844% 
+16:44:17: Train Epoch: 249 [12800/45056 (28%)]	Loss: 1.070007 Accuracy: 8312/12928 (64.295% 
+16:44:35: Train Epoch: 249 [25600/45056 (57%)]	Loss: 1.092242 Accuracy: 16495/25728 (64.113% 
+16:44:53: Train Epoch: 249 [38400/45056 (85%)]	Loss: 1.134051 Accuracy: 24763/38528 (64.273% 
+16:45:02: 
+Training summary: Average loss: 1.0120, Accuracy: 28831/45000 (64.069%)
+
+16:45:04: 
+Evaluation: Average loss: 0.9883, Accuracy: 3258/5000 (65.160%)
+
+16:45:04: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.84 seconds.
+
+16:45:04: Train Epoch: 250 [0/45056 (0%)]	Loss: 1.124997 Accuracy: 82/128 (64.062% 
+16:45:22: Train Epoch: 250 [12800/45056 (28%)]	Loss: 1.028653 Accuracy: 8259/12928 (63.885% 
+16:45:40: Train Epoch: 250 [25600/45056 (57%)]	Loss: 0.958337 Accuracy: 16481/25728 (64.059% 
+16:45:57: Train Epoch: 250 [38400/45056 (85%)]	Loss: 0.791991 Accuracy: 24737/38528 (64.205% 
+16:46:06: 
+Training summary: Average loss: 1.0123, Accuracy: 28829/45000 (64.064%)
+
+16:46:09: 
+Evaluation: Average loss: 0.9967, Accuracy: 3226/5000 (64.520%)
+
+16:46:09: Current learning rate: 0.0010000000000000002. Time taken for epoch: 64.87 seconds.
+
+16:46:14: 
+Test evaluation: Average loss: 0.9619, Accuracy: 6552/10000 (65.520%)
+
+16:46:14: 
+Iteration end: 1/1
+

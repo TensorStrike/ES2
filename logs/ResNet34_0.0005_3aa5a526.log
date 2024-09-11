@@ -1,0 +1,348 @@
+11:31:23: Namespace(batch_size=128, bench=False, data='cifar10', death='magnitude', death_rate=0.5, decay_frequency=30000, decay_schedule='cosine', density=0.0005, disable_drelu_grad=True, end_ghost_epoch=None, epochs=250, fix=False, fp16=False, growth='gradient', iters=1, l1=0.0, l2=0.0001, log_interval=100, lr=0.1, max_threads=10, model='ResNet34', momentum=0.9, multiplier=1, no_cuda=False, optimizer='sgd', redistribution='none', resume=None, save='1725877883824462.pt', save_features=False, seed=41, sparse=True, sparse_init='ERK', start_epoch=1, start_ghost_epoch=None, test_batch_size=100, update_frequency=4000, valid_split=0.1)
+11:31:23: 
+
+
+11:31:23: ================================================================================
+11:31:23: 
+Iteration start: 1/1
+
+11:31:24: ResNet(
+  (conv1): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+  (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): DyReLUB(
+    (fc1): Linear(in_features=64, out_features=16, bias=True)
+    (relu): ReLU(inplace=True)
+    (fc2): Linear(in_features=16, out_features=256, bias=True)
+    (sigmoid): Sigmoid()
+  )
+  (layer1): ModuleList(
+    (0-1): 2 x BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock_NoPara(
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=64, out_features=16, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=16, out_features=256, bias=True)
+        (sigmoid): Sigmoid()
+      )
+    )
+  )
+  (layer2): ModuleList(
+    (0): BasicBlock(
+      (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2-3): 2 x BasicBlock_NoPara(
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=128, out_features=32, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=32, out_features=512, bias=True)
+        (sigmoid): Sigmoid()
+      )
+    )
+  )
+  (layer3): ModuleList(
+    (0): BasicBlock(
+      (conv1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2-5): 4 x BasicBlock_NoPara(
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=256, out_features=64, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=64, out_features=1024, bias=True)
+        (sigmoid): Sigmoid()
+      )
+    )
+  )
+  (layer4): ModuleList(
+    (0): BasicBlock(
+      (conv1): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (shortcut): Sequential()
+    )
+    (2): BasicBlock_NoPara(
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (shortcut): Sequential()
+      (relu1): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+      (relu2): DyReLUB(
+        (fc1): Linear(in_features=512, out_features=128, bias=True)
+        (relu): ReLU(inplace=True)
+        (fc2): Linear(in_features=128, out_features=2048, bias=True)
+        (sigmoid): Sigmoid()
+      )
+    )
+  )
+  (classifier): Linear(in_features=512, out_features=10, bias=False)
+)
+11:31:24: ============================================================
+11:31:24: ResNet34
+11:31:24: ============================================================
+11:31:24: ============================================================
+11:31:24: Prune mode: magnitude
+11:31:24: Growth mode: gradient
+11:31:24: Redistribution mode: none
+11:31:24: ============================================================
+11:31:26: Train Epoch: 1 [0/45056 (0%)]	Loss: 0.018621 Accuracy: 12/128 (9.375% 
+11:31:26: 
+Training summary: Average loss: -0.0962, Accuracy: 29/256 (11.328%)
+
+11:31:29: 
+Evaluation: Average loss: -0.0102, Accuracy: 532/5000 (10.640%)
+
+11:31:29: Current learning rate: 0.1. Time taken for epoch: 4.27 seconds.
+
+11:31:29: Train Epoch: 2 [0/45056 (0%)]	Loss: -0.295523 Accuracy: 15/128 (11.719% 
+11:31:29: 
+Training summary: Average loss: -0.9115, Accuracy: 35/256 (13.672%)
+
+11:31:32: 
+Evaluation: Average loss: -0.0343, Accuracy: 532/5000 (10.640%)
+
+11:31:32: Current learning rate: 0.1. Time taken for epoch: 3.08 seconds.
+
+11:31:32: Train Epoch: 3 [0/45056 (0%)]	Loss: -1.021514 Accuracy: 21/128 (16.406% 
+11:31:32: 
+Training summary: Average loss: -2.5558, Accuracy: 38/256 (14.844%)
+
+11:31:35: 
+Evaluation: Average loss: -0.1113, Accuracy: 532/5000 (10.640%)
+
+11:31:35: Current learning rate: 0.1. Time taken for epoch: 3.10 seconds.
+
+11:31:35: Train Epoch: 4 [0/45056 (0%)]	Loss: -2.463012 Accuracy: 30/128 (23.438% 
+11:31:36: 
+Training summary: Average loss: -6.2500, Accuracy: 48/256 (18.750%)
+
+11:31:38: 
+Evaluation: Average loss: -0.4540, Accuracy: 532/5000 (10.640%)
+
+11:31:38: Current learning rate: 0.1. Time taken for epoch: 3.08 seconds.
+
+11:31:38: Train Epoch: 5 [0/45056 (0%)]	Loss: -7.504089 Accuracy: 20/128 (15.625% 
+11:31:39: 
+Training summary: Average loss: -25.3132, Accuracy: 34/256 (13.281%)
+
+11:31:41: 
+Evaluation: Average loss: -6.3258, Accuracy: 493/5000 (9.860%)
+
+11:31:41: Current learning rate: 0.1. Time taken for epoch: 3.08 seconds.
+
+11:31:41: Train Epoch: 6 [0/45056 (0%)]	Loss: -36.945004 Accuracy: 16/128 (12.500% 
+11:31:42: 
+Training summary: Average loss: -99.2818, Accuracy: 25/256 (9.766%)
+
+11:31:44: 
+Evaluation: Average loss: -583.1188, Accuracy: 437/5000 (8.740%)
+
+11:31:44: Current learning rate: 0.1. Time taken for epoch: 3.09 seconds.
+
+11:31:45: Train Epoch: 7 [0/45056 (0%)]	Loss: -126.547447 Accuracy: 8/128 (6.250% 
+11:31:45: 
+Training summary: Average loss: -421.4851, Accuracy: 26/256 (10.156%)
+
+11:31:47: 
+Evaluation: Average loss: -65741.4109, Accuracy: 488/5000 (9.760%)
+
+11:31:47: Current learning rate: 0.1. Time taken for epoch: 3.08 seconds.
+
+11:31:48: Train Epoch: 8 [0/45056 (0%)]	Loss: -607.768799 Accuracy: 14/128 (10.938% 
+11:31:48: 
+Training summary: Average loss: -2006.6251, Accuracy: 38/256 (14.844%)
+
+11:31:50: 
+Evaluation: Average loss: -4180740947.9680, Accuracy: 479/5000 (9.580%)
+
+11:31:50: Current learning rate: 0.1. Time taken for epoch: 3.07 seconds.
+
+11:31:51: Train Epoch: 9 [0/45056 (0%)]	Loss: -2944.273682 Accuracy: 12/128 (9.375% 
+11:31:51: 
+Training summary: Average loss: -9900.2893, Accuracy: 22/256 (8.594%)
+
+11:31:53: 
+Evaluation: Average loss: -463076078946913419264.0000, Accuracy: 529/5000 (10.580%)
+
+11:31:53: Current learning rate: 0.1. Time taken for epoch: 3.09 seconds.
+
+11:31:54: Train Epoch: 10 [0/45056 (0%)]	Loss: -16162.901367 Accuracy: 11/128 (8.594% 
+11:31:54: 
+Training summary: Average loss: nan, Accuracy: 21/256 (8.203%)
+
+11:31:57: 
+Evaluation: Average loss: nan, Accuracy: 493/5000 (9.860%)
+
+11:31:57: Current learning rate: 0.1. Time taken for epoch: 3.09 seconds.
+
+11:31:57: Train Epoch: 11 [0/45056 (0%)]	Loss: nan Accuracy: 12/128 (9.375% 
+11:31:57: 
+Training summary: Average loss: nan, Accuracy: 25/256 (9.766%)
+
+11:32:00: 
+Evaluation: Average loss: nan, Accuracy: 493/5000 (9.860%)
+
+11:32:00: Current learning rate: 0.1. Time taken for epoch: 3.07 seconds.
+
+11:32:00: Train Epoch: 12 [0/45056 (0%)]	Loss: nan Accuracy: 11/128 (8.594% 
+11:32:00: 
+Training summary: Average loss: nan, Accuracy: 21/256 (8.203%)
+

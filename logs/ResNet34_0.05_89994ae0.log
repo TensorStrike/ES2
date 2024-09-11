@@ -1,0 +1,8 @@
+15:16:25: Namespace(batch_size=128, bench=False, data='cifar10', death='magnitude', death_rate=0.5, decay_frequency=30000, decay_schedule='cosine', density=0.05, epochs=250, fix=False, fp16=False, growth='gradient', iters=1, l1=0.0, l2=0.0005, log_interval=100, lr=0.1, max_threads=10, model='ResNet34', momentum=0.9, multiplier=1, no_cuda=False, optimizer='sgd', redistribution='none', resume=None, save='17182881854691558.pt', save_features=False, seed=18, sparse=True, sparse_init='ERK', start_epoch=1, test_batch_size=100, update_frequency=4000, valid_split=0.1)
+15:16:25: 
+
+
+15:16:25: ================================================================================
+15:16:25: 
+Iteration start: 1/1
+
