@@ -582,10 +582,10 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes):
+    def __init__(self, block, num_blocks, num_classes, ratio=2):
         super(ResNet, self).__init__()
         self.in_planes = 64
-        self.ratio = 2
+        self.ratio = ratio
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -713,8 +713,8 @@ class BasicBlock_NoPara(nn.Module):
 def ResNet18(c=1000):
     return ResNet(BasicBlock, [2,2,2,2],c)
 
-def ResNet34(c=10):
-    return ResNet(BasicBlock, [3,4,6,3],c)
+def ResNet34(c=10, ratio=2):
+    return ResNet(BasicBlock, [3,4,6,3],c,ratio=ratio)
 
 def ResNet50(c=10):
     return ResNet(Bottleneck, [3,4,6,3],c)

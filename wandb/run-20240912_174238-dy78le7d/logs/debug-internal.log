@@ -1,0 +1,95 @@
+2024-09-12 17:42:38,063 INFO    StreamThr :2552820 [internal.py:wandb_internal():86] W&B internal server running at pid: 2552820, started at: 2024-09-12 17:42:38.062092
+2024-09-12 17:42:38,065 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status
+2024-09-12 17:42:38,083 INFO    WriterThread:2552820 [datastore.py:open_for_write():85] open: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/run-dy78le7d.wandb
+2024-09-12 17:42:38,084 DEBUG   SenderThread:2552820 [sender.py:send():379] send: header
+2024-09-12 17:42:38,094 DEBUG   SenderThread:2552820 [sender.py:send():379] send: run
+2024-09-12 17:42:38,505 INFO    SenderThread:2552820 [dir_watcher.py:__init__():211] watching files in: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files
+2024-09-12 17:42:38,505 INFO    SenderThread:2552820 [sender.py:_start_run_threads():1121] run started: dy78le7d with start time 1726159358.062346
+2024-09-12 17:42:38,510 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: summary_record
+2024-09-12 17:42:38,510 INFO    SenderThread:2552820 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2024-09-12 17:42:38,518 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: check_version
+2024-09-12 17:42:38,519 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: check_version
+2024-09-12 17:42:38,609 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: run_start
+2024-09-12 17:42:38,651 DEBUG   HandlerThread:2552820 [system_info.py:__init__():31] System info init
+2024-09-12 17:42:38,651 DEBUG   HandlerThread:2552820 [system_info.py:__init__():46] System info init done
+2024-09-12 17:42:38,651 INFO    HandlerThread:2552820 [system_monitor.py:start():181] Starting system monitor
+2024-09-12 17:42:38,652 INFO    SystemMonitor:2552820 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2024-09-12 17:42:38,653 INFO    HandlerThread:2552820 [system_monitor.py:probe():201] Collecting system info
+2024-09-12 17:42:38,654 INFO    SystemMonitor:2552820 [interfaces.py:start():190] Started cpu monitoring
+2024-09-12 17:42:38,655 INFO    SystemMonitor:2552820 [interfaces.py:start():190] Started disk monitoring
+2024-09-12 17:42:38,660 INFO    SystemMonitor:2552820 [interfaces.py:start():190] Started gpu monitoring
+2024-09-12 17:42:38,663 INFO    SystemMonitor:2552820 [interfaces.py:start():190] Started memory monitoring
+2024-09-12 17:42:38,666 INFO    SystemMonitor:2552820 [interfaces.py:start():190] Started network monitoring
+2024-09-12 17:42:38,883 DEBUG   HandlerThread:2552820 [system_info.py:probe():195] Probing system
+2024-09-12 17:42:38,884 DEBUG   HandlerThread:2552820 [system_info.py:_probe_git():180] Probing git
+2024-09-12 17:42:38,892 DEBUG   HandlerThread:2552820 [system_info.py:_probe_git():188] Probing git done
+2024-09-12 17:42:38,892 DEBUG   HandlerThread:2552820 [system_info.py:probe():240] Probing system done
+2024-09-12 17:42:38,892 DEBUG   HandlerThread:2552820 [system_monitor.py:probe():210] {'os': 'Linux-5.15.0-116-generic-x86_64-with-glibc2.17', 'python': '3.8.12', 'heartbeatAt': '2024-09-12T16:42:38.883697', 'startedAt': '2024-09-12T16:42:38.037184', 'docker': None, 'cuda': None, 'args': ('--sparse', '--seed', '41', '--disable_drelu_grad', '--sparse_init', 'ERK', '--multiplier', '1', '--lr', '0.1', '--density', '0.0005', '--update_frequency', '4000', '--epochs', '250', '--model', 'ResNet34', '--data', 'cifar10', '--decay_frequency', '30000', '--batch-size', '128', '--growth', 'gradient', '--death', 'magnitude', '--redistribution', 'none', '--l2', '1e-4', '--wandb-mode', 'online'), 'state': 'running', 'program': '/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/main.py', 'codePath': 'main.py', 'git': {'remote': 'https://github.com/TensorStrike/ES2.git', 'commit': 'ab9a9a87f2d26c15c452aad0a195c571211566f0'}, 'email': 'lihanou@yahoo.com', 'root': '/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2', 'host': 'MD-058161', 'username': 'r01al21', 'executable': '/home/rpgsbs/r01al21/anaconda3/envs/pytorch_py38/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 3082.8067499999997, 'min': 800.0, 'max': 4300.0}, 'cpu_freq_per_core': [{'current': 3737.962, 'min': 800.0, 'max': 4300.0}, {'current': 3802.911, 'min': 800.0, 'max': 4300.0}, {'current': 4037.546, 'min': 800.0, 'max': 4300.0}, {'current': 4011.111, 'min': 800.0, 'max': 4300.0}, {'current': 4006.348, 'min': 800.0, 'max': 4300.0}, {'current': 4044.355, 'min': 800.0, 'max': 4300.0}, {'current': 4001.663, 'min': 800.0, 'max': 4300.0}, {'current': 4001.989, 'min': 800.0, 'max': 4300.0}, {'current': 4000.022, 'min': 800.0, 'max': 4300.0}, {'current': 4000.005, 'min': 800.0, 'max': 4300.0}, {'current': 4000.061, 'min': 800.0, 'max': 4300.0}, {'current': 3999.999, 'min': 800.0, 'max': 4300.0}], 'disk': {'total': 81.9483413696289, 'used': 35.80453872680664}, 'gpu': 'NVIDIA GeForce RTX 3060 Ti', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 3060 Ti', 'memory_total': 8589934592}], 'memory': {'total': 15.486103057861328}}
+2024-09-12 17:42:38,892 INFO    HandlerThread:2552820 [system_monitor.py:probe():211] Finished collecting system info
+2024-09-12 17:42:38,892 INFO    HandlerThread:2552820 [system_monitor.py:probe():214] Publishing system info
+2024-09-12 17:42:38,892 DEBUG   HandlerThread:2552820 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2024-09-12 17:42:38,893 DEBUG   HandlerThread:2552820 [system_info.py:_save_pip():67] Saving pip packages done
+2024-09-12 17:42:38,893 DEBUG   HandlerThread:2552820 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2024-09-12 17:42:39,507 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/conda-environment.yaml
+2024-09-12 17:42:39,508 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/requirements.txt
+2024-09-12 17:42:39,508 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/wandb-summary.json
+2024-09-12 17:42:42,272 DEBUG   HandlerThread:2552820 [system_info.py:_save_conda():86] Saving conda packages done
+2024-09-12 17:42:42,273 INFO    HandlerThread:2552820 [system_monitor.py:probe():216] Finished publishing system info
+2024-09-12 17:42:42,277 DEBUG   SenderThread:2552820 [sender.py:send():379] send: files
+2024-09-12 17:42:42,277 INFO    SenderThread:2552820 [sender.py:_save_file():1375] saving file wandb-metadata.json with policy now
+2024-09-12 17:42:42,280 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:42:42,280 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:42:42,452 DEBUG   SenderThread:2552820 [sender.py:send():379] send: telemetry
+2024-09-12 17:42:42,506 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/conda-environment.yaml
+2024-09-12 17:42:42,506 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/wandb-metadata.json
+2024-09-12 17:42:42,506 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_created():271] file/dir created: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:42:42,869 INFO    wandb-upload_0:2552820 [upload_job.py:push():131] Uploaded file /tmp/tmpht9ed8vfwandb/1w0deqts-wandb-metadata.json
+2024-09-12 17:42:43,227 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:42:44,542 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:42:46,543 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:42:48,815 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:42:53,816 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:42:57,345 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:42:57,346 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:42:59,482 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:04,546 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:43:04,715 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:09,719 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:10,548 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/config.yaml
+2024-09-12 17:43:12,360 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:43:12,361 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:43:15,512 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:20,513 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:22,550 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:43:25,583 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:27,431 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:43:27,432 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:43:30,648 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:35,649 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:38,666 DEBUG   SystemMonitor:2552820 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2024-09-12 17:43:38,667 DEBUG   SenderThread:2552820 [sender.py:send():379] send: stats
+2024-09-12 17:43:40,554 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:43:40,668 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:42,455 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:43:42,456 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:43:45,678 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:50,556 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:43:50,845 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:50,922 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: partial_history
+2024-09-12 17:43:50,924 DEBUG   SenderThread:2552820 [sender.py:send():379] send: history
+2024-09-12 17:43:50,924 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: summary_record
+2024-09-12 17:43:50,924 INFO    SenderThread:2552820 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2024-09-12 17:43:51,556 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/wandb-summary.json
+2024-09-12 17:43:53,557 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:43:56,269 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:43:57,455 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:43:57,456 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:44:01,649 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:44:06,649 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:44:08,668 DEBUG   SenderThread:2552820 [sender.py:send():379] send: stats
+2024-09-12 17:44:11,561 INFO    Thread-12 :2552820 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/run-20240912_174238-dy78le7d/files/output.log
+2024-09-12 17:44:12,326 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:44:12,465 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: stop_status
+2024-09-12 17:44:12,466 DEBUG   SenderThread:2552820 [sender.py:send_request():406] send_request: stop_status
+2024-09-12 17:44:17,686 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 17:44:22,686 DEBUG   HandlerThread:2552820 [handler.py:handle_request():144] handle_request: status_report

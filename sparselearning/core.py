@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import copy
-
+import wandb
 import numpy as np
 import math
 
@@ -221,7 +221,7 @@ class Masking(object):
             if self.steps % self.prune_every_k_steps == 0:
                 self.truncate_weights()
                 _, _ = self.fired_masks_update()
-                self.print_nonzero_counts()
+                # self.print_nonzero_counts()
 
 
     def add_module(self, module, density, sparse_init='ER'):
@@ -550,6 +550,46 @@ class Masking(object):
         grad = weight.grad.clone()
         return grad
 
+    def get_metrics(self):
+        total_nonzero = 0
+        total_params = 0
+        non_shared_nonzero = 0
+        non_shared_params = 0
+        shared_params = 0
+
+        for module in self.modules:
+            for name, tensor in module.named_parameters():
+                if name not in self.masks:
+                    continue
+                mask = self.masks[name]
+                num_nonzeros = (mask != 0).sum().item()
+                total_nonzero += num_nonzeros               # alive params in non-shared
+                total_params += mask.numel()                # all params in non-shared
+
+                if 'layer' in name and int(name.split('.')[1]) >= self.args.ratio:      # shared blocks
+                    shared_params += mask.numel()
+                else:
+                    non_shared_nonzero += num_nonzeros
+                    non_shared_params += mask.numel()       # includes the removed shared blocks
+
+        overall_density = total_nonzero / total_params
+
+        if non_shared_params != 0:
+            normalized_density = non_shared_nonzero / non_shared_params
+        else:
+            normalized_density = overall_density
+
+        metrics = {
+            'overall_density': overall_density,
+            'normalized_density': normalized_density,
+            'total_params': total_params,
+            'non_shared_params': non_shared_params,
+            'shared_params': shared_params,
+            'total_nonzero': total_nonzero,
+        }
+
+        return metrics
+
     def print_nonzero_counts(self):
         for module in self.modules:
             for name, tensor in module.named_parameters():
@@ -565,6 +605,7 @@ class Masking(object):
                 if name not in self.masks: continue
                 print('Death rate: {0}\n'.format(self.death_rate))
                 break
+
 
     def fired_masks_update(self):
         ntotal_fired_weights = 0.0

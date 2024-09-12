@@ -21,6 +21,8 @@ from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders,
 import torchvision
 import torchvision.transforms as transforms
 import warnings
+import wandb
+
 warnings.filterwarnings("ignore", category=UserWarning)
 cudnn.benchmark = True
 cudnn.deterministic = True
@@ -146,6 +148,9 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
         'Training summary' ,
         train_loss/batch_idx, correct, n, 100. * correct / float(n)))
 
+
+    return train_loss/batch_idx,  correct / float(n)
+
 def evaluate(args, model, device, test_loader, is_test_set=False):
     model.eval()
     test_loss = 0
@@ -169,7 +174,7 @@ def evaluate(args, model, device, test_loader, is_test_set=False):
     print_and_log('\n{}: Average loss: {:.4f}, Accuracy: {}/{} ({:.3f}%)\n'.format(
         'Test evaluation' if is_test_set else 'Evaluation',
         test_loss, correct, n, 100. * correct / float(n)))
-    return correct / float(n)
+    return test_loss, correct / float(n)
 
 
 def main():
@@ -217,10 +222,20 @@ def main():
     parser.add_argument('--disable_drelu_grad', action='store_true', help='disable_drelu_grad')
     parser.add_argument('--start_ghost_epoch', type=int, default=None, help='Start epoch for gradual phasing')
     parser.add_argument('--end_ghost_epoch', type=int, default=None, help='End epoch for gradual phasing')
+    # weight sharing
+    parser.add_argument('--ratio', type=int, default=2)
+
+    parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
+    parser.add_argument('--wandb-project', type=str, default='extreme_sparsity')
 
     args = parser.parse_args()
     setup_logger(args)
     print_and_log(args)
+
+    if args.wandb_mode == "dryrun":
+        wandb.init(mode="dryrun")
+    elif args.wandb_mode == "online":
+        wandb.init(project="extreme-sparsity", entity="tensorstrike", config=vars(args))
 
 
     if args.fp16:
@@ -255,7 +270,7 @@ def main():
             model = ResNet18(c=c).to(device)
         elif args.model == 'ResNet34':
             # model = ResNet34(c=100).to(device)
-            model = ResNet34(c=c).to(device)
+            model = ResNet34(c=c, ratio=args.ratio).to(device)
 
         else:
             cls, cls_args = models[args.model]
@@ -368,12 +383,13 @@ def main():
                     if isinstance(module, DyReLUB):
                         module.beta = decay_factor
 
-            train(args, model, device, train_loader, optimizer, epoch, mask)
+            train_loss, train_acc = train(args, model, device, train_loader, optimizer, epoch, mask)
 
             lr_scheduler.step()
 
             if args.valid_split > 0.0:
-                val_acc = evaluate(args, model, device, valid_loader)
+                val_loss, val_acc = evaluate(args, model, device, valid_loader)
+
 
             if val_acc > best_acc:
                 print('Saving model')
@@ -382,6 +398,21 @@ def main():
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
+
+            metrics = {
+                "epoch": epoch,
+                "train_loss": train_loss,
+                "train_accuracy": train_acc,
+                "val_loss": val_loss,
+                "val_accuracy": val_acc,
+                "learning_rate": optimizer.param_groups[0]['lr'],
+            }
+
+            if args.sparse:
+                sparse_metrics = mask.get_metrics()
+                metrics.update(sparse_metrics)
+
+            wandb.log(metrics)
 
         print('Testing model')
         model.load_state_dict(torch.load(args.save))
