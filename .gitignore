@@ -2,3 +2,4 @@
 _dataset/*
 data/*
 logs/*
+wandb/*
