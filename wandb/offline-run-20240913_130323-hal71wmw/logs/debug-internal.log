@@ -1,0 +1,28 @@
+2024-09-13 13:03:23,352 INFO    StreamThr :2604798 [internal.py:wandb_internal():86] W&B internal server running at pid: 2604798, started at: 2024-09-13 13:03:23.352387
+2024-09-13 13:03:23,354 DEBUG   HandlerThread:2604798 [handler.py:handle_request():144] handle_request: status
+2024-09-13 13:03:23,355 INFO    WriterThread:2604798 [datastore.py:open_for_write():85] open: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/offline-run-20240913_130323-hal71wmw/run-hal71wmw.wandb
+2024-09-13 13:03:23,414 DEBUG   HandlerThread:2604798 [handler.py:handle_request():144] handle_request: run_start
+2024-09-13 13:03:23,442 DEBUG   HandlerThread:2604798 [system_info.py:__init__():31] System info init
+2024-09-13 13:03:23,442 DEBUG   HandlerThread:2604798 [system_info.py:__init__():46] System info init done
+2024-09-13 13:03:23,442 INFO    HandlerThread:2604798 [system_monitor.py:start():181] Starting system monitor
+2024-09-13 13:03:23,442 INFO    SystemMonitor:2604798 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2024-09-13 13:03:23,442 INFO    HandlerThread:2604798 [system_monitor.py:probe():201] Collecting system info
+2024-09-13 13:03:23,443 INFO    SystemMonitor:2604798 [interfaces.py:start():190] Started cpu monitoring
+2024-09-13 13:03:23,443 INFO    SystemMonitor:2604798 [interfaces.py:start():190] Started disk monitoring
+2024-09-13 13:03:23,444 INFO    SystemMonitor:2604798 [interfaces.py:start():190] Started gpu monitoring
+2024-09-13 13:03:23,444 INFO    SystemMonitor:2604798 [interfaces.py:start():190] Started memory monitoring
+2024-09-13 13:03:23,445 INFO    SystemMonitor:2604798 [interfaces.py:start():190] Started network monitoring
+2024-09-13 13:03:23,677 DEBUG   HandlerThread:2604798 [system_info.py:probe():195] Probing system
+2024-09-13 13:03:23,679 DEBUG   HandlerThread:2604798 [system_info.py:_probe_git():180] Probing git
+2024-09-13 13:03:23,709 DEBUG   HandlerThread:2604798 [system_info.py:_probe_git():188] Probing git done
+2024-09-13 13:03:23,709 DEBUG   HandlerThread:2604798 [system_info.py:probe():240] Probing system done
+2024-09-13 13:03:23,709 DEBUG   HandlerThread:2604798 [system_monitor.py:probe():210] {'os': 'Linux-5.15.0-116-generic-x86_64-with-glibc2.17', 'python': '3.8.12', 'heartbeatAt': '2024-09-13T12:03:23.677571', 'startedAt': '2024-09-13T12:03:23.348477', 'docker': None, 'cuda': None, 'args': ('--sparse', '--seed', '41', '--disable_drelu_grad', '--sparse_init', 'ERK', '--multiplier', '1', '--lr', '0.1', '--density', '0.0005', '--update_frequency', '4000', '--epochs', '250', '--model', 'ResNet34', '--data', 'cifar10', '--decay_frequency', '30000', '--batch-size', '128', '--growth', 'gradient', '--death', 'magnitude', '--redistribution', 'none', '--l2', '1e-4', '--wandb-mode', 'dryrun'), 'state': 'running', 'program': '/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/main.py', 'codePath': 'main.py', 'git': {'remote': 'https://github.com/TensorStrike/ES2.git', 'commit': 'a215ea638dac5bfa908c76d796d15a02dca3e7f9'}, 'email': 'lihanou@yahoo.com', 'root': '/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2', 'host': 'MD-058161', 'username': 'r01al21', 'executable': '/home/rpgsbs/r01al21/anaconda3/envs/pytorch_py38/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 1758.5217499999999, 'min': 800.0, 'max': 4300.0}, 'cpu_freq_per_core': [{'current': 2068.288, 'min': 800.0, 'max': 4300.0}, {'current': 1561.417, 'min': 800.0, 'max': 4300.0}, {'current': 2380.97, 'min': 800.0, 'max': 4300.0}, {'current': 1074.204, 'min': 800.0, 'max': 4300.0}, {'current': 1784.454, 'min': 800.0, 'max': 4300.0}, {'current': 1650.33, 'min': 800.0, 'max': 4300.0}, {'current': 989.261, 'min': 800.0, 'max': 4300.0}, {'current': 3442.05, 'min': 800.0, 'max': 4300.0}, {'current': 1380.9, 'min': 800.0, 'max': 4300.0}, {'current': 1982.543, 'min': 800.0, 'max': 4300.0}, {'current': 1141.811, 'min': 800.0, 'max': 4300.0}, {'current': 1125.781, 'min': 800.0, 'max': 4300.0}], 'disk': {'total': 81.9483413696289, 'used': 35.822574615478516}, 'gpu': 'NVIDIA GeForce RTX 3060 Ti', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 3060 Ti', 'memory_total': 8589934592}], 'memory': {'total': 15.486103057861328}}
+2024-09-13 13:03:23,709 INFO    HandlerThread:2604798 [system_monitor.py:probe():211] Finished collecting system info
+2024-09-13 13:03:23,709 INFO    HandlerThread:2604798 [system_monitor.py:probe():214] Publishing system info
+2024-09-13 13:03:23,709 DEBUG   HandlerThread:2604798 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2024-09-13 13:03:23,710 DEBUG   HandlerThread:2604798 [system_info.py:_save_pip():67] Saving pip packages done
+2024-09-13 13:03:23,710 DEBUG   HandlerThread:2604798 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2024-09-13 13:03:26,855 DEBUG   HandlerThread:2604798 [system_info.py:_save_conda():86] Saving conda packages done
+2024-09-13 13:03:26,855 INFO    HandlerThread:2604798 [system_monitor.py:probe():216] Finished publishing system info
+2024-09-13 13:03:28,355 DEBUG   HandlerThread:2604798 [handler.py:handle_request():144] handle_request: status_report
+2024-09-13 13:03:28,356 DEBUG   SenderThread:2604798 [sender.py:send_request():406] send_request: status_report

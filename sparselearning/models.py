@@ -634,6 +634,9 @@ class ResNet(nn.Module):
         return x
 
     def get_shared_para(self):
+        '''
+        counts all active and pruned parameters in shared blocks
+        '''
         shared_params = 0
         for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
             if len(layer) > self.ratio:

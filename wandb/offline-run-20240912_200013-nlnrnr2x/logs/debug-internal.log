@@ -1,0 +1,58 @@
+2024-09-12 20:00:13,242 INFO    StreamThr :2566944 [internal.py:wandb_internal():86] W&B internal server running at pid: 2566944, started at: 2024-09-12 20:00:13.241586
+2024-09-12 20:00:13,242 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status
+2024-09-12 20:00:13,244 INFO    WriterThread:2566944 [datastore.py:open_for_write():85] open: /home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/wandb/offline-run-20240912_200013-nlnrnr2x/run-nlnrnr2x.wandb
+2024-09-12 20:00:13,298 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: run_start
+2024-09-12 20:00:13,323 DEBUG   HandlerThread:2566944 [system_info.py:__init__():31] System info init
+2024-09-12 20:00:13,323 DEBUG   HandlerThread:2566944 [system_info.py:__init__():46] System info init done
+2024-09-12 20:00:13,323 INFO    HandlerThread:2566944 [system_monitor.py:start():181] Starting system monitor
+2024-09-12 20:00:13,323 INFO    SystemMonitor:2566944 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2024-09-12 20:00:13,324 INFO    SystemMonitor:2566944 [interfaces.py:start():190] Started cpu monitoring
+2024-09-12 20:00:13,324 INFO    HandlerThread:2566944 [system_monitor.py:probe():201] Collecting system info
+2024-09-12 20:00:13,324 INFO    SystemMonitor:2566944 [interfaces.py:start():190] Started disk monitoring
+2024-09-12 20:00:13,324 INFO    SystemMonitor:2566944 [interfaces.py:start():190] Started gpu monitoring
+2024-09-12 20:00:13,325 INFO    SystemMonitor:2566944 [interfaces.py:start():190] Started memory monitoring
+2024-09-12 20:00:13,325 INFO    SystemMonitor:2566944 [interfaces.py:start():190] Started network monitoring
+2024-09-12 20:00:13,527 DEBUG   HandlerThread:2566944 [system_info.py:probe():195] Probing system
+2024-09-12 20:00:13,528 DEBUG   HandlerThread:2566944 [system_info.py:_probe_git():180] Probing git
+2024-09-12 20:00:13,535 DEBUG   HandlerThread:2566944 [system_info.py:_probe_git():188] Probing git done
+2024-09-12 20:00:13,535 DEBUG   HandlerThread:2566944 [system_info.py:probe():240] Probing system done
+2024-09-12 20:00:13,535 DEBUG   HandlerThread:2566944 [system_monitor.py:probe():210] {'os': 'Linux-5.15.0-116-generic-x86_64-with-glibc2.17', 'python': '3.8.12', 'heartbeatAt': '2024-09-12T19:00:13.527605', 'startedAt': '2024-09-12T19:00:13.237647', 'docker': None, 'cuda': None, 'args': ('--sparse', '--seed', '41', '--disable_drelu_grad', '--sparse_init', 'ERK', '--multiplier', '1', '--lr', '0.1', '--density', '0.0005', '--update_frequency', '4000', '--epochs', '250', '--model', 'ResNet34', '--data', 'cifar10', '--decay_frequency', '30000', '--batch-size', '128', '--growth', 'gradient', '--death', 'magnitude', '--redistribution', 'none', '--l2', '1e-4', '--wandb-mode', 'dryrun'), 'state': 'running', 'program': '/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/main.py', 'codePath': 'main.py', 'git': {'remote': 'https://github.com/TensorStrike/ES2.git', 'commit': 'a215ea638dac5bfa908c76d796d15a02dca3e7f9'}, 'email': 'lihanou@yahoo.com', 'root': '/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2', 'host': 'MD-058161', 'username': 'r01al21', 'executable': '/home/rpgsbs/r01al21/anaconda3/envs/pytorch_py38/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 3992.4029166666674, 'min': 800.0, 'max': 4300.0}, 'cpu_freq_per_core': [{'current': 4070.642, 'min': 800.0, 'max': 4300.0}, {'current': 4097.97, 'min': 800.0, 'max': 4300.0}, {'current': 4085.902, 'min': 800.0, 'max': 4300.0}, {'current': 4088.444, 'min': 800.0, 'max': 4300.0}, {'current': 4096.77, 'min': 800.0, 'max': 4300.0}, {'current': 4093.667, 'min': 800.0, 'max': 4300.0}, {'current': 4088.676, 'min': 800.0, 'max': 4300.0}, {'current': 4078.869, 'min': 800.0, 'max': 4300.0}, {'current': 4093.148, 'min': 800.0, 'max': 4300.0}, {'current': 4091.249, 'min': 800.0, 'max': 4300.0}, {'current': 4092.442, 'min': 800.0, 'max': 4300.0}, {'current': 4099.355, 'min': 800.0, 'max': 4300.0}], 'disk': {'total': 81.9483413696289, 'used': 35.806766510009766}, 'gpu': 'NVIDIA GeForce RTX 3060 Ti', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 3060 Ti', 'memory_total': 8589934592}], 'memory': {'total': 15.486103057861328}}
+2024-09-12 20:00:13,535 INFO    HandlerThread:2566944 [system_monitor.py:probe():211] Finished collecting system info
+2024-09-12 20:00:13,535 INFO    HandlerThread:2566944 [system_monitor.py:probe():214] Publishing system info
+2024-09-12 20:00:13,535 DEBUG   HandlerThread:2566944 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2024-09-12 20:00:13,535 DEBUG   HandlerThread:2566944 [system_info.py:_save_pip():67] Saving pip packages done
+2024-09-12 20:00:13,535 DEBUG   HandlerThread:2566944 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2024-09-12 20:00:16,716 DEBUG   HandlerThread:2566944 [system_info.py:_save_conda():86] Saving conda packages done
+2024-09-12 20:00:16,717 INFO    HandlerThread:2566944 [system_monitor.py:probe():216] Finished publishing system info
+2024-09-12 20:00:18,245 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:18,245 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:23,246 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:23,246 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:28,246 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:28,247 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:33,247 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:33,247 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:38,248 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:38,248 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:43,249 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:43,249 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:48,250 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:48,250 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:53,251 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:53,251 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:00:58,252 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:00:58,252 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:01:03,253 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:01:03,253 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:01:08,253 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:01:08,254 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:01:13,254 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:01:13,255 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:01:13,325 DEBUG   SystemMonitor:2566944 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2024-09-12 20:01:18,256 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:01:18,256 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:01:23,256 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:01:23,257 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report
+2024-09-12 20:01:25,810 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: partial_history
+2024-09-12 20:01:28,257 DEBUG   HandlerThread:2566944 [handler.py:handle_request():144] handle_request: status_report
+2024-09-12 20:01:28,258 DEBUG   SenderThread:2566944 [sender.py:send_request():406] send_request: status_report

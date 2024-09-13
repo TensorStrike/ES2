@@ -1,0 +1,140 @@
+{
+    "os": "Linux-5.15.0-116-generic-x86_64-with-glibc2.17",
+    "python": "3.8.12",
+    "heartbeatAt": "2024-09-13T14:58:59.833725",
+    "startedAt": "2024-09-13T14:58:59.488441",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--sparse",
+        "--seed",
+        "41",
+        "--disable_drelu_grad",
+        "--sparse_init",
+        "ERK",
+        "--multiplier",
+        "1",
+        "--lr",
+        "0.1",
+        "--density",
+        "0.0005",
+        "--update_frequency",
+        "4000",
+        "--epochs",
+        "250",
+        "--model",
+        "ResNet34",
+        "--data",
+        "cifar10",
+        "--decay_frequency",
+        "30000",
+        "--batch-size",
+        "128",
+        "--growth",
+        "gradient",
+        "--death",
+        "magnitude",
+        "--redistribution",
+        "none",
+        "--l2",
+        "1e-4",
+        "--wandb-mode",
+        "dryrun"
+    ],
+    "state": "running",
+    "program": "/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2/main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://github.com/TensorStrike/ES2.git",
+        "commit": "a215ea638dac5bfa908c76d796d15a02dca3e7f9"
+    },
+    "email": "lihanou@yahoo.com",
+    "root": "/home/rpgsbs/r01al21/PycharmProjects/pythonProject/ES2",
+    "host": "MD-058161",
+    "username": "r01al21",
+    "executable": "/home/rpgsbs/r01al21/anaconda3/envs/pytorch_py38/bin/python",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 2294.9171666666666,
+        "min": 800.0,
+        "max": 4300.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1541.195,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 1562.11,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 1713.907,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 2237.875,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 1515.314,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 1341.149,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 1274.224,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 1265.653,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 940.444,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 849.831,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 800.064,
+            "min": 800.0,
+            "max": 4300.0
+        },
+        {
+            "current": 800.084,
+            "min": 800.0,
+            "max": 4300.0
+        }
+    ],
+    "disk": {
+        "total": 81.9483413696289,
+        "used": 35.8232307434082
+    },
+    "gpu": "NVIDIA GeForce RTX 3060 Ti",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3060 Ti",
+            "memory_total": 8589934592
+        }
+    ],
+    "memory": {
+        "total": 15.486103057861328
+    }
+}

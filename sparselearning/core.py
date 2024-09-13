@@ -551,43 +551,83 @@ class Masking(object):
         return grad
 
     def get_metrics(self):
-        total_nonzero = 0
+
         total_params = 0
-        non_shared_nonzero = 0
-        non_shared_params = 0
-        shared_params = 0
+        active_params = 0
+        normal_params = 0
+        active_normal_params = 0
+        mask_count = 0
+        running_total = 0
 
-        for module in self.modules:
-            for name, tensor in module.named_parameters():
-                if name not in self.masks:
-                    continue
-                mask = self.masks[name]
-                num_nonzeros = (mask != 0).sum().item()
-                total_nonzero += num_nonzeros               # alive params in non-shared
-                total_params += mask.numel()                # all params in non-shared
+        print("Debug: Starting get_metrics")
+        print(f"Debug: Number of masks: {len(self.masks)}")
 
-                if 'layer' in name and int(name.split('.')[1]) >= self.args.ratio:      # shared blocks
-                    shared_params += mask.numel()
-                else:
-                    non_shared_nonzero += num_nonzeros
-                    non_shared_params += mask.numel()       # includes the removed shared blocks
+        for name, mask in self.masks.items():
+            if 'weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower():
+                mask_count += 1
+                param_size = mask.numel()
+                layer_active = (mask != 0).sum().item()
+                running_total += param_size
+                print(f"Debug: Mask {mask_count}: {name}")
+                print(f"Debug: Layer size: {param_size}, Active elements: {layer_active}")
+                print(f"Debug: Running total of parameters: {running_total}")
+                normal_params += param_size
+                active_normal_params += layer_active
 
-        overall_density = total_nonzero / total_params
+        # Account for shared parameters
+        shared_params = self.modules[0].get_shared_para()
+        total_params = normal_params + shared_params
 
-        if non_shared_params != 0:
-            normalized_density = non_shared_nonzero / non_shared_params
-        else:
-            normalized_density = overall_density
+        print(f"Debug: Final normal params: {normal_params}")
+        print(f"Debug: Shared params: {shared_params}")
+        print(f"Debug: Total params: {total_params}")
+
+        # active shared parameters
+        # if self.args.ratio > 0:
+        #     num_shared_blocks = sum(len(layer) - self.args.ratio for layer in self.modules[0].children() if
+        #                             isinstance(layer, nn.ModuleList))
+        #     avg_active_per_block = int(active_normal_params / (len(self.masks) / 2))  # Assuming 2 conv layers per block
+        #     active_shared_params = avg_active_per_block * num_shared_blocks
+        # else:
+        #     active_shared_params = 0
+
+        print(f"Debug: Detailed breakdown of parameters:")
+        for name, param in self.modules[0].named_parameters():
+            print(f"Layer: {name}, Params: {param.numel()}")
+
+        active_shared_params = 0
+        for layer_name in ['layer1', 'layer2', 'layer3', 'layer4']:
+            layer = getattr(self.modules[0], layer_name)
+            if len(layer) > self.args.ratio:
+                last_non_shared_block = layer[self.args.ratio - 1]
+                num_shared_blocks = len(layer) - self.args.ratio
+                for name, param in last_non_shared_block.named_parameters():
+                    if 'weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower():
+                        full_name = f"{layer_name}.{self.args.ratio - 1}.{name}"
+                        if full_name in self.masks:
+                            mask = self.masks[full_name]
+                            active_params_in_block = (mask != 0).sum().item()
+                            active_shared_params += active_params_in_block * num_shared_blocks
+                            print(f"Debug: Shared block {full_name}, Active elements: {active_params_in_block}, Shared blocks: {num_shared_blocks}")
+
+        active_params = active_normal_params + active_shared_params
+
+        print(f"Debug: Normal params: {normal_params}, Active normal params: {active_normal_params}")
+        print(f"Debug: Shared parameters: {shared_params}")
+        print(f"Debug: Estimated active shared parameters: {active_shared_params}")
+        print(f"Debug: Final counts - Total params: {total_params}, Active params: {active_params}")
+
+        overall_density = active_params / total_params if total_params != 0 else 0
+        normalized_density = active_normal_params / total_params if total_params != 0 else 0
 
         metrics = {
             'overall_density': overall_density,
             'normalized_density': normalized_density,
             'total_params': total_params,
-            'non_shared_params': non_shared_params,
-            'shared_params': shared_params,
-            'total_nonzero': total_nonzero,
+            'active_params': active_params,
+            'normal_params': normal_params,
+            'active_normal_params': active_normal_params,
         }
-
         return metrics
 
     def print_nonzero_counts(self):
