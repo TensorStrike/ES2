@@ -6,7 +6,7 @@ import argparse
 import logging
 import hashlib
 import copy
-
+import torch.nn as nn
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
@@ -81,22 +81,13 @@ def print_and_log(msg):
 
 def calculate_adjusted_density(model, density):
     non_shared_params = 0
-    shared_params = 0
-
     for name, param in model.named_parameters():
-        if 'conv' in name or 'classifier' in name:          # normal layers
+        if 'weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower():
             non_shared_params += param.numel()
 
-    for layer_name in ['layer1', 'layer2', 'layer3', 'layer4']:
-        layer = getattr(model, layer_name)
-        if len(layer) > model.ratio:        # shared layers
-            # parameters in one block
-            block_params = sum(p.numel() for name, p in layer[model.ratio - 1].named_parameters()
-                               if 'conv' in name)
-            shared_params += block_params * (len(layer) - model.ratio)      # multiply by how many
+    shared_params = model.get_shared_para()
 
     total_params = non_shared_params + shared_params
-
 
     print(f"Total params: {total_params}")
     print(f"Non-shared params: {non_shared_params}")
@@ -105,6 +96,8 @@ def calculate_adjusted_density(model, density):
     adjusted_density = total_params * density / non_shared_params
 
     return adjusted_density
+
+
 
 
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
@@ -235,7 +228,7 @@ def main():
     if args.wandb_mode == "dryrun":
         wandb.init(mode="dryrun")
     elif args.wandb_mode == "online":
-        wandb.init(project="extreme-sparsity", entity="tensorstrike", config=vars(args))
+        wandb.init(project="ES2", entity="tensorstrike", config=vars(args))
 
 
     if args.fp16:

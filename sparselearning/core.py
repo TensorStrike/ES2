@@ -120,79 +120,124 @@ class Masking(object):
                     # self.masks[name][:] = (torch.rand(weight.shape) < density).float().data #lsw
                     self.baseline_nonzero += weight.numel()*density
 
-        elif mode == 'ERK':
+        # elif mode == 'ERK':
+        #     print('initialize by ERK')
+        #     total_params = 0
+        #     for name, weight in self.masks.items():
+        #         total_params += weight.numel()
+        #     is_epsilon_valid = False
+        #     # # The following loop will terminate worst case when all masks are in the
+        #     # custom_sparsity_map. This should probably never happen though, since once
+        #     # we have a single variable or more with the same constant, we have a valid
+        #     # epsilon. Note that for each iteration we add at least one variable to the
+        #     # custom_sparsity_map and therefore this while loop should terminate.
+        #     dense_layers = set()
+        #     while not is_epsilon_valid:
+        #         # We will start with all layers and try to find right epsilon. However if
+        #         # any probablity exceeds 1, we will make that layer dense and repeat the
+        #         # process (finding epsilon) with the non-dense layers.
+        #         # We want the total number of connections to be the same. Let say we have
+        #         # for layers with N_1, ..., N_4 parameters each. Let say after some
+        #         # iterations probability of some dense layers (3, 4) exceeded 1 and
+        #         # therefore we added them to the dense_layers set. Those layers will not
+        #         # scale with erdos_renyi, however we need to count them so that target
+        #         # paratemeter count is achieved. See below.
+        #         # eps * (p_1 * N_1 + p_2 * N_2) + (N_3 + N_4) =
+        #         #    (1 - default_sparsity) * (N_1 + N_2 + N_3 + N_4)
+        #         # eps * (p_1 * N_1 + p_2 * N_2) =
+        #         #    (1 - default_sparsity) * (N_1 + N_2) - default_sparsity * (N_3 + N_4)
+        #         # eps = rhs / (\sum_i p_i * N_i) = rhs / divisor.
+        #
+        #         divisor = 0
+        #         rhs = 0
+        #         raw_probabilities = {}
+        #         for name, mask in self.masks.items():
+        #             n_param = np.prod(mask.shape)
+        #             n_zeros = n_param * (1 - self.density)
+        #             n_ones = n_param * self.density
+        #
+        #             if name in dense_layers:
+        #                 rhs -= n_zeros
+        #             else:
+        #                 rhs += n_ones
+        #                 raw_probabilities[name] = (
+        #                                                   np.sum(mask.shape) / np.prod(mask.shape)
+        #                                           ) ** erk_power_scale
+        #                 divisor += raw_probabilities[name] * n_param
+        #         epsilon = rhs / divisor
+        #         max_prob = np.max(list(raw_probabilities.values()))
+        #         max_prob_one = max_prob * epsilon
+        #         if max_prob_one > 1:
+        #             is_epsilon_valid = False
+        #             for mask_name, mask_raw_prob in raw_probabilities.items():
+        #                 if mask_raw_prob == max_prob:
+        #                     print(f"Sparsity of var:{mask_name} had to be set to 0.")
+        #                     dense_layers.add(mask_name)
+        #         else:
+        #             is_epsilon_valid = True
+        #
+        #     density_dict = {}
+        #     total_nonzero = 0.0
+        #     # With the valid epsilon, we can set sparsities of the remaning layers.
+        #     for name, mask in self.masks.items():
+        #         n_param = np.prod(mask.shape)
+        #         if name in dense_layers:
+        #             density_dict[name] = 1.0
+        #         else:
+        #             probability_one = epsilon * raw_probabilities[name]
+        #             density_dict[name] = probability_one
+        #         print(
+        #             f"layer: {name}, shape: {mask.shape}, density: {density_dict[name]}"
+        #         )
+        #         self.masks[name][:] = (torch.rand(mask.shape) < density_dict[name]).float().data.cuda()
+        #
+        #         total_nonzero += density_dict[name] * mask.numel()
+        #     print(f"Overall sparsity {total_nonzero / total_params}")
+        if mode == 'ERK':
             print('initialize by ERK')
-            total_params = 0
-            for name, weight in self.masks.items():
-                total_params += weight.numel()
-            is_epsilon_valid = False
-            # # The following loop will terminate worst case when all masks are in the
-            # custom_sparsity_map. This should probably never happen though, since once
-            # we have a single variable or more with the same constant, we have a valid
-            # epsilon. Note that for each iteration we add at least one variable to the
-            # custom_sparsity_map and therefore this while loop should terminate.
-            dense_layers = set()
-            while not is_epsilon_valid:
-                # We will start with all layers and try to find right epsilon. However if
-                # any probablity exceeds 1, we will make that layer dense and repeat the
-                # process (finding epsilon) with the non-dense layers.
-                # We want the total number of connections to be the same. Let say we have
-                # for layers with N_1, ..., N_4 parameters each. Let say after some
-                # iterations probability of some dense layers (3, 4) exceeded 1 and
-                # therefore we added them to the dense_layers set. Those layers will not
-                # scale with erdos_renyi, however we need to count them so that target
-                # paratemeter count is achieved. See below.
-                # eps * (p_1 * N_1 + p_2 * N_2) + (N_3 + N_4) =
-                #    (1 - default_sparsity) * (N_1 + N_2 + N_3 + N_4)
-                # eps * (p_1 * N_1 + p_2 * N_2) =
-                #    (1 - default_sparsity) * (N_1 + N_2) - default_sparsity * (N_3 + N_4)
-                # eps = rhs / (\sum_i p_i * N_i) = rhs / divisor.
+            total_params = sum(mask.numel() for mask in self.masks.values())
+            expected_active_params = int(total_params * self.density)
 
-                divisor = 0
-                rhs = 0
-                raw_probabilities = {}
-                for name, mask in self.masks.items():
-                    n_param = np.prod(mask.shape)
-                    n_zeros = n_param * (1 - self.density)
-                    n_ones = n_param * self.density
-
-                    if name in dense_layers:
-                        rhs -= n_zeros
-                    else:
-                        rhs += n_ones
-                        raw_probabilities[name] = (
-                                                          np.sum(mask.shape) / np.prod(mask.shape)
-                                                  ) ** erk_power_scale
-                        divisor += raw_probabilities[name] * n_param
-                epsilon = rhs / divisor
-                max_prob = np.max(list(raw_probabilities.values()))
-                max_prob_one = max_prob * epsilon
-                if max_prob_one > 1:
-                    is_epsilon_valid = False
-                    for mask_name, mask_raw_prob in raw_probabilities.items():
-                        if mask_raw_prob == max_prob:
-                            print(f"Sparsity of var:{mask_name} had to be set to 0.")
-                            dense_layers.add(mask_name)
-                else:
-                    is_epsilon_valid = True
-
-            density_dict = {}
-            total_nonzero = 0.0
-            # With the valid epsilon, we can set sparsities of the remaning layers.
+            # Compute raw probabilities for ERK
+            raw_probabilities = {}
+            total_raw_prob = 0.0
             for name, mask in self.masks.items():
-                n_param = np.prod(mask.shape)
-                if name in dense_layers:
-                    density_dict[name] = 1.0
-                else:
-                    probability_one = epsilon * raw_probabilities[name]
-                    density_dict[name] = probability_one
-                print(
-                    f"layer: {name}, shape: {mask.shape}, density: {density_dict[name]}"
-                )
-                self.masks[name][:] = (torch.rand(mask.shape) < density_dict[name]).float().data.cuda()
+                n_param = mask.numel()
+                raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** erk_power_scale
+                raw_probabilities[name] = raw_prob
+                total_raw_prob += raw_prob * n_param
 
-                total_nonzero += density_dict[name] * mask.numel()
-            print(f"Overall sparsity {total_nonzero / total_params}")
+            # Calculate scaling factor epsilon
+            epsilon = expected_active_params / total_raw_prob
+
+            # Set a minimum density threshold
+            min_density = 0.001  # Adjust as needed
+            total_nonzero = 0
+            for name, mask in self.masks.items():
+                n_param = mask.numel()
+                prob_one = epsilon * raw_probabilities[name]
+
+                # Enforce minimum density
+                prob_one = max(prob_one, min_density)
+                prob_one = min(prob_one, 1.0)  # Ensure density does not exceed 1
+                n_ones = int(round(prob_one * n_param))
+
+                # Update total_nonzero
+                total_nonzero += n_ones
+
+                # Apply mask
+                mask_flat = mask.view(-1)
+                indices = torch.randperm(n_param, device=mask.device)[:n_ones]
+                mask_flat.zero_()
+                mask_flat[indices] = 1.0
+                self.masks[name] = mask_flat.view_as(mask)
+
+            print(f"Total expected active trainable params: {expected_active_params}")
+            print(f"Total actual active trainable params after ERK initialization: {total_nonzero}")
+
+        else:
+            # Handle other initialization modes
+            pass
 
         self.apply_mask()
         self.fired_masks = copy.deepcopy(self.masks) # used for ITOP
@@ -558,9 +603,9 @@ class Masking(object):
         active_normal_params = 0
         mask_count = 0
         running_total = 0
-
         print("Debug: Starting get_metrics")
         print(f"Debug: Number of masks: {len(self.masks)}")
+
 
         for name, mask in self.masks.items():
             if 'weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower():
@@ -602,13 +647,11 @@ class Masking(object):
                 last_non_shared_block = layer[self.args.ratio - 1]
                 num_shared_blocks = len(layer) - self.args.ratio
                 for name, param in last_non_shared_block.named_parameters():
-                    if 'weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower():
-                        full_name = f"{layer_name}.{self.args.ratio - 1}.{name}"
-                        if full_name in self.masks:
-                            mask = self.masks[full_name]
-                            active_params_in_block = (mask != 0).sum().item()
-                            active_shared_params += active_params_in_block * num_shared_blocks
-                            print(f"Debug: Shared block {full_name}, Active elements: {active_params_in_block}, Shared blocks: {num_shared_blocks}")
+                    full_name = f"{layer_name}.{self.args.ratio - 1}.{name}"
+                    if full_name in self.masks:
+                        mask = self.masks[full_name]
+                        active_params_in_block = (mask != 0).sum().item()
+                        active_shared_params += active_params_in_block * num_shared_blocks
 
         active_params = active_normal_params + active_shared_params
 
@@ -620,6 +663,8 @@ class Masking(object):
         overall_density = active_params / total_params if total_params != 0 else 0
         normalized_density = active_normal_params / total_params if total_params != 0 else 0
 
+
+
         metrics = {
             'overall_density': overall_density,
             'normalized_density': normalized_density,
@@ -629,6 +674,7 @@ class Masking(object):
             'active_normal_params': active_normal_params,
         }
         return metrics
+
 
     def print_nonzero_counts(self):
         for module in self.modules:
