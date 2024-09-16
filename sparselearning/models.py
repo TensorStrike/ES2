@@ -633,34 +633,34 @@ class ResNet(nn.Module):
                 x = block(x, weight_params)
         return x
 
-    def get_shared_para(self):
-        '''
-        counts all active and pruned parameters in shared blocks
-        '''
-        shared_params = 0
-        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
-            if len(layer) > self.ratio:
-                params_per_block = sum(p.numel() for p in layer[self.ratio-1].parameters() if len(p.shape) > 1)
-                shared_params += params_per_block * (len(layer) - self.ratio)
-        return shared_params
-
     # def get_shared_para(self):
     #     '''
-    #     Counts only the convolutional and linear weights in shared blocks.
+    #     counts all active and pruned parameters in shared blocks
     #     '''
     #     shared_params = 0
     #     for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
     #         if len(layer) > self.ratio:
-    #             num_shared_blocks = len(layer) - self.ratio
-    #             last_non_shared_block = layer[self.ratio - 1]
-    #             # Count only the prunable weights
-    #             params_per_block = sum(
-    #                 p.numel() for name, p in last_non_shared_block.named_parameters()
-    #                 if ('weight' in name and (
-    #                             'conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower())
-    #             )
-    #             shared_params += params_per_block * num_shared_blocks
+    #             params_per_block = sum(p.numel() for p in layer[self.ratio-1].parameters() if len(p.shape) > 1)
+    #             shared_params += params_per_block * (len(layer) - self.ratio)
     #     return shared_params
+
+    def get_shared_para(self):
+        '''
+        Counts only the convolutional and linear weights in shared blocks.
+        '''
+        shared_params = 0
+        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
+            if len(layer) > self.ratio:
+                num_shared_blocks = len(layer) - self.ratio
+                last_non_shared_block = layer[self.ratio - 1]
+                # Count only the prunable weights
+                params_per_block = sum(
+                    p.numel() for name, p in last_non_shared_block.named_parameters()
+                    if ('weight' in name and (
+                                'conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower())
+                )
+                shared_params += params_per_block * num_shared_blocks
+        return shared_params
 
 
 class BasicBlock_NoPara(nn.Module):

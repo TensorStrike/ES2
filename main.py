@@ -81,9 +81,17 @@ def print_and_log(msg):
 
 def calculate_adjusted_density(model, density):
     non_shared_params = 0
+    count_layer = 0
     for name, param in model.named_parameters():
-        if 'weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower():
+        if ('weight' in name and
+                ('conv' in name.lower() or 'linear' in name.lower() or 'classifier' in name.lower() or name.endswith('.shortcut.0.weight')) and
+                'bn' not in name.lower() and
+                'relu' not in name.lower()):
             non_shared_params += param.numel()
+            count_layer+=1
+            print(f"Non-shared layer: {name}, params: {param.numel()}")
+        # else:
+        #     print(f"Skipped layer: {name}, params: {param.numel()}")
 
     shared_params = model.get_shared_para()
 
@@ -333,9 +341,9 @@ def main():
         mask = None
         if args.sparse:
             decay = CosineDecay(args.death_rate, len(train_loader)*(args.epochs*args.multiplier))
-            density = calculate_adjusted_density(model, args.density)           # we adjust density to account for weight sharing
             mask = Masking(optimizer, death_rate=args.death_rate, death_mode=args.death, death_rate_decay=decay, growth_mode=args.growth,
                            redistribution_mode=args.redistribution, args=args)
+            density = calculate_adjusted_density(model, args.density)           # we adjust density to account for weight sharing
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         best_acc = 0.0
