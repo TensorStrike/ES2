@@ -16,7 +16,8 @@ from sparselearning.dyrelu import DyReLUB, DyReLUB_inf
 from torch.nn.utils import clip_grad_norm_
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
-from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, ResNet18
+from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
+    ResNet18
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders
 import torchvision
 import torchvision.transforms as transforms
@@ -32,9 +33,9 @@ if not os.path.exists('./logs'): os.mkdir('./logs')
 logger = None
 
 models = {}
-models['MLPCIFAR10'] = (MLP_CIFAR10,[])
-models['lenet5'] = (LeNet_5_Caffe,[])
-models['lenet300-100'] = (LeNet_300_100,[])
+models['MLPCIFAR10'] = (MLP_CIFAR10, [])
+models['lenet5'] = (LeNet_5_Caffe, [])
+models['lenet300-100'] = (LeNet_300_100, [])
 models['ResNet34'] = ()
 models['ResNet18'] = ()
 models['alexnet-s'] = (AlexNet, ['s', 10])
@@ -46,6 +47,7 @@ models['wrn-28-2'] = (WideResNet, [28, 2, 10, 0.3])
 models['wrn-22-8'] = (WideResNet, [22, 8, 10, 0.3])
 models['wrn-16-8'] = (WideResNet, [16, 8, 10, 0.3])
 models['wrn-16-10'] = (WideResNet, [16, 10, 10, 0.3])
+
 
 def setup_logger(args):
     global logger
@@ -64,7 +66,8 @@ def setup_logger(args):
     args_copy.log_interval = 1
     args_copy.seed = 0
 
-    log_path = './logs/{0}_{1}_{2}.log'.format(args.model, args.density, hashlib.md5(str(args_copy).encode('utf-8')).hexdigest()[:8])
+    log_path = './logs/{0}_{1}_{2}.log'.format(args.model, args.density,
+                                               hashlib.md5(str(args_copy).encode('utf-8')).hexdigest()[:8])
 
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter(fmt='%(asctime)s: %(message)s', datefmt='%H:%M:%S')
@@ -72,6 +75,7 @@ def setup_logger(args):
     fh = logging.FileHandler(log_path)
     fh.setFormatter(formatter)
     logger.addHandler(fh)
+
 
 def print_and_log(msg):
     global logger
@@ -84,11 +88,12 @@ def calculate_adjusted_density(model, density):
     count_layer = 0
     for name, param in model.named_parameters():
         if ('weight' in name and
-                ('conv' in name.lower() or 'linear' in name.lower() or 'classifier' in name.lower() or name.endswith('.shortcut.0.weight')) and
+                ('conv' in name.lower() or 'linear' in name.lower() or 'classifier' in name.lower() or name.endswith(
+                    '.shortcut.0.weight')) and
                 'bn' not in name.lower() and
                 'relu' not in name.lower()):
             non_shared_params += param.numel()
-            count_layer+=1
+            count_layer += 1
             print(f"Non-shared layer: {name}, params: {param.numel()}")
         # else:
         #     print(f"Skipped layer: {name}, params: {param.numel()}")
@@ -105,6 +110,7 @@ def calculate_adjusted_density(model, density):
 
     return adjusted_density
 
+
 def test_inference_speed(model, device, test_loader, num_batches=100):
     model.eval()
     model.to(device)
@@ -116,7 +122,6 @@ def test_inference_speed(model, device, test_loader, num_batches=100):
                 break
             data = data.to(device)
             _ = model(data)
-
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -131,6 +136,7 @@ def convert_drelu_to_drelu_inf(model):
             setattr(model, child_name, DyReLUB_inf(child.channels, 4, child.k, child.conv_type))
         else:
             convert_drelu_to_drelu_inf(child)
+
 
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
     model.train()
@@ -157,24 +163,23 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
 
         clip_grad_norm_(model.parameters(), max_norm=1.0)
 
-
-        if mask is not None: mask.step()
-        else: optimizer.step()
-
+        if mask is not None:
+            mask.step()
+        else:
+            optimizer.step()
 
         if batch_idx % args.log_interval == 0:
             print_and_log('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} Accuracy: {}/{} ({:.3f}% '.format(
-                epoch, batch_idx * len(data), len(train_loader)*args.batch_size,
-                100. * batch_idx / len(train_loader), loss.item(), correct, n, 100. * correct / float(n)))
-
+                epoch, batch_idx * len(data), len(train_loader) * args.batch_size,
+                       100. * batch_idx / len(train_loader), loss.item(), correct, n, 100. * correct / float(n)))
 
     # training summary
     print_and_log('\n{}: Average loss: {:.4f}, Accuracy: {}/{} ({:.3f}%)\n'.format(
-        'Training summary' ,
-        train_loss/batch_idx, correct, n, 100. * correct / float(n)))
+        'Training summary',
+        train_loss / batch_idx, correct, n, 100. * correct / float(n)))
 
+    return train_loss / batch_idx, correct / float(n)
 
-    return train_loss/batch_idx,  correct / float(n)
 
 def evaluate(args, model, device, test_loader, is_test_set=False):
     model.eval()
@@ -190,7 +195,7 @@ def evaluate(args, model, device, test_loader, is_test_set=False):
             # test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
             test_loss += F.cross_entropy(output, target, reduction='sum').item()
 
-            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
             n += target.shape[0]
 
@@ -223,7 +228,8 @@ def main():
     parser.add_argument('--seed', type=int, default=17, metavar='S', help='random seed (default: 17)')
     parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                         help='how many batches to wait before logging training status')
-    parser.add_argument('--optimizer', type=str, default='sgd', help='The optimizer to use. Default: sgd. Options: sgd, adam.')
+    parser.add_argument('--optimizer', type=str, default='sgd',
+                        help='The optimizer to use. Default: sgd. Options: sgd, adam.')
     randomhash = ''.join(str(time.time()).split('.'))
     parser.add_argument('--save', type=str, default=randomhash + '.pt',
                         help='path to save the final model')
@@ -236,9 +242,12 @@ def main():
     parser.add_argument('--start-epoch', type=int, default=1)
     parser.add_argument('--model', type=str, default='')
     parser.add_argument('--l2', type=float, default=5.0e-4)
-    parser.add_argument('--iters', type=int, default=1, help='How many times the model should be run after each other. Default=1')
-    parser.add_argument('--save-features', action='store_true', help='Resumes a saved model and saves its feature data to disk for plotting.')
-    parser.add_argument('--bench', action='store_true', help='Enables the benchmarking of layers and estimates sparse speedups')
+    parser.add_argument('--iters', type=int, default=1,
+                        help='How many times the model should be run after each other. Default=1')
+    parser.add_argument('--save-features', action='store_true',
+                        help='Resumes a saved model and saves its feature data to disk for plotting.')
+    parser.add_argument('--bench', action='store_true',
+                        help='Enables the benchmarking of layers and estimates sparse speedups')
     parser.add_argument('--max-threads', type=int, default=10, help='How many threads to use for data loading.')
     # ITOP settings
     sparselearning.core.add_sparse_args(parser)
@@ -262,7 +271,6 @@ def main():
     elif args.wandb_mode == "online":
         wandb.init(project="ES2", entity="tensorstrike", config=vars(args))
 
-
     if args.fp16:
         try:
             from apex.fp16_utils import FP16_Optimizer
@@ -274,18 +282,20 @@ def main():
     device = torch.device("cuda" if use_cuda else "cpu")
 
     print_and_log('\n\n')
-    print_and_log('='*80)
+    print_and_log('=' * 80)
     torch.manual_seed(args.seed)
     for i in range(args.iters):
-        print_and_log("\nIteration start: {0}/{1}\n".format(i+1, args.iters))
-        c=10
+        print_and_log("\nIteration start: {0}/{1}\n".format(i + 1, args.iters))
+        c = 10
         if args.data == 'mnist':
             train_loader, valid_loader, test_loader = get_mnist_dataloaders(args, validation_split=args.valid_split)
         elif args.data == 'cifar10':
-            train_loader, valid_loader, test_loader = get_cifar10_dataloaders(args, args.valid_split, max_threads=args.max_threads)
+            train_loader, valid_loader, test_loader = get_cifar10_dataloaders(args, args.valid_split,
+                                                                              max_threads=args.max_threads)
         elif args.data == 'cifar100':
-            train_loader, valid_loader, test_loader = get_cifar100_dataloaders(args, args.valid_split, max_threads=args.max_threads)
-            c=100
+            train_loader, valid_loader, test_loader = get_cifar100_dataloaders(args, args.valid_split,
+                                                                               max_threads=args.max_threads)
+            c = 100
         if args.model not in models:
             print('You need to select an existing model via the --model argument. Available models include: ')
             for key in models:
@@ -302,9 +312,8 @@ def main():
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
         # print(summary(model, input_size=(3, 32, 32)))
-        print('tensor param:',sum(p.numel() for p in model.parameters()))
+        print('tensor param:', sum(p.numel() for p in model.parameters()))
         test_inference_speed(model, device, test_loader)
-
 
         print_and_log(model)
         print_and_log('=' * 60)
@@ -317,12 +326,12 @@ def main():
         print_and_log('Redistribution mode: {0}'.format(args.redistribution))
         print_and_log('=' * 60)
 
-
         optimizer = None
         if args.optimizer == 'sgd':
-            optimizer = optim.SGD(model.parameters(),lr=args.lr,momentum=args.momentum,weight_decay=args.l2, nesterov=True)
+            optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.l2,
+                                  nesterov=True)
         elif args.optimizer == 'adam':
-            optimizer = optim.Adam(model.parameters(),lr=args.lr,weight_decay=args.l2)
+            optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.l2)
         else:
             print('Unknown optimizer: {0}'.format(args.optimizer))
             raise Exception('Unknown optimizer.')
@@ -330,7 +339,7 @@ def main():
         milestones = [int(args.epochs / 2) * args.multiplier, int(args.epochs * 3 / 4) * args.multiplier]
         lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, last_epoch=-1)
         if args.start_ghost_epoch is None:
-            args.start_ghost_epoch = milestones[0]/2
+            args.start_ghost_epoch = milestones[0] / 2
         if args.end_ghost_epoch is None:
             args.end_ghost_epoch = milestones[0] - 1
 
@@ -345,7 +354,7 @@ def main():
                 model.load_state_dict(checkpoint['state_dict'])
                 optimizer.load_state_dict(checkpoint['optimizer'])
                 print_and_log("=> loaded checkpoint '{}' (epoch {})"
-                      .format(args.resume, checkpoint['epoch']))
+                              .format(args.resume, checkpoint['epoch']))
                 print_and_log('Testing...')
                 evaluate(args, model, device, test_loader)
                 model.feats = []
@@ -354,21 +363,21 @@ def main():
             else:
                 print_and_log("=> no checkpoint found at '{}'".format(args.resume))
 
-
         if args.fp16:
             print('FP16')
             optimizer = FP16_Optimizer(optimizer,
-                                       static_loss_scale = None,
-                                       dynamic_loss_scale = True,
-                                       dynamic_loss_args = {'init_scale': 2 ** 16})
+                                       static_loss_scale=None,
+                                       dynamic_loss_scale=True,
+                                       dynamic_loss_args={'init_scale': 2 ** 16})
             model = model.half()
 
         mask = None
         if args.sparse:
-            decay = CosineDecay(args.death_rate, len(train_loader)*(args.epochs*args.multiplier))
-            mask = Masking(optimizer, death_rate=args.death_rate, death_mode=args.death, death_rate_decay=decay, growth_mode=args.growth,
+            decay = CosineDecay(args.death_rate, len(train_loader) * (args.epochs * args.multiplier))
+            mask = Masking(optimizer, death_rate=args.death_rate, death_mode=args.death, death_rate_decay=decay,
+                           growth_mode=args.growth,
                            redistribution_mode=args.redistribution, args=args)
-            density = calculate_adjusted_density(model, args.density)           # we adjust density to account for weight sharing
+            density = calculate_adjusted_density(model, args.density)  # we adjust density to account for weight sharing
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         best_acc = 0.0
@@ -379,19 +388,19 @@ def main():
         #     lr_scheduler.step()
         #     if args.valid_split > 0.0:
         #         val_acc = evaluate(args, model, device, valid_loader)
-        
+
         #     if val_acc > best_acc:
         #         print('Saving model')
         #         best_acc = val_acc
         #         torch.save(model.state_dict(), args.save)
-        
+
         #     print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(optimizer.param_groups[0]['lr'], time.time() - t0))
 
         for epoch in range(1, args.epochs * args.multiplier + 1):
             t0 = time.time()
 
             if args.disable_drelu_grad:
-                if epoch == start_ghost_epoch:          # when we freeze gradients of drelu
+                if epoch == start_ghost_epoch:  # when we freeze gradients of drelu
                     print("Disabling grad for DyReLU")
                     for name, module in model.named_modules():
                         if isinstance(module, DyReLUB):
@@ -402,12 +411,12 @@ def main():
                                     if 'momentum_buffer' in optimizer.state[param]:
                                         optimizer.state[param]['momentum_buffer'] = torch.zeros_like(param)
 
-            if start_ghost_epoch <= epoch <= end_ghost_epoch:       #decay factor (beta) for phasing out drelu
-                decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
-                print(f"Decay factor for epoch {epoch}: {decay_factor}")
-                for name, module in model.named_modules():
-                    if isinstance(module, DyReLUB):
-                        module.beta = decay_factor
+                if start_ghost_epoch <= epoch <= end_ghost_epoch:  # decay factor (beta) for phasing out drelu
+                    decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
+                    print(f"Decay factor for epoch {epoch}: {decay_factor}")
+                    for name, module in model.named_modules():
+                        if isinstance(module, DyReLUB):
+                            module.beta = decay_factor
 
             train_loss, train_acc = train(args, model, device, train_loader, optimizer, epoch, mask)
 
@@ -415,7 +424,6 @@ def main():
 
             if args.valid_split > 0.0:
                 val_loss, val_acc = evaluate(args, model, device, valid_loader)
-
 
             if val_acc > best_acc:
                 print('Saving model')
@@ -446,13 +454,11 @@ def main():
         evaluate(args, model, device, test_loader, is_test_set=True)
         # Converts the orignal dreul to the inference version
 
-
         convert_drelu_to_drelu_inf(model)
 
         # Load checkpoint
         # checkpoint = torch.load('/home/msl/Documents/ES2/17265023133596997.pt')
         checkpoint = torch.load(args.save)
-
 
         # Remove all drelu layer parameters other than coefficients
         layers_to_remove = []
@@ -467,7 +473,6 @@ def main():
         model.load_state_dict(checkpoint)
         test_inference_speed(model, device, test_loader)
 
-
         # You will need to recompute the number of parameters here
 
         # Ensure on Cuda
@@ -475,12 +480,13 @@ def main():
         print('4444444444444444')
         evaluate(args, model, device, test_loader, is_test_set=True)
 
-        print_and_log("\nIteration end: {0}/{1}\n".format(i+1, args.iters))
+        print_and_log("\nIteration end: {0}/{1}\n".format(i + 1, args.iters))
 
         # layer_fired_weights, total_fired_weights = mask.fired_masks_update()
         # for name in layer_fired_weights:
         #     print('The final percentage of fired weights in the layer', name, 'is:', layer_fired_weights[name])
         # print('The final percentage of the total fired weights is:', total_fired_weights)
 
+
 if __name__ == '__main__':
-   main()
+    main()
