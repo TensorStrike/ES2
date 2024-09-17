@@ -232,6 +232,8 @@ def main():
     setup_logger(args)
     print_and_log(args)
 
+    args.epochs = 2
+
     if args.wandb_mode == "dryrun":
         wandb.init(mode="dryrun")
     elif args.wandb_mode == "online":
@@ -426,7 +428,9 @@ def main():
         convert_drelu_to_drelu_inf(model)
 
         # Load checkpoint
-        checkpoint = torch.load('/home/msl/Documents/ES2/17265023133596997.pt')
+        # checkpoint = torch.load('/home/msl/Documents/ES2/17265023133596997.pt')
+        checkpoint = torch.load(args.save)
+
 
         # Remove all drelu layer parameters other than coefficients
         layers_to_remove = []
