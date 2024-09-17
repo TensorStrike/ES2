@@ -526,8 +526,8 @@ class Masking(object):
         active_normal_params = 0
         mask_count = 0
         running_total = 0
-        print("Debug: Starting get_metrics")
-        print(f"Debug: Number of masks: {len(self.masks)}")
+        # print("Debug: Starting get_metrics")
+        # print(f"Debug: Number of masks: {len(self.masks)}")
 
 
         for name, mask in self.masks.items():
@@ -541,9 +541,9 @@ class Masking(object):
                 param_size = mask.numel()
                 layer_active = (mask != 0).sum().item()
                 running_total += param_size
-                print(f"Debug: Mask {mask_count}: {name}")
-                print(f"Debug: Layer size: {param_size}, Active elements: {layer_active}")
-                print(f"Debug: Running total of parameters: {running_total}")
+                # print(f"Debug: Mask {mask_count}: {name}")
+                # print(f"Debug: Layer size: {param_size}, Active elements: {layer_active}")
+                # print(f"Debug: Running total of parameters: {running_total}")
                 normal_params += param_size
                 active_normal_params += layer_active
 
@@ -564,9 +564,9 @@ class Masking(object):
         # else:
         #     active_shared_params = 0
 
-        print(f"Debug: Detailed breakdown of parameters:")
-        for name, param in self.modules[0].named_parameters():
-            print(f"Layer: {name}, Params: {param.numel()}")
+        # print(f"Debug: Detailed breakdown of parameters:")
+        # for name, param in self.modules[0].named_parameters():
+        #     print(f"Layer: {name}, Params: {param.numel()}")
 
         active_shared_params = 0
         for layer_name in ['layer1', 'layer2', 'layer3', 'layer4']:
