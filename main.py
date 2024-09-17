@@ -105,7 +105,22 @@ def calculate_adjusted_density(model, density):
 
     return adjusted_density
 
+def test_inference_speed(model, device, test_loader, num_batches=100):
+    model.eval()
+    model.to(device)
 
+    start_time = time.time()
+    with torch.no_grad():
+        for i, (data, target) in enumerate(test_loader):
+            while i < num_batches:
+                data = data.to(device)
+                _ = model(data)
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
+    avg_inference_time_per_batch = elapsed_time / num_batches
+    print(f"Average inference time per batch: {avg_inference_time_per_batch:.6f} seconds")
 
 
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
@@ -281,6 +296,7 @@ def main():
 
         # print(summary(model, input_size=(3, 32, 32)))
         print('tensor param:',sum(p.numel() for p in model.parameters()))
+        test_inference_speed(model, device, test_loader)
 
 
         print_and_log(model)
@@ -444,6 +460,8 @@ def main():
 
         # Load Checkpoint without drelu params
         model.load_state_dict(checkpoint)
+        test_inference_speed(model, device, test_loader)
+
 
         # You will need to recompute the number of parameters here
 
@@ -451,6 +469,7 @@ def main():
         model = model.cuda()
 
         evaluate(args, model, device, test_loader, is_test_set=True)
+
         print_and_log("\nIteration end: {0}/{1}\n".format(i+1, args.iters))
 
         layer_fired_weights, total_fired_weights = mask.fired_masks_update()
