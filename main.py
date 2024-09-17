@@ -125,6 +125,13 @@ def test_inference_speed(model, device, test_loader, num_batches=100):
     print(f"Average inference time per batch: {avg_inference_time_per_batch:.6f} seconds")
 
 
+def convert_drelu_to_drelu_inf(model):
+    for child_name, child in model.named_children():
+        if isinstance(child, DyReLUB):
+            setattr(model, child_name, DyReLUB_inf(child.channels, 4, child.k, child.conv_type))
+        else:
+            convert_drelu_to_drelu_inf(child)
+
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
     model.train()
     train_loss = 0
@@ -249,8 +256,6 @@ def main():
     args = parser.parse_args()
     setup_logger(args)
     print_and_log(args)
-
-    args.epochs = 2
 
     if args.wandb_mode == "dryrun":
         wandb.init(mode="dryrun")
@@ -436,13 +441,11 @@ def main():
             wandb.log(metrics)
 
         print('Testing')
+
+        print('111111111111111')
+        evaluate(args, model, device, test_loader, is_test_set=True)
         # Converts the orignal dreul to the inference version
-        def convert_drelu_to_drelu_inf(model):
-            for child_name, child in model.named_children():
-                if isinstance(child, DyReLUB):
-                    setattr(model, child_name, DyReLUB_inf(child.channels, 4, child.k, child.conv_type))
-                else:
-                    convert_drelu_to_drelu_inf(child)
+
 
         convert_drelu_to_drelu_inf(model)
 
@@ -469,15 +472,15 @@ def main():
 
         # Ensure on Cuda
         model = model.cuda()
-
+        print('4444444444444444')
         evaluate(args, model, device, test_loader, is_test_set=True)
 
         print_and_log("\nIteration end: {0}/{1}\n".format(i+1, args.iters))
 
-        layer_fired_weights, total_fired_weights = mask.fired_masks_update()
-        for name in layer_fired_weights:
-            print('The final percentage of fired weights in the layer', name, 'is:', layer_fired_weights[name])
-        print('The final percentage of the total fired weights is:', total_fired_weights)
+        # layer_fired_weights, total_fired_weights = mask.fired_masks_update()
+        # for name in layer_fired_weights:
+        #     print('The final percentage of fired weights in the layer', name, 'is:', layer_fired_weights[name])
+        # print('The final percentage of the total fired weights is:', total_fired_weights)
 
 if __name__ == '__main__':
    main()
