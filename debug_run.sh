@@ -1,0 +1,1 @@
+python main.py --sparse --seed 41 --disable_drelu_grad --sparse_init ERK --multiplier 1 --lr 0.1 --density 0.0005 --update_frequency 4000 --epochs 250 --model ResNet34 --data cifar10 --decay_frequency 30000 --batch-size 128 --growth gradient --death magnitude --redistribution none --l2 1e-4
