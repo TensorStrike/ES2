@@ -259,6 +259,10 @@ def main():
     # weight sharing
     parser.add_argument('--ratio', type=int, default=2)
 
+    # cyclic sparsity
+    parser.add_argument('--num_cycle', type=int, default=2)
+    parser.add_argument('--cycle_length', type=int, default=50, help='Number of ep per cycle')
+
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
     parser.add_argument('--wandb-project', type=str, default='extreme_sparsity')
 
@@ -398,28 +402,7 @@ def main():
 
         for epoch in range(1, args.epochs * args.multiplier + 1):
             t0 = time.time()
-
-            if args.disable_drelu_grad:
-                if epoch == start_ghost_epoch:  # when we freeze gradients of drelu
-                    print("Disabling grad for DyReLU")
-                    for name, module in model.named_modules():
-                        if isinstance(module, DyReLUB):
-                            for param in module.parameters():
-                                param.requires_grad = False
-                                param.grad = None
-                                if param in optimizer.state:
-                                    if 'momentum_buffer' in optimizer.state[param]:
-                                        optimizer.state[param]['momentum_buffer'] = torch.zeros_like(param)
-
-                if start_ghost_epoch <= epoch <= end_ghost_epoch:  # decay factor (beta) for phasing out drelu
-                    decay_factor = 1 - (epoch - start_ghost_epoch) / (end_ghost_epoch - start_ghost_epoch)
-                    print(f"Decay factor for epoch {epoch}: {decay_factor}")
-                    for name, module in model.named_modules():
-                        if isinstance(module, DyReLUB):
-                            module.beta = decay_factor
-
             train_loss, train_acc = train(args, model, device, train_loader, optimizer, epoch, mask)
-
             lr_scheduler.step()
 
             if args.valid_split > 0.0:
@@ -457,7 +440,6 @@ def main():
         convert_drelu_to_drelu_inf(model)
 
         # Load checkpoint
-        # checkpoint = torch.load('/home/msl/Documents/ES2/17265023133596997.pt')
         checkpoint = torch.load(args.save)
 
         # Remove all drelu layer parameters other than coefficients
@@ -472,8 +454,6 @@ def main():
         # Load Checkpoint without drelu params
         model.load_state_dict(checkpoint)
         test_inference_speed(model, device, test_loader)
-
-        # You will need to recompute the number of parameters here
 
         # Ensure on Cuda
         model = model.cuda()
