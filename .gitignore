@@ -3,3 +3,4 @@ _dataset/*
 data/*
 logs/*
 wandb/*
+*.pyc

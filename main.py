@@ -12,7 +12,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 from torchsummary import summary
-from sparselearning.dyrelu import DyReLUB
+from sparselearning.dyrelu import DyReLUB, DyReLUB_inf
 from torch.nn.utils import clip_grad_norm_
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
@@ -233,6 +233,8 @@ def main():
     setup_logger(args)
     print_and_log(args)
 
+    args.epochs = 2
+
     if args.wandb_mode == "dryrun":
         wandb.init(mode="dryrun")
     elif args.wandb_mode == "online":
@@ -354,12 +356,12 @@ def main():
         #     lr_scheduler.step()
         #     if args.valid_split > 0.0:
         #         val_acc = evaluate(args, model, device, valid_loader)
-        #
+        
         #     if val_acc > best_acc:
         #         print('Saving model')
         #         best_acc = val_acc
         #         torch.save(model.state_dict(), args.save)
-        #
+        
         #     print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(optimizer.param_groups[0]['lr'], time.time() - t0))
 
         for epoch in range(1, args.epochs * args.multiplier + 1):
@@ -415,8 +417,39 @@ def main():
 
             wandb.log(metrics)
 
-        print('Testing model')
-        model.load_state_dict(torch.load(args.save))
+        print('Testing')
+        # Converts the orignal dreul to the inference version
+        def convert_drelu_to_drelu_inf(model):
+            for child_name, child in model.named_children():
+                if isinstance(child, DyReLUB):
+                    setattr(model, child_name, DyReLUB_inf(child.channels, 4, child.k, child.conv_type))
+                else:
+                    convert_drelu_to_drelu_inf(child)
+
+        convert_drelu_to_drelu_inf(model)
+
+        # Load checkpoint
+        # checkpoint = torch.load('/home/msl/Documents/ES2/17265023133596997.pt')
+        checkpoint = torch.load(args.save)
+
+
+        # Remove all drelu layer parameters other than coefficients
+        layers_to_remove = []
+        for key in checkpoint:
+            if "relu" in key and ("weight" in key or "bias" in key or "lambdas" in key or "init_v" in key):
+                layers_to_remove.append(key)
+
+        for key in layers_to_remove:
+            del checkpoint[key]
+
+        # Load Checkpoint without drelu params
+        model.load_state_dict(checkpoint)
+
+        # You will need to recompute the number of parameters here
+
+        # Ensure on Cuda
+        model = model.cuda()
+
         evaluate(args, model, device, test_loader, is_test_set=True)
         print_and_log("\nIteration end: {0}/{1}\n".format(i+1, args.iters))
 
