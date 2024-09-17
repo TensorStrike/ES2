@@ -112,9 +112,11 @@ def test_inference_speed(model, device, test_loader, num_batches=100):
     start_time = time.time()
     with torch.no_grad():
         for i, (data, target) in enumerate(test_loader):
-            while i < num_batches:
-                data = data.to(device)
-                _ = model(data)
+            if i >= num_batches:
+                break
+            data = data.to(device)
+            _ = model(data)
+
 
     end_time = time.time()
     elapsed_time = end_time - start_time
