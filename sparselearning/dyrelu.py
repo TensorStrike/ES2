@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class DyReLU(nn.Module):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLU, self).__init__()
@@ -11,11 +12,11 @@ class DyReLU(nn.Module):
 
         self.fc1 = nn.Linear(channels, channels // reduction)
         self.relu = nn.ReLU(inplace=True)
-        self.fc2 = nn.Linear(channels // reduction, 2*k)
+        self.fc2 = nn.Linear(channels // reduction, 2 * k)
         self.sigmoid = nn.Sigmoid()
 
-        self.register_buffer('lambdas', torch.Tensor([1.]*k + [0.5]*k).float())
-        self.register_buffer('init_v', torch.Tensor([1.] + [0.]*(2*k - 1)).float())
+        self.register_buffer('lambdas', torch.Tensor([1.] * k + [0.5] * k).float())
+        self.register_buffer('init_v', torch.Tensor([1.] + [0.] * (2 * k - 1)).float())
 
     def get_relu_coefs(self, x):
         theta = torch.mean(x, axis=-1)
@@ -34,13 +35,13 @@ class DyReLU(nn.Module):
 class DyReLUA(DyReLU):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLUA, self).__init__(channels, reduction, k, conv_type)
-        self.fc2 = nn.Linear(channels // reduction, 2*k)
+        self.fc2 = nn.Linear(channels // reduction, 2 * k)
 
     def forward(self, x):
         assert x.shape[1] == self.channels
         theta = self.get_relu_coefs(x)
 
-        relu_coefs = theta.view(-1, 2*self.k) * self.lambdas + self.init_v
+        relu_coefs = theta.view(-1, 2 * self.k) * self.lambdas + self.init_v
         # BxCxL -> LxCxBx1
         x_perm = x.transpose(0, -1).unsqueeze(-1)
         output = x_perm * relu_coefs[:, :self.k] + relu_coefs[:, self.k:]
@@ -53,16 +54,22 @@ class DyReLUA(DyReLU):
 class DyReLUB(DyReLU):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLUB, self).__init__(channels, reduction, k, conv_type)
-        self.fc2 = nn.Linear(channels // reduction, 2*k*channels)
-        # self.beta = 1.0  # for phasing drelu to relu
+        self.fc2 = nn.Linear(channels // reduction, 2 * k * channels)
+        self.beta = 1.0  # for phasing drelu to relu
 
-        self.register_buffer('relu_coefs_buffer', torch.zeros(channels, 2*k))
+        self.register_buffer('relu_coefs_buffer', torch.zeros(channels, 2 * k))
 
     def forward(self, x):
         assert x.shape[1] == self.channels
         theta = self.get_relu_coefs(x)
 
         relu_coefs = theta.view(-1, self.channels, 2 * self.k) * self.lambdas + self.init_v
+
+        relu_original = torch.zeros_like(relu_coefs)
+        relu_original[:, :, 0] = 1.0  # Set the positive slope to 1
+        relu_coefs = relu_coefs * self.beta + relu_original * (1 - self.beta)
+
+        self.relu_coefs_buffer = torch.mean(relu_coefs, dim=0)
 
         if self.conv_type == '1d':
             # BxCxL -> LxBxCx1
@@ -80,6 +87,7 @@ class DyReLUB(DyReLU):
 
         return result
 
+
 class DyReLUB_inf(nn.Module):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
         super(DyReLUB_inf, self).__init__()
@@ -87,7 +95,7 @@ class DyReLUB_inf(nn.Module):
         self.channels = channels
         self.k = k
         self.conv_type = conv_type
-        self.register_buffer('relu_coefs_buffer', torch.zeros(channels, 2*k))
+        self.register_buffer('relu_coefs_buffer', torch.zeros(channels, 2 * k))
 
     def forward(self, x):
         assert x.shape[1] == self.channels
@@ -95,14 +103,16 @@ class DyReLUB_inf(nn.Module):
         if self.conv_type == '1d':
             # BxCxL -> LxBxCx1
             x_perm = x.permute(2, 0, 1).unsqueeze(-1)
-            output = x_perm * self.relu_coefs_buffer.unsqueeze(0)[:, :, :self.k] + self.relu_coefs_buffer.unsqueeze(0)[:, :, self.k:]
+            output = x_perm * self.relu_coefs_buffer.unsqueeze(0)[:, :, :self.k] + self.relu_coefs_buffer.unsqueeze(0)[
+                                                                                   :, :, self.k:]
             # LxBxCx2 -> BxCxL
             result = torch.max(output, dim=-1)[0].permute(1, 2, 0)
 
         elif self.conv_type == '2d':
             # BxCxHxW -> HxWxBxCx1
             x_perm = x.permute(2, 3, 0, 1).unsqueeze(-1)
-            output = x_perm * self.relu_coefs_buffer.unsqueeze(0)[:, :, :self.k] + self.relu_coefs_buffer.unsqueeze(0)[:, :, self.k:]
+            output = x_perm * self.relu_coefs_buffer.unsqueeze(0)[:, :, :self.k] + self.relu_coefs_buffer.unsqueeze(0)[
+                                                                                   :, :, self.k:]
             # HxWxBxCx2 -> BxCxHxW
             result = torch.max(output, dim=-1)[0].permute(2, 3, 0, 1)
 
