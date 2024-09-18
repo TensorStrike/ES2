@@ -258,6 +258,10 @@ def main():
     parser.add_argument('--end_ghost_epoch', type=int, default=None, help='End epoch for gradual phasing')
     # weight sharing
     parser.add_argument('--ratio', type=int, default=2)
+    # cyclic sparsity
+    parser.add_argument('--cyclic', action='store_true')
+    parser.add_argument('--num_cycles', type=int, default=2)
+    parser.add_argument('--cyclic-length', type=int, default=50, help='How many epochs per cycle')
 
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
     parser.add_argument('--wandb-project', type=str, default='extreme_sparsity')

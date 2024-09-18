@@ -78,104 +78,114 @@ class Masking(object):
         if self.args.fix: self.prune_every_k_steps = None
         else: self.prune_every_k_steps = self.args.update_frequency
 
+        # if self.args.cyclic:
+        #     self.prune_every_k_steps =
+
+
+
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
-        self.density = density
+            self.density = density
 
-        if mode == 'GMP':
-            self.baseline_nonzero = 0
-            for module in self.modules:
-                for name, weight in module.named_parameters():
-                    if name not in self.masks: continue
-                    self.masks[name] = torch.ones_like(weight, dtype=torch.float32, requires_grad=False).cuda()
-                    self.baseline_nonzero += (self.masks[name] != 0).sum().int().item()
+            if mode == 'GMP':
+                self.baseline_nonzero = 0
+                for module in self.modules:
+                    for name, weight in module.named_parameters():
+                        if name not in self.masks: continue
+                        self.masks[name] = torch.ones_like(weight, dtype=torch.float32, requires_grad=False).cuda()
+                        self.baseline_nonzero += (self.masks[name] != 0).sum().int().item()
 
-        elif mode == 'lottery_ticket':
-            print('initialize by lottery ticket')
-            self.baseline_nonzero = 0
-            weight_abs = []
-            for module in self.modules:
-                for name, weight in module.named_parameters():
-                    if name not in self.masks: continue
-                    weight_abs.append(torch.abs(weight))
+            elif mode == 'lottery_ticket':
+                print('initialize by lottery ticket')
+                self.baseline_nonzero = 0
+                weight_abs = []
+                for module in self.modules:
+                    for name, weight in module.named_parameters():
+                        if name not in self.masks: continue
+                        weight_abs.append(torch.abs(weight))
 
-            # Gather all scores in a single vector and normalise
-            all_scores = torch.cat([torch.flatten(x) for x in weight_abs])
-            num_params_to_keep = int(len(all_scores) * self.density)
+                # Gather all scores in a single vector and normalise
+                all_scores = torch.cat([torch.flatten(x) for x in weight_abs])
+                num_params_to_keep = int(len(all_scores) * self.density)
 
-            threshold, _ = torch.topk(all_scores, num_params_to_keep, sorted=True)
-            acceptable_score = threshold[-1]
+                threshold, _ = torch.topk(all_scores, num_params_to_keep, sorted=True)
+                acceptable_score = threshold[-1]
 
-            for module in self.modules:
-                for name, weight in module.named_parameters():
-                    if name not in self.masks: continue
-                    self.masks[name] = ((torch.abs(weight)) >= acceptable_score).float()
-                    self.baseline_nonzero += (self.masks[name]!=0).sum().int().item()
+                for module in self.modules:
+                    for name, weight in module.named_parameters():
+                        if name not in self.masks: continue
+                        self.masks[name] = ((torch.abs(weight)) >= acceptable_score).float()
+                        self.baseline_nonzero += (self.masks[name]!=0).sum().int().item()
 
-        elif mode == 'uniform':
-            self.baseline_nonzero = 0
-            for module in self.modules:
-                for name, weight in module.named_parameters():
-                    if name not in self.masks: continue
-                    self.masks[name][:] = (torch.rand(weight.shape) < density).float().data.cuda() #lsw
-                    # self.masks[name][:] = (torch.rand(weight.shape) < density).float().data #lsw
-                    self.baseline_nonzero += weight.numel()*density
+            elif mode == 'uniform':
+                self.baseline_nonzero = 0
+                for module in self.modules:
+                    for name, weight in module.named_parameters():
+                        if name not in self.masks: continue
+                        self.masks[name][:] = (torch.rand(weight.shape) < density).float().data.cuda() #lsw
+                        # self.masks[name][:] = (torch.rand(weight.shape) < density).float().data #lsw
+                        self.baseline_nonzero += weight.numel()*density
 
-        if mode == 'ERK':
-            print('initialize by ERK')
-            total_params = sum(mask.numel() for mask in self.masks.values())
-            expected_active_params = int(total_params * self.density)
+            if mode == 'ERK':
+                '''
+                compute a sparsity mask for each layer, distributing the overall sparsity in a way that aligns with the ERK principle
+                '''
+                print('initialize by ERK')
+                total_params = sum(mask.numel() for mask in self.masks.values())
+                expected_active_params = int(total_params * self.density)
 
-            raw_probabilities = {}
-            total_raw_prob = 0.0
-            for name, mask in self.masks.items():
-                n_param = mask.numel()
-                # np.prod(mask.shape) is the total # of params
-                raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** erk_power_scale
-                raw_probabilities[name] = raw_prob
-                total_raw_prob += raw_prob * n_param
+                raw_probabilities = {}
+                total_raw_prob = 0.0
+                # Compute raw probabilities for each layer based on ERK principle
+                for name, mask in self.masks.items():
+                    n_param = mask.numel()
+                    # np.prod(mask.shape) is the total # of params
+                    raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** erk_power_scale
+                    raw_probabilities[name] = raw_prob
+                    total_raw_prob += raw_prob * n_param
 
-            epsilon = expected_active_params / total_raw_prob               # scaling factor
+                epsilon = expected_active_params / total_raw_prob               # scaling factor
 
-            min_density = 0.7 * self.density                         # Set a minimum density threshold
+                min_density = 0.7 * self.density                         # Set a minimum density threshold to prevent from layer pruned entirely
 
-            total_nonzero = 0
-            for name, mask in self.masks.items():
-                n_param = mask.numel()
-                prob_one = epsilon * raw_probabilities[name]
+                total_nonzero = 0
+                for name, mask in self.masks.items():
+                    n_param = mask.numel()
+                    prob_one = epsilon * raw_probabilities[name]
 
-                prob_one = max(prob_one, min_density)           # to ensure density is never 0
-                prob_one = min(prob_one, 1.0)                   # ensure density not above 1
-                n_ones = int(round(prob_one * n_param))
+                    prob_one = max(prob_one, min_density)           # to ensure density is never 0
+                    prob_one = min(prob_one, 1.0)                   # ensure density not above 1
+                    n_ones = int(round(prob_one * n_param))         # how many parameters should be kept
 
-                total_nonzero += n_ones
+                    total_nonzero += n_ones
 
-                mask_flat = mask.view(-1)
-                indices = torch.randperm(n_param, device=mask.device)[:n_ones]
-                mask_flat.zero_()
-                mask_flat[indices] = 1.0
-                self.masks[name] = mask_flat.view_as(mask)
+                    # Apply pruning: keep `n_ones` parameters and set the rest to zero
+                    mask_flat = mask.view(-1)
+                    indices = torch.randperm(n_param, device=mask.device)[:n_ones]
+                    mask_flat.zero_()
+                    mask_flat[indices] = 1.0
+                    self.masks[name] = mask_flat.view_as(mask)
 
-            print(f"Total expected active trainable params: {expected_active_params}")
-            print(f"Total actual active trainable params after ERK initialization: {total_nonzero}")
+                # print(f"Total expected active trainable params: {expected_active_params}")
+                # print(f"Total actual active trainable params after ERK initialization: {total_nonzero}")
 
-        else:
-            # Handle other initialization modes
-            pass
+            else:
+                # Handle other initialization modes
+                pass
 
-        self.apply_mask()
-        self.fired_masks = copy.deepcopy(self.masks) # used for ITOP
-        # self.print_nonzero_counts()
+            self.apply_mask()
+            self.fired_masks = copy.deepcopy(self.masks) # used for ITOP
+            # self.print_nonzero_counts()
 
-        total_size = 0
-        for name, weight in self.masks.items():
-            total_size  += weight.numel()
-        print('Total Model parameters (trainable):', total_size)
+            total_size = 0
+            for name, weight in self.masks.items():
+                total_size  += weight.numel()
+            print('Total Model parameters (trainable):', total_size)
 
-        sparse_size = 0
-        for name, weight in self.masks.items():
-            sparse_size += (weight != 0).sum().int().item()
+            sparse_size = 0
+            for name, weight in self.masks.items():
+                sparse_size += (weight != 0).sum().int().item()
 
-        print('Total parameters (trainable) under sparsity level of {0}: {1}'.format(self.density, sparse_size / total_size))
+            print('Total parameters (trainable) under sparsity level of {0}: {1}'.format(self.density, sparse_size / total_size))
 
 
     def step(self):
@@ -185,11 +195,19 @@ class Masking(object):
         self.death_rate = self.death_rate_decay.get_dr()
         self.steps += 1
 
-        if self.prune_every_k_steps is not None:
-            if self.steps % self.prune_every_k_steps == 0:
-                self.truncate_weights()
-                _, _ = self.fired_masks_update()
-                # self.print_nonzero_counts()
+        if self.args.cyclic:
+            if self.prune_every_k_steps is not None:
+                if self.steps <= self.prune_every_k_steps * self.args.cyclic_length * self.args.cyclic_count:
+                    if self.steps % self.prune_every_k_steps == 0:
+                        self.prune_regrow()
+        else:
+            if self.prune_every_k_steps is not None:
+                if self.steps % self.prune_every_k_steps == 0:
+                    self.truncate_weights()
+                    _, _ = self.fired_masks_update()
+                    # self.print_nonzero_counts()
+
+        self.next_density =
 
 
     def add_module(self, module, density, sparse_init='ER'):
@@ -211,19 +229,11 @@ class Masking(object):
         self.remove_type(nn.BatchNorm2d)
         print('Removing 1D batch norms...')
         self.remove_type(nn.BatchNorm1d)
-        # self.init(mode=sparse_init, density=density)
-
-        # Calculate effective number of parameters
-        # total_params = sum(p.numel() for n, p in self.masks.items())
-        # shared_params = module.get_shared_para()
-        # effective_total_params = total_params - shared_params
-        #
-        #
-        # print(f"Total parameters: {total_params}")
-        # print(f"Shared parameters: {shared_params}")
-        # print(f"Effective total parameters: {effective_total_params}")
 
         self.init(mode=sparse_init, density=density)
+
+        if self.args.cyclic:
+            self.sparsity_decay = CosineDecay(density, self.prune_every_k_steps * self.args.cyclic_length, density)
 
 
     def remove_weight(self, name):
@@ -305,9 +315,68 @@ class Masking(object):
 
         print('Total parameters under sparsity level of {0}: {1} after epoch of {2}'.format(self.density, sparse_size / total_size, epoch))
 
+    def prune_regrow(self):
+        if self.next_density < self.max_cyclic_density:
+            print(f'to grow')
+            self.ERK_grow()
+        else:
+            print(f'to prune')
+            self.ERK_prune()
+
+    def ERK_prune(self):
+        '''
+        prunes based on ERK principle
+        '''
+
+        total_params = sum(mask.numel() for mask in self.masks.values())
+        expected_active_params = int(total_params * self.cyclic_density)
+
+        raw_probabilities = {}
+        total_raw_prob = 0.0
+
+        for name, mask in self.masks.items():
+            n_param = mask.numel()
+            # np.prod(mask.shape) is the total number of params
+            raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** self.args.erk_power_scale
+            raw_probabilities[name] = raw_prob
+            total_raw_prob += raw_prob * n_param
+
+        epsilon = expected_active_params / total_raw_prob
+
+        min_density = 0.7 * self.cyclic_density
+
+        # compute a dict for target densities for all layers
+        density_dict = {}
+
+        for name, mask in self.masks.items():
+            n_param = mask.numel()
+            prob_one = epsilon * raw_probabilities[name]
+            prob_one = max(prob_one, min_density)
+            prob_one = min(prob_one, 1.0)
+            density_dict[name] = prob_one
+
+        # prune based on the dict
+        for module in self.modules:
+            for name, weight in module.named_parameters():
+                if name in self.masks:
+                    target_density = density_dict.get(name, 1.0)
+                    n_total = self.masks[name].numel()
+                    n_ones = int(target_density * n_total)
+                    idx = torch.argsort(torch.abs(weight.data.view(-1)))        # sort by magnitude
+                    mask_flat = self.masks[name].view(-1)
+                    mask_flat.zero_()
+                    mask_flat[idx[-n_ones:]] = 1.0
+
+                    self.masks[name] = mask_flat.view_as(self.masks[name])
+
+        self.apply_mask()
+
+
+    def ERK_grow(self):
+
+
+
     def truncate_weights(self):
-
-
         for module in self.modules:
             for name, weight in module.named_parameters():
                 if name not in self.masks: continue
