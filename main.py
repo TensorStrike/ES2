@@ -386,7 +386,7 @@ def main():
             if args.cyclic:
                 mask.steps_per_cycle = args.cyclic_length * len(train_loader)
                 mask.cyclic_end_step = mask.steps_per_cycle * 1.5
-                mask.cyclic_density = CyclicDensityDecay(density * 3, args.cyclic_length * len(train_loader), density,
+                mask.cyclic_density = CyclicDensityDecay(density_min=density, density_max=density * 3, T_max=args.cyclic_length * len(train_loader),
                                                   last_epoch=mask.cyclic_end_step)
                 mask.add_module(model, sparse_init=args.sparse_init, density=density * 3)       # start at peak density
 

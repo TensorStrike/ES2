@@ -33,9 +33,9 @@ class CosineDecay(object):
 class CyclicDensityDecay:
     '''
     if used for cyclic density...
-    :param death_rate: starting density
+    :param density_max: starting density
     :param T_max: how many steps in one full cycle of cosine decay
-    :param eta_min: lowest density
+    :param density_min: lowest density
     :param last_epoch: last step
     '''
     def __init__(self, density_min, density_max, T_max, last_epoch=-1):
@@ -227,11 +227,11 @@ class Masking(object):
                         # calculate cycle position
                         cycle_step = (self.steps - 1) % self.steps_per_cycle
                         print('cycle step ', cycle_step)
-                        cycle_position = cycle_step / self.steps_per_cycle
-                        print('cycle position ', cycle_position)
+                        # cycle_position = cycle_step / self.steps_per_cycle
+                        # print('cycle position ', cycle_position)
 
                         self.next_density = self.cyclic_density.get_density()
-
+                        print('next density ',self.next_density)
                         self.prune_regrow()
                     else:
                         # for the remainder of training
