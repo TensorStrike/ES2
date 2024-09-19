@@ -260,7 +260,7 @@ def main():
     parser.add_argument('--ratio', type=int, default=2)
     # cyclic sparsity
     parser.add_argument('--cyclic', action='store_true')
-    parser.add_argument('--num_cycles', type=float, default=1.5)
+    parser.add_argument('--num_cycles', type=int, default=2)
     parser.add_argument('--cyclic-length', type=int, default=50)
 
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
@@ -385,7 +385,7 @@ def main():
             density = calculate_adjusted_density(model, args.density)  # we adjust density to account for weight sharing
             if args.cyclic:
                 mask.steps_per_cycle = args.cyclic_length * len(train_loader)
-                mask.cyclic_end_step = mask.steps_per_cycle * 1.5
+                mask.cyclic_end_step = mask.steps_per_cycle * args.num_cycles
 
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
