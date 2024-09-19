@@ -85,6 +85,8 @@ class Masking(object):
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
             self.density = density
+            self.density_min = density
+            self.density_max = density * 3
 
             if mode == 'GMP':
                 self.baseline_nonzero = 0
@@ -195,19 +197,28 @@ class Masking(object):
         self.death_rate = self.death_rate_decay.get_dr()
         self.steps += 1
 
-        if self.args.cyclic:
-            if self.prune_every_k_steps is not None:
-                if self.steps <= self.prune_every_k_steps * self.args.cyclic_length * self.args.cyclic_count:
-                    if self.steps % self.prune_every_k_steps == 0:
+        if self.prune_every_k_steps is not None:
+            if self.steps % self.prune_every_k_steps == 0:
+                if self.args.cyclic:        # cyclic density
+                    total_cyclic_steps = self.prune_every_k_steps * self.args.cyclic_length * self.args.num_cycles
+                    if self.steps <= total_cyclic_steps:
+                        # calculate cycle position
+                        total_steps_per_cycle = self.prune_every_k_steps * self.args.cyclic_length
+                        cycle_step = (self.steps - 1) % total_steps_per_cycle
+                        cycle_position = cycle_step / total_steps_per_cycle
+
+                        density_range = self.density_max - self.density_min
+                        self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+
                         self.prune_regrow()
-        else:
-            if self.prune_every_k_steps is not None:
-                if self.steps % self.prune_every_k_steps == 0:
+                    else:
+                        # for the remainder of training
+                        self.truncate_weights()
+                        _, _ = self.fired_masks_update()
+                else:       # standard dst
                     self.truncate_weights()
                     _, _ = self.fired_masks_update()
-                    # self.print_nonzero_counts()
 
-        self.next_density =
 
 
     def add_module(self, module, density, sparse_init='ER'):
@@ -315,21 +326,27 @@ class Masking(object):
 
         print('Total parameters under sparsity level of {0}: {1} after epoch of {2}'.format(self.density, sparse_size / total_size, epoch))
 
+    # def prune_regrow(self):
+    #     if self.next_density < self.max_cyclic_density:
+    #         print(f'to grow')
+    #         self.ERK_grow()
+    #     else:
+    #         print(f'to prune')
+    #         self.ERK_prune()
+
     def prune_regrow(self):
-        if self.next_density < self.max_cyclic_density:
-            print(f'to grow')
-            self.ERK_grow()
-        else:
-            print(f'to prune')
+        current_density = self.get_metrics()['overall_density']
+        if self.next_density < current_density:
+            # Prune weights to decrease density
             self.ERK_prune()
+        else:
+            # Regrow weights to increase density
+            self.ERK_grow()
 
-    def ERK_prune(self):
-        '''
-        prunes based on ERK principle
-        '''
-
+    def ERK_density_dict(self, erk_power_scale=1.0):
+        target_density = self.next_density
         total_params = sum(mask.numel() for mask in self.masks.values())
-        expected_active_params = int(total_params * self.cyclic_density)
+        expected_active_params = int(total_params * target_density)
 
         raw_probabilities = {}
         total_raw_prob = 0.0
@@ -337,23 +354,32 @@ class Masking(object):
         for name, mask in self.masks.items():
             n_param = mask.numel()
             # np.prod(mask.shape) is the total number of params
-            raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** self.args.erk_power_scale
+            raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** erk_power_scale
             raw_probabilities[name] = raw_prob
             total_raw_prob += raw_prob * n_param
 
         epsilon = expected_active_params / total_raw_prob
 
-        min_density = 0.7 * self.cyclic_density
+        min_density = 0.7 * self.get_metrics()['overall_density']
 
         # compute a dict for target densities for all layers
         density_dict = {}
 
         for name, mask in self.masks.items():
-            n_param = mask.numel()
             prob_one = epsilon * raw_probabilities[name]
             prob_one = max(prob_one, min_density)
             prob_one = min(prob_one, 1.0)
             density_dict[name] = prob_one
+
+        return density_dict
+
+    def ERK_prune(self):
+        '''
+        prunes based on ERK principle
+        '''
+
+        # compute a dict for target densities for all layers
+        density_dict = self.ERK_density_dict()
 
         # prune based on the dict
         for module in self.modules:
@@ -366,13 +392,28 @@ class Masking(object):
                     mask_flat = self.masks[name].view(-1)
                     mask_flat.zero_()
                     mask_flat[idx[-n_ones:]] = 1.0
-
                     self.masks[name] = mask_flat.view_as(self.masks[name])
 
         self.apply_mask()
 
-
     def ERK_grow(self):
+        density_dict = self.ERK_density_dict()
+
+        for module in self.modules:
+            for name, weight in module.named_parameters():
+                if name in self.masks:
+                    target_density = density_dict.get(name, 1.0)
+                    n_total = self.masks[name].numel()
+                    n_ones = int(target_density * n_total)
+                    current_n_ones = int(self.masks[name].sum().item())
+
+                    n_to_grow = n_ones - current_n_ones     # grow this many back
+
+                    if n_to_grow > 0:
+                        new_mask = self.gradient_growth(name, self.masks[name], weight)     # updated mask after apply gradient-based regrowth
+                        self.masks[name] = new_mask.view_as(self.masks[name])           # reshape back to original shape
+
+        self.apply_mask()
 
 
 
