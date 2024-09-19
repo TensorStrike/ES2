@@ -15,7 +15,7 @@ from torchsummary import summary
 from sparselearning.dyrelu import DyReLUB, DyReLUB_inf
 from torch.nn.utils import clip_grad_norm_
 import sparselearning
-from sparselearning.core import Masking, CosineDecay, LinearDecay
+from sparselearning.core import Masking, CosineDecay, LinearDecay, CyclicDensityDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
     ResNet18
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders
@@ -260,8 +260,8 @@ def main():
     parser.add_argument('--ratio', type=int, default=2)
     # cyclic sparsity
     parser.add_argument('--cyclic', action='store_true')
-    parser.add_argument('--num_cycles', type=int, default=2)
-    parser.add_argument('--cyclic-length', type=int, default=50, help='How many epochs per cycle')
+    parser.add_argument('--num_cycles', type=float, default=1.5)
+    parser.add_argument('--cyclic-length', type=int, default=50)
 
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
     parser.add_argument('--wandb-project', type=str, default='extreme_sparsity')
@@ -377,12 +377,21 @@ def main():
 
         mask = None
         if args.sparse:
+
             decay = CosineDecay(args.death_rate, len(train_loader) * (args.epochs * args.multiplier))
             mask = Masking(optimizer, death_rate=args.death_rate, death_mode=args.death, death_rate_decay=decay,
                            growth_mode=args.growth,
                            redistribution_mode=args.redistribution, args=args)
             density = calculate_adjusted_density(model, args.density)  # we adjust density to account for weight sharing
-            mask.add_module(model, sparse_init=args.sparse_init, density=density)
+            if args.cyclic:
+                mask.steps_per_cycle = args.cyclic_length * len(train_loader)
+                mask.cyclic_end_step = mask.steps_per_cycle * 1.5
+                mask.cyclic_density = CyclicDensityDecay(density * 3, args.cyclic_length * len(train_loader), density,
+                                                  last_epoch=mask.cyclic_end_step)
+                mask.add_module(model, sparse_init=args.sparse_init, density=density * 3)       # start at peak density
+
+            else:
+                mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         best_acc = 0.0
 

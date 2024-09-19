@@ -30,6 +30,30 @@ class CosineDecay(object):
     def get_dr(self):
         return self.sgd.param_groups[0]['lr']
 
+class CyclicDensityDecay:
+    '''
+    if used for cyclic density...
+    :param death_rate: starting density
+    :param T_max: how many steps in one full cycle of cosine decay
+    :param eta_min: lowest density
+    :param last_epoch: last step
+    '''
+    def __init__(self, density_min, density_max, T_max, last_epoch=-1):
+        self.density_min = density_min
+        self.density_max = density_max
+        self.T_max = T_max
+        self.last_epoch = last_epoch
+        self.stepper = 0
+
+    def step(self):
+        self.stepper += 1
+
+    def get_density(self):
+        # Cosine schedule for oscillating density
+        cos_inner = (math.pi * self.stepper) / self.T_max
+        return self.density_min + (self.density_max - self.density_min) * (1 + math.cos(cos_inner)) / 2
+
+
 class LinearDecay(object):
     def __init__(self, death_rate, factor=0.99, frequency=600):
         self.factor = factor
@@ -78,10 +102,9 @@ class Masking(object):
         if self.args.fix: self.prune_every_k_steps = None
         else: self.prune_every_k_steps = self.args.update_frequency
 
-        # if self.args.cyclic:
-        #     self.prune_every_k_steps =
-
-
+        self.cyclic_end_step = 0        # step when cyclic density ends
+        self.steps_per_cycle = 0
+        self.cyclic_density = None
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
             self.density = density
@@ -196,19 +219,18 @@ class Masking(object):
         self.death_rate_decay.step()
         self.death_rate = self.death_rate_decay.get_dr()
         self.steps += 1
-
+        # print('step ', self.steps)
         if self.prune_every_k_steps is not None:
             if self.steps % self.prune_every_k_steps == 0:
-                if self.args.cyclic:        # cyclic density
-                    total_cyclic_steps = self.prune_every_k_steps * self.args.cyclic_length * self.args.num_cycles
-                    if self.steps <= total_cyclic_steps:
+                if self.args.cyclic:
+                    if self.steps <= self.cyclic_end_step:      # cyclic density phase
                         # calculate cycle position
-                        total_steps_per_cycle = self.prune_every_k_steps * self.args.cyclic_length
-                        cycle_step = (self.steps - 1) % total_steps_per_cycle
-                        cycle_position = cycle_step / total_steps_per_cycle
+                        cycle_step = (self.steps - 1) % self.steps_per_cycle
+                        print('cycle step ', cycle_step)
+                        cycle_position = cycle_step / self.steps_per_cycle
+                        print('cycle position ', cycle_position)
 
-                        density_range = self.density_max - self.density_min
-                        self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+                        self.next_density = self.cyclic_density.get_density()
 
                         self.prune_regrow()
                     else:
@@ -243,8 +265,7 @@ class Masking(object):
 
         self.init(mode=sparse_init, density=density)
 
-        if self.args.cyclic:
-            self.sparsity_decay = CosineDecay(density, self.prune_every_k_steps * self.args.cyclic_length, density)
+
 
 
     def remove_weight(self, name):
@@ -336,15 +357,14 @@ class Masking(object):
 
     def prune_regrow(self):
         current_density = self.get_metrics()['overall_density']
-        if self.next_density < current_density:
-            # Prune weights to decrease density
-            self.ERK_prune()
-        else:
-            # Regrow weights to increase density
-            self.ERK_grow()
+        desired_density = self.next_density
+        if desired_density < current_density:
+            self.ERK_prune(desired_density)
+        elif desired_density > current_density:
+            self.ERK_grow(desired_density)
 
-    def ERK_density_dict(self, erk_power_scale=1.0):
-        target_density = self.next_density
+    def ERK_density_dict(self, desired_density, erk_power_scale=1.0):
+        target_density = desired_density
         total_params = sum(mask.numel() for mask in self.masks.values())
         expected_active_params = int(total_params * target_density)
 
@@ -373,13 +393,13 @@ class Masking(object):
 
         return density_dict
 
-    def ERK_prune(self):
+    def ERK_prune(self, desired_density):
         '''
         prunes based on ERK principle
         '''
 
         # compute a dict for target densities for all layers
-        density_dict = self.ERK_density_dict()
+        density_dict = self.ERK_density_dict(desired_density)
 
         # prune based on the dict
         for module in self.modules:
@@ -388,16 +408,17 @@ class Masking(object):
                     target_density = density_dict.get(name, 1.0)
                     n_total = self.masks[name].numel()
                     n_ones = int(target_density * n_total)
-                    idx = torch.argsort(torch.abs(weight.data.view(-1)))        # sort by magnitude
+                    x, idx = torch.sort(torch.abs(weight.data.view(-1)))
                     mask_flat = self.masks[name].view(-1)
                     mask_flat.zero_()
-                    mask_flat[idx[-n_ones:]] = 1.0
+                    if n_ones > 0:
+                        mask_flat[idx[-n_ones:]] = 1.0
                     self.masks[name] = mask_flat.view_as(self.masks[name])
 
         self.apply_mask()
 
-    def ERK_grow(self):
-        density_dict = self.ERK_density_dict()
+    def ERK_grow(self, desired_density):
+        density_dict = self.ERK_density_dict(desired_density)
 
         for module in self.modules:
             for name, weight in module.named_parameters():
@@ -406,12 +427,21 @@ class Masking(object):
                     n_total = self.masks[name].numel()
                     n_ones = int(target_density * n_total)
                     current_n_ones = int(self.masks[name].sum().item())
-
                     n_to_grow = n_ones - current_n_ones     # grow this many back
 
+                    # if n_to_grow > 0:
+                    #     new_mask = self.gradient_growth(name, self.masks[name], weight)     # updated mask after apply gradient-based regrowth
+                    #     self.masks[name] = new_mask.view_as(self.masks[name])           # reshape back to original shape
+
                     if n_to_grow > 0:
-                        new_mask = self.gradient_growth(name, self.masks[name], weight)     # updated mask after apply gradient-based regrowth
-                        self.masks[name] = new_mask.view_as(self.masks[name])           # reshape back to original shape
+                        grad = self.get_gradient_for_weights(weight)
+                        grad = grad * (self.masks[name] == 0).float()  # Consider only zeroed weights
+                        y, idx = torch.sort(torch.abs(grad).flatten(), descending=True)
+                        n_to_grow = min(n_to_grow, (self.masks[name] == 0).sum().item())
+
+                        mask_flat = self.masks[name].view(-1)
+                        mask_flat[idx[:n_to_grow]] = 1.0
+                        self.masks[name] = mask_flat.view_as(self.masks[name])
 
         self.apply_mask()
 
