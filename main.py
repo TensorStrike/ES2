@@ -15,7 +15,7 @@ from torchsummary import summary
 from sparselearning.dyrelu import DyReLUB, DyReLUB_inf
 from torch.nn.utils import clip_grad_norm_
 import sparselearning
-from sparselearning.core import Masking, CosineDecay, LinearDecay, CyclicDensityDecay
+from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
     ResNet18
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders
@@ -387,10 +387,7 @@ def main():
                 mask.steps_per_cycle = args.cyclic_length * len(train_loader)
                 mask.cyclic_end_step = mask.steps_per_cycle * 1.5
 
-                mask.add_module(model, sparse_init=args.sparse_init, density=density * 3)       # start at peak density
-
-            else:
-                mask.add_module(model, sparse_init=args.sparse_init, density=density)
+            mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         best_acc = 0.0
 
