@@ -30,28 +30,7 @@ class CosineDecay(object):
     def get_dr(self):
         return self.sgd.param_groups[0]['lr']
 
-class CyclicDensityDecay:
-    '''
-    if used for cyclic density...
-    :param density_max: starting density
-    :param T_max: how many steps in one full cycle of cosine decay
-    :param density_min: lowest density
-    :param last_epoch: last step
-    '''
-    def __init__(self, density_min, density_max, T_max, last_epoch=-1):
-        self.density_min = density_min
-        self.density_max = density_max
-        self.T_max = T_max
-        self.last_epoch = last_epoch
-        self.stepper = 0
 
-    def step(self):
-        self.stepper += 1
-
-    def get_density(self):
-        # Cosine schedule for oscillating density
-        cos_inner = (math.pi * self.stepper) / self.T_max
-        return self.density_min + (self.density_max - self.density_min) * (1 + math.cos(cos_inner)) / 2
 
 
 class LinearDecay(object):
@@ -104,7 +83,6 @@ class Masking(object):
 
         self.cyclic_end_step = 0        # step when cyclic density ends
         self.steps_per_cycle = 0
-        self.cyclic_density = None
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
             self.density = density
@@ -223,21 +201,27 @@ class Masking(object):
         if self.prune_every_k_steps is not None:
             if self.steps % self.prune_every_k_steps == 0:
                 if self.args.cyclic:
-                    if self.steps <= self.cyclic_end_step:      # cyclic density phase
+                    if self.steps <= self.cyclic_end_step:  # cyclic density phase
                         # calculate cycle position
                         cycle_step = (self.steps - 1) % self.steps_per_cycle
-                        print('cycle step ', cycle_step)
-                        # cycle_position = cycle_step / self.steps_per_cycle
-                        # print('cycle position ', cycle_position)
+                        cycle_position = cycle_step / self.steps_per_cycle
 
-                        self.next_density = self.cyclic_density.get_density()
-                        print('next density ',self.next_density)
+                        # calculate density using cosine
+                        density_range = self.density_max - self.density_min
+                        self.next_density = self.density_min + 0.5 * density_range * (
+                                1 - math.cos(2 * math.pi * cycle_position))
+
+                        print('Cycle step:', cycle_step)
+                        print('Cycle position:', cycle_position)
+                        print('Next density:', self.next_density)
+
+                        # Adjust masks based on next_density
                         self.prune_regrow()
                     else:
                         # for the remainder of training
                         self.truncate_weights()
                         _, _ = self.fired_masks_update()
-                else:       # standard dst
+                else:  # standard DST
                     self.truncate_weights()
                     _, _ = self.fired_masks_update()
 
