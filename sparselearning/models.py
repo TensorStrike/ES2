@@ -806,3 +806,6 @@ def ResNet34(c, ratio=2):
 
 def ResNet50(c, ratio=2):
     return ResNet([Bottleneck, Bottleneck_NoPara], [3, 4, 6, 3], c, ratio=ratio)
+
+def ResNet18(c, ratio=2):
+    return ResNet([BasicBlock, BasicBlock_NoPara], [2,2,2,2],c, ratio=ratio)
