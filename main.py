@@ -17,7 +17,7 @@ from torch.nn.utils import clip_grad_norm_
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
-    ResNet18
+    ResNet50
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders
 import torchvision
 import torchvision.transforms as transforms
@@ -47,6 +47,8 @@ models['wrn-28-2'] = (WideResNet, [28, 2, 10, 0.3])
 models['wrn-22-8'] = (WideResNet, [22, 8, 10, 0.3])
 models['wrn-16-8'] = (WideResNet, [16, 8, 10, 0.3])
 models['wrn-16-10'] = (WideResNet, [16, 10, 10, 0.3])
+models['ResNet50'] = ()
+
 
 
 def setup_logger(args):
@@ -310,6 +312,8 @@ def main():
         elif args.model == 'ResNet34':
             # model = ResNet34(c=100).to(device)
             model = ResNet34(c=c, ratio=args.ratio).to(device)
+        elif args.model == 'ResNet50':
+            model = ResNet50(c=c, ratio=args.ratio).to(device)
 
         else:
             cls, cls_args = models[args.model]

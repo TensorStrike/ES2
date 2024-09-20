@@ -580,7 +580,59 @@ class Bottleneck(nn.Module):
         out = F.relu(out)
         return out
 
+class Bottleneck_NoPara(nn.Module):
+    expansion = 4
 
+    def __init__(self, in_planes, planes, stride=1):
+        super(Bottleneck_NoPara, self).__init__()
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.bn3 = nn.BatchNorm2d(self.expansion * planes)
+
+        self.relu1 = DyReLUB(planes)
+        self.relu2 = DyReLUB(planes)
+        self.relu3 = DyReLUB(self.expansion * planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion * planes:
+            self.shortcut = nn.Sequential(
+                nn.BatchNorm2d(self.expansion * planes)
+            )
+
+        self.stride = stride
+        self.in_planes = in_planes
+        self.planes = planes
+
+        # learnable scaling factors
+        self.scale_1 = nn.Parameter(torch.ones(1))
+        self.scale_2 = nn.Parameter(torch.ones(1))
+        self.scale_3 = nn.Parameter(torch.ones(1))
+        if stride != 1 or in_planes != self.expansion * planes:
+            self.scale_4 = nn.Parameter(torch.ones(1))
+
+        nn.init.uniform_(self.scale_1)
+        nn.init.uniform_(self.scale_2)
+        nn.init.uniform_(self.scale_3)
+        if hasattr(self, 'scale_4'):
+            nn.init.uniform_(self.scale_4)
+
+    def forward(self, x, weight_params):
+        conv1_weight, conv2_weight, conv3_weight = weight_params[:3]
+
+        out = self.relu1(self.bn1(F.conv2d(x, self.scale_1 * conv1_weight, stride=1, padding=0)))
+        out = self.relu2(self.bn2(F.conv2d(out, self.scale_2 * conv2_weight, stride=self.stride, padding=1)))
+        out = self.bn3(F.conv2d(out, self.scale_3 * conv3_weight, stride=1, padding=0))
+
+        if len(weight_params) > 3:
+            shortcut_weight = weight_params[3]
+            shortcut = F.conv2d(x, self.scale_4 * shortcut_weight, stride=self.stride)
+            shortcut = self.shortcut(shortcut)
+        else:
+            shortcut = self.shortcut(x)
+
+        out += shortcut
+        out = self.relu3(out)
+        return out
 class ResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes, ratio=2):
         super(ResNet, self).__init__()
@@ -594,17 +646,27 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.classifier = nn.Linear(512*block.expansion, num_classes, bias=False)
+        self.classifier = nn.Linear(512 * block[0].expansion, num_classes, bias=False)
 
+    # def _make_layer(self, block, planes, num_blocks, stride):
+    #     strides = [stride] + [1] * (num_blocks - 1)
+    #     layers = []
+    #     for i, stride in enumerate(strides):
+    #         if i < self.ratio:      # normal weights
+    #             layers.append(block(self.in_planes, planes, stride))
+    #         else:       # shared weights
+    #             layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
+    #         self.in_planes = planes * block.expansion
+    #     return nn.ModuleList(layers)
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for i, stride in enumerate(strides):
-            if i < self.ratio:      # normal weights
-                layers.append(block(self.in_planes, planes, stride))
-            else:       # shared weights
-                layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
-            self.in_planes = planes * block.expansion
+            if i < self.ratio:
+                layers.append(block[0](self.in_planes, planes, stride))     # basic block
+            else:
+                layers.append(block[1](self.in_planes, planes, stride))     # bottleneck
+            self.in_planes = planes * block[0].expansion
         return nn.ModuleList(layers)
 
     def forward(self, x):
@@ -730,17 +792,17 @@ class BasicBlock_NoPara(nn.Module):
         return out
 
 
-def ResNet18(c=1000):
-    return ResNet(BasicBlock, [2,2,2,2],c)
+# def ResNet18(c=1000, ratio=2):
+#     return ResNet(BasicBlock, [2,2,2,2],c, ratio=ratio)
 
-def ResNet34(c=10, ratio=2):
-    return ResNet(BasicBlock, [3,4,6,3],c,ratio=ratio)
+# def ResNet34(c=10, ratio=2):
+#     return ResNet(BasicBlock, [3,4,6,3],c,ratio=ratio)
+#
+# def ResNet50(c=10, ratio=2):
+#     return ResNet(Bottleneck, [3,4,6,3],c, ratio=ratio)
 
-def ResNet50(c=10):
-    return ResNet(Bottleneck, [3,4,6,3],c)
+def ResNet34(c, ratio=2):
+    return ResNet([BasicBlock, BasicBlock_NoPara], [3, 4, 6, 3], c, ratio=ratio)
 
-def ResNet101(c=10):
-    return ResNet(Bottleneck, [3,4,23,3],c)
-
-def ResNet152(c=10):
-    return ResNet(Bottleneck, [3,8,36,3],c)
+def ResNet50(c, ratio=2):
+    return ResNet([Bottleneck, Bottleneck_NoPara], [3, 4, 6, 3], c, ratio=ratio)
