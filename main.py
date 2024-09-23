@@ -17,7 +17,7 @@ from torch.nn.utils import clip_grad_norm_
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
-    ResNet50
+    ResNet50, ResNet18
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders
 import torchvision
 import torchvision.transforms as transforms

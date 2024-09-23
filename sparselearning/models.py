@@ -558,12 +558,19 @@ class Bottleneck(nn.Module):
 
     def __init__(self, in_planes, planes, stride=1):
         super(Bottleneck, self).__init__()
+
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
+        self.relu1 = DyReLUB(planes)
+
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
+        self.relu2 = DyReLUB(planes)
+
         self.conv3 = nn.Conv2d(planes, self.expansion*planes, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(self.expansion*planes)
+        self.relu3 = DyReLUB(self.expansion*planes)
+
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
@@ -573,16 +580,15 @@ class Bottleneck(nn.Module):
             )
 
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = F.relu(self.bn2(self.conv2(out)))
+        out = self.relu1(self.bn1(self.conv1(x)))
+        out = self.relu2(self.bn2(self.conv2(out)))
         out = self.bn3(self.conv3(out))
         out += self.shortcut(x)
-        out = F.relu(out)
+        out = self.relu3(out)
         return out
 
 class Bottleneck_NoPara(nn.Module):
     expansion = 4
-
     def __init__(self, in_planes, planes, stride=1):
         super(Bottleneck_NoPara, self).__init__()
         self.bn1 = nn.BatchNorm2d(planes)
@@ -613,8 +619,8 @@ class Bottleneck_NoPara(nn.Module):
         nn.init.uniform_(self.scale_1)
         nn.init.uniform_(self.scale_2)
         nn.init.uniform_(self.scale_3)
-        if hasattr(self, 'scale_4'):
-            nn.init.uniform_(self.scale_4)
+        # if hasattr(self, 'scale_4'):
+        #     nn.init.uniform_(self.scale_4)
 
     def forward(self, x, weight_params):
         conv1_weight, conv2_weight, conv3_weight = weight_params[:3]
@@ -633,6 +639,7 @@ class Bottleneck_NoPara(nn.Module):
         out += shortcut
         out = self.relu3(out)
         return out
+
 class ResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes, ratio=2):
         super(ResNet, self).__init__()
