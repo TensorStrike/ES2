@@ -185,9 +185,7 @@ def get_imagenet_dataloaders(args):
             normalize,
         ]))
 
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=args.batch_size, shuffle=True,
-        num_workers=args.workers, pin_memory=True)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
 
     val_loader = torch.utils.data.DataLoader(
         datasets.ImageFolder(valdir, transforms.Compose([
@@ -196,8 +194,10 @@ def get_imagenet_dataloaders(args):
             transforms.ToTensor(),
             normalize,
         ])),
-        batch_size=args.batch_size, shuffle=False,
-        num_workers=args.workers, pin_memory=True)
+        batch_size=args.batch_size,
+        shuffle=False,
+        num_workers=args.workers,
+        pin_memory=True)
 
     return train_loader, val_loader
 

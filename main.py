@@ -296,6 +296,8 @@ def main():
     parser.add_argument('--num_cycles', type=int, default=2)
     parser.add_argument('--cyclic-length', type=int, default=50)
     parser.add_argument('--density_max_multiplier', type=int, default=3)
+    # imagenet
+    parser.add_argument('--workers', type=int, default=8)
 
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
     parser.add_argument('--wandb-project', type=str, default='extreme_sparsity')
