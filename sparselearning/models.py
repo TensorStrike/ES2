@@ -799,6 +799,76 @@ class BasicBlock_NoPara(nn.Module):
         return out
 
 
+class ResNetImageNet(nn.Module):
+    def __init__(self, block, num_blocks, num_classes=1000, ratio=2):
+        super(ResNetImageNet, self).__init__()
+        self.in_planes = 64
+        self.ratio = ratio
+
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.relu = DyReLUB(64, reduction=4, k=2, conv_type='2d')
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.classifier = nn.Linear(512 * block[0].expansion, num_classes, bias=False)
+
+    def _make_layer(self, block, planes, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)
+        layers = []
+        for i, stride in enumerate(strides):
+            if i < self.ratio:
+                layers.append(block[0](self.in_planes, planes, stride))     # basic block
+            else:
+                layers.append(block[1](self.in_planes, planes, stride))     # bottleneck
+            self.in_planes = planes * block[0].expansion
+        return nn.ModuleList(layers)
+
+    def forward(self, x):
+        out = self.relu(self.bn1(self.conv1(x)))
+        out = self.maxpool(out)
+
+        out = self.layer_forward(self.layer1, out)
+        out = self.layer_forward(self.layer2, out)
+        out = self.layer_forward(self.layer3, out)
+        out = self.layer_forward(self.layer4, out)
+
+        out = self.avgpool(out)
+        out = out.view(out.size(0), -1)
+        out = self.classifier(out)
+        return out
+
+    def layer_forward(self, layer, x):
+        for i, block in enumerate(layer):
+            if i < self.ratio:
+                x = block(x)
+            else:
+                weight_params = []
+                for name, param in layer[self.ratio - 1].named_parameters():
+                    if 'conv' in name and 'weight' in name:
+                        weight_params.append(param)
+                x = block(x, weight_params)
+        return x
+
+    def get_shared_para(self):
+        shared_params = 0
+        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
+            if len(layer) > self.ratio:
+                num_shared_blocks = len(layer) - self.ratio
+                last_non_shared_block = layer[self.ratio - 1]
+                params_per_block = sum(
+                    p.numel() for name, p in last_non_shared_block.named_parameters()
+                    if ('weight' in name and (
+                                'conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower())
+                )
+                shared_params += params_per_block * num_shared_blocks
+        return shared_params
+
+
+
 # def ResNet18(c=1000, ratio=2):
 #     return ResNet(BasicBlock, [2,2,2,2],c, ratio=ratio)
 
@@ -816,3 +886,6 @@ def ResNet50(c, ratio=2):
 
 def ResNet18(c, ratio=2):
     return ResNet([BasicBlock, BasicBlock_NoPara], [2,2,2,2],c, ratio=ratio)
+
+def ResNet50_ImageNet(c=1000, ratio=2):
+    return ResNetImageNet([Bottleneck, Bottleneck_NoPara], [3, 4, 6,3], c, ratio=ratio)

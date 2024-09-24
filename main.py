@@ -17,8 +17,8 @@ from torch.nn.utils import clip_grad_norm_
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
-    ResNet50, ResNet18
-from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders
+    ResNet50, ResNet18, ResNet50_ImageNet
+from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders, get_imagenet_dataloaders
 import torchvision
 import torchvision.transforms as transforms
 import warnings
@@ -303,6 +303,11 @@ def main():
             train_loader, valid_loader, test_loader = get_cifar100_dataloaders(args, args.valid_split,
                                                                                max_threads=args.max_threads)
             c = 100
+        elif args.data == 'imagenet':
+            train_loader, valid_loader = get_imagenet_dataloaders(args)
+            test_loader = valid_loader
+            c = 1000
+
         if args.model not in models:
             print('You need to select an existing model via the --model argument. Available models include: ')
             for key in models:
@@ -314,7 +319,10 @@ def main():
             # model = ResNet34(c=100).to(device)
             model = ResNet34(c=c, ratio=args.ratio).to(device)
         elif args.model == 'ResNet50':
-            model = ResNet50(c=c, ratio=args.ratio).to(device)
+            if args.data == 'imagenet':
+                model = ResNet50_ImageNet(c=1000, ratio=args.ratio).to(device)
+            else:       # cifar
+                model = ResNet50(c=c, ratio=args.ratio).to(device)
 
         else:
             cls, cls_args = models[args.model]
@@ -436,8 +444,11 @@ def main():
 
             lr_scheduler.step()
 
-            if args.valid_split > 0.0:
+            if args.data == 'imagenet':
                 val_loss, val_acc = evaluate(args, model, device, valid_loader)
+            else:
+                val_loss, val_acc = evaluate(args, model, device, valid_loader)
+
 
             if val_acc > best_acc:
                 print('Saving model')

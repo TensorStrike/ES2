@@ -169,6 +169,38 @@ def get_cifar10_dataloaders(args, validation_split=0.0, max_threads=10):
 
     return train_loader, valid_loader, test_loader
 
+def get_imagenet_dataloaders(args):
+    data_path = '/uoa/home/r01al21/sharedscratch/imagenet/ILSVRC/Data/CLS-LOC'
+    traindir = os.path.join(data_path, 'train')
+    valdir = os.path.join(data_path, 'val')
+    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                     std=[0.229, 0.224, 0.225])
+
+    train_dataset = datasets.ImageFolder(
+        traindir,
+        transforms.Compose([
+            transforms.RandomResizedCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize,
+        ]))
+
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset, batch_size=args.batch_size, shuffle=True,
+        num_workers=args.workers, pin_memory=True)
+
+    val_loader = torch.utils.data.DataLoader(
+        datasets.ImageFolder(valdir, transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            normalize,
+        ])),
+        batch_size=args.batch_size, shuffle=False,
+        num_workers=args.workers, pin_memory=True)
+
+    return train_loader, val_loader
+
 def get_tinyimagenet_dataloaders(args, validation_split=0.0):
     traindir = os.path.join(args.datadir, 'train')
     valdir = os.path.join(args.datadir, 'val')
