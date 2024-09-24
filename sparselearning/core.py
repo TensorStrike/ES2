@@ -205,24 +205,17 @@ class Masking(object):
             if self.steps % self.prune_every_k_steps == 0:
                 if self.args.cyclic:
                     if self.steps <= self.cyclic_end_step:  # cyclic density phase
-                        # calculate cycle position
                         cycle_step = (self.steps - 1) % self.steps_per_cycle
-                        # cycle_position = cycle_step / self.steps_per_cycle
-
-                        # ensure start from maximum density
                         adjusted_cycle_step = (cycle_step + self.steps_per_cycle // 2) % self.steps_per_cycle
                         cycle_position = adjusted_cycle_step / self.steps_per_cycle
 
-                        # calculate density using cosine
                         density_range = self.density_max - self.density_min
-                        # self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
-                        self.next_density = self.density_max - 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+                        self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
 
-                        print('Cycle step:', cycle_step)
-                        print('Cycle position:', cycle_position)
-                        print('Next density:', self.next_density)
+                        print(f'Step: {self.steps}')
+                        print(f'Cycle step: {cycle_step}')
+                        print(f'Cycle position: {cycle_position:.4f}')
 
-                        # Adjust masks based on next_density
                         self.prune_regrow()
 
                     else:
