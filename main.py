@@ -390,7 +390,7 @@ def main():
             density = calculate_adjusted_density(model, args.density)  # we adjust density to account for weight sharing
             if args.cyclic:
                 mask.steps_per_cycle = args.cyclic_length * len(train_loader)
-                mask.cyclic_end_step = mask.steps_per_cycle * (args.num_cycles-0.5) # end at bottom
+                mask.cyclic_end_step = mask.steps_per_cycle * args.num_cycles
 
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
