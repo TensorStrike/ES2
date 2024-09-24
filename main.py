@@ -209,6 +209,37 @@ def evaluate(args, model, device, test_loader, is_test_set=False):
     return test_loss, correct / float(n)
 
 
+def eval_imagenet(args, model, device, test_loader, is_test_set=False):
+    model.eval()
+    test_loss = 0
+    correct1 = 0
+    correct5 = 0
+    n = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            if args.fp16: data = data.half()
+            output = model(data)
+            test_loss += F.cross_entropy(output, target, reduction='sum').item()
+
+            _, pred = output.topk(5, 1, True, True)
+            pred = pred.t()
+            correct = pred.eq(target.view(1, -1).expand_as(pred))
+            correct1 += correct[:1].reshape(-1).float().sum(0, keepdim=True).item()
+            correct5 += correct[:5].reshape(-1).float().sum(0, keepdim=True).item()
+            n += target.size(0)
+
+    test_loss /= n
+    top1_acc = 100. * correct1 / n
+    top5_acc = 100. * correct5 / n
+
+    print_and_log(
+        '\n{}: Average loss: {:.4f}, Top-1 Accuracy: {}/{} ({:.2f}%), Top-5 Accuracy: {}/{} ({:.2f}%)\n'.format(
+            'Test evaluation' if is_test_set else 'Evaluation',
+            test_loss, correct1, n, top1_acc, correct5, n, top5_acc))
+
+    return test_loss, top1_acc, top5_acc
+
 def main():
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
@@ -445,15 +476,22 @@ def main():
             lr_scheduler.step()
 
             if args.data == 'imagenet':
-                val_loss, val_acc = evaluate(args, model, device, valid_loader)
+                val_loss, val_top1_acc, val_top5_acc = eval_imagenet(args, model, device, valid_loader)
             else:
                 val_loss, val_acc = evaluate(args, model, device, valid_loader)
 
 
-            if val_acc > best_acc:
-                print('Saving model')
-                best_acc = val_acc
-                torch.save(model.state_dict(), args.save)
+            if args.data == 'imagenet':
+                if val_top1_acc > best_acc:
+                    print('Saving model')
+                    best_acc = val_top1_acc
+                    torch.save(model.state_dict(), args.save)
+            else:
+                if val_acc > best_acc:
+                    print('Saving model')
+                    best_acc = val_acc
+                    torch.save(model.state_dict(), args.save)
+
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
@@ -463,9 +501,19 @@ def main():
                 "train_loss": train_loss,
                 "train_accuracy": train_acc,
                 "val_loss": val_loss,
-                "val_accuracy": val_acc,
+                # "val_accuracy": val_acc,
                 "learning_rate": optimizer.param_groups[0]['lr'],
             }
+
+            if args.data == 'imagenet':
+                metrics.update({
+                    "val_top1_accuracy": val_top1_acc,
+                    "val_top5_accuracy": val_top5_acc,
+                })
+            else:
+                metrics.update({
+                    "val_accuracy": val_acc,
+                })
 
             if args.sparse:
                 sparse_metrics = mask.get_metrics()
