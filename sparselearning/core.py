@@ -87,8 +87,9 @@ class Masking(object):
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
             self.density_min = density
             self.density_max = density * self.args.density_max_multiplier
-            self.density = self.density_max
-
+            self.density = density * self.args.density_max_multiplier
+            print('MIN DENSITY IS #####################', self.density_min)
+            print('DENSITY IS #########################', self.density)
 
             if mode == 'GMP':
                 self.baseline_nonzero = 0
@@ -136,6 +137,7 @@ class Masking(object):
                 print('initialize by ERK')
                 total_params = sum(mask.numel() for mask in self.masks.values())
                 expected_active_params = int(total_params * self.density)
+                # print('DENSITY ERK #########################', self.density)
 
                 raw_probabilities = {}
                 total_raw_prob = 0.0
@@ -205,12 +207,16 @@ class Masking(object):
                     if self.steps <= self.cyclic_end_step:  # cyclic density phase
                         # calculate cycle position
                         cycle_step = (self.steps - 1) % self.steps_per_cycle
-                        cycle_position = cycle_step / self.steps_per_cycle
+                        # cycle_position = cycle_step / self.steps_per_cycle
+
+                        # ensure start from maximum density
+                        adjusted_cycle_step = (cycle_step + self.steps_per_cycle // 2) % self.steps_per_cycle
+                        cycle_position = adjusted_cycle_step / self.steps_per_cycle
 
                         # calculate density using cosine
                         density_range = self.density_max - self.density_min
-                        self.next_density = self.density_min + 0.5 * density_range * (
-                                1 - math.cos(2 * math.pi * cycle_position))
+                        # self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+                        self.next_density = self.density_max - 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
 
                         print('Cycle step:', cycle_step)
                         print('Cycle position:', cycle_position)
