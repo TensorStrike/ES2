@@ -85,9 +85,10 @@ class Masking(object):
         self.steps_per_cycle = 0
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
-            self.density = density
             self.density_min = density
-            self.density_max = density * 3
+            self.density_max = density * self.args.density_max_multiplier
+            self.density = self.density_max
+
 
             if mode == 'GMP':
                 self.baseline_nonzero = 0
@@ -148,7 +149,7 @@ class Masking(object):
 
                 epsilon = expected_active_params / total_raw_prob               # scaling factor
 
-                min_density = 0.6 * self.density                         # Set a minimum density threshold to prevent from layer pruned entirely
+                min_density = 0.5 * self.density                         # Set a minimum density threshold to prevent from layer pruned entirely
 
                 total_nonzero = 0
                 for name, mask in self.masks.items():
@@ -217,8 +218,10 @@ class Masking(object):
 
                         # Adjust masks based on next_density
                         self.prune_regrow()
+
                     else:
-                        # for the remainder of training
+                        # for the remainder of training, reset prune_every_k_steps to 4000 used in ITOP paper
+                        self.prune_every_k_steps = 4000
                         self.truncate_weights()
                         _, _ = self.fired_masks_update()
                 else:  # standard DST
