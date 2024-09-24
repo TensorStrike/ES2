@@ -211,6 +211,7 @@ class Masking(object):
 
                         density_range = self.density_max - self.density_min
                         self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+                        self.next_density = self.density_max - 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
 
                         print(f'Step: {self.steps}')
                         print(f'Cycle step: {cycle_step}')
