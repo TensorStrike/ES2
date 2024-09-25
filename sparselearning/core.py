@@ -210,7 +210,8 @@ class Masking(object):
                             self.current_cycle += 1
 
                         # calculate cycle position
-                        cycle_step = (self.steps - 1) % self.steps_per_cycle[self.current_cycle]
+                        # cycle_step = (self.steps - 1) % self.steps_per_cycle[self.current_cycle]
+                        cycle_step = self.steps - cumulative_steps - 1
                         cycle_position = cycle_step / self.steps_per_cycle[self.current_cycle]
 
                         # calculate density using cosine
