@@ -85,12 +85,12 @@ class Masking(object):
         self.steps_per_cycle = 0
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
-            self.density_min = density
-            self.density_max = density * self.args.density_max_multiplier
             if self.args.cyclic:
-                self.density = density
-            else:
                 self.density = density * self.args.density_max_multiplier
+                self.density_min = density
+                self.density_max = density * self.args.density_max_multiplier
+            else:
+                self.density = density
 
 
             if mode == 'GMP':
