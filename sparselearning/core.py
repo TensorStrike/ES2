@@ -82,16 +82,14 @@ class Masking(object):
         else: self.prune_every_k_steps = self.args.update_frequency
 
         self.cyclic_end_step = 0        # step when cyclic density ends
-        self.steps_per_cycle = 0
+        self.steps_per_cycle = []
+        self.current_cycle = 0
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
+            self.density = density
             if self.args.cyclic:
-                self.density = density * self.args.density_max_multiplier
                 self.density_min = density
                 self.density_max = density * self.args.density_max_multiplier
-            else:
-                self.density = density
-
 
             if mode == 'GMP':
                 self.baseline_nonzero = 0
@@ -206,15 +204,20 @@ class Masking(object):
             if self.steps % self.prune_every_k_steps == 0:
                 if self.args.cyclic:
                     if self.steps <= self.cyclic_end_step:  # cyclic density phase
+                        # check which cycle it is currently in
+                        cumulative_steps = sum(self.steps_per_cycle[:self.current_cycle + 1])
+                        if self.steps > cumulative_steps:
+                            self.current_cycle += 1
+
                         # calculate cycle position
-                        cycle_step = (self.steps - 1) % self.steps_per_cycle
-                        cycle_position = cycle_step / self.steps_per_cycle
+                        cycle_step = (self.steps - 1) % self.steps_per_cycle[self.current_cycle]
+                        cycle_position = cycle_step / self.steps_per_cycle[self.current_cycle]
 
                         # calculate density using cosine
                         density_range = self.density_max - self.density_min
-                        self.next_density = self.density_min + 0.5 * density_range * (
-                                1 - math.cos(2 * math.pi * cycle_position))
+                        self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
 
+                        print('Current cycle: ', self.current_cycle)
                         print('Cycle step:', cycle_step)
                         print('Cycle position:', cycle_position)
                         print('Next density:', self.next_density)
