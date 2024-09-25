@@ -219,15 +219,15 @@ class Masking(object):
                         self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
 
                         print('Current cycle: ', self.current_cycle)
-                        print('Cycle step:', cycle_step)
-                        print('Cycle position:', cycle_position)
+                        # print('Cycle step:', cycle_step)
+                        # print('Cycle position:', cycle_position)
                         print('Next density:', self.next_density)
 
                         # Adjust masks based on next_density
                         self.prune_regrow()
 
                     else:
-                        # for the remainder of training, reset prune_every_k_steps to 4000 used in ITOP paper
+                        # for the remainder of training, reset prune_every_k_steps to value used in ITOP paper
                         self.prune_every_k_steps = 4000
                         self.truncate_weights()
                         _, _ = self.fired_masks_update()

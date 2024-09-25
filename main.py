@@ -486,18 +486,29 @@ def main():
             else:
                 val_loss, val_acc = evaluate(args, model, device, valid_loader)
 
-
-            if args.data == 'imagenet':
-                if val_top1_acc > best_acc:
-                    print('Saving model')
-                    best_acc = val_top1_acc
-                    torch.save(model.state_dict(), args.save)
+            if args.cyclic:
+                if mask.cyclic_end_step >= mask.steps:      # after cycles
+                    if args.data == 'imagenet':
+                        if val_top1_acc > best_acc:
+                            print('Saving model')
+                            best_acc = val_top1_acc
+                            torch.save(model.state_dict(), args.save)
+                    else:
+                        if val_acc > best_acc:
+                            print('Saving model')
+                            best_acc = val_acc
+                            torch.save(model.state_dict(), args.save)
             else:
-                if val_acc > best_acc:
-                    print('Saving model')
-                    best_acc = val_acc
-                    torch.save(model.state_dict(), args.save)
-
+                if args.data == 'imagenet':
+                    if val_top1_acc > best_acc:
+                        print('Saving model')
+                        best_acc = val_top1_acc
+                        torch.save(model.state_dict(), args.save)
+                else:
+                    if val_acc > best_acc:
+                        print('Saving model')
+                        best_acc = val_acc
+                        torch.save(model.state_dict(), args.save)
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
