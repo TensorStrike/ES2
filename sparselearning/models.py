@@ -625,12 +625,20 @@ class Bottleneck_NoPara(nn.Module):
     def forward(self, x, weight_params):
         conv1_weight, conv2_weight, conv3_weight = weight_params[:3]
 
+        # checking shape for weight sharing
+        assert conv1_weight.shape == (self.planes, self.in_planes, 1, 1), f"Unexpected shape for conv1_weight: {conv1_weight.shape}"
+        assert conv2_weight.shape == (self.planes, self.planes, 3, 3), f"Unexpected shape for conv2_weight: {conv2_weight.shape}"
+        assert conv3_weight.shape == (self.expansion * self.planes, self.planes, 1, 1), f"Unexpected shape for conv3_weight: {conv3_weight.shape}"
+
         out = self.relu1(self.bn1(F.conv2d(x, self.scale_1 * conv1_weight, stride=1, padding=0)))
         out = self.relu2(self.bn2(F.conv2d(out, self.scale_2 * conv2_weight, stride=self.stride, padding=1)))
         out = self.bn3(F.conv2d(out, self.scale_3 * conv3_weight, stride=1, padding=0))
 
         if len(weight_params) > 3:
             shortcut_weight = weight_params[3]
+            assert shortcut_weight.shape == (self.expansion * self.planes, self.in_planes, 1,
+                                             1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
+
             shortcut = F.conv2d(x, self.scale_4 * shortcut_weight, stride=self.stride)
             shortcut = self.shortcut(shortcut)
         else:
