@@ -552,6 +552,72 @@ class BasicBlock(nn.Module):
         out = self.relu2(out)
         return out
 
+class BasicBlock_NoPara(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1):
+        super(BasicBlock_NoPara, self).__init__()
+        self.in_planes = in_planes
+        self.planes = planes
+        self.stride = stride
+
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
+                nn.BatchNorm2d(self.expansion*planes)
+            )
+
+        self.relu1 = DyReLUB(planes)
+        self.relu2 = DyReLUB(planes)
+
+        # learnable scaling factors
+        self.scale_1 = nn.Parameter(torch.ones(1))
+        self.scale_2 = nn.Parameter(torch.ones(1))
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.scale_3 = nn.Parameter(torch.ones(1))
+
+        nn.init.uniform_(self.scale_1)
+        nn.init.uniform_(self.scale_2)
+        if hasattr(self, 'scale_3'):
+            nn.init.uniform_(self.scale_3)
+
+    def forward(self, x, weight_params):
+        conv1_weight, conv2_weight = weight_params[:2]
+
+        # shortcut_weight = weight_params[2] if len(weight_params) > 2 else None
+
+        assert conv1_weight.shape == (
+        self.planes, self.in_planes, 3, 3), f"Unexpected shape for conv1_weight: {conv1_weight.shape}"
+        assert conv2_weight.shape == (
+        self.planes, self.planes, 3, 3), f"Unexpected shape for conv2_weight: {conv2_weight.shape}"
+
+        out = self.relu1(self.bn1(F.conv2d(x, self.scale_1 * conv1_weight, stride=self.stride, padding=1)))
+        out = self.bn2(F.conv2d(out, self.scale_2 * conv2_weight, stride=1, padding=1))
+
+        # if shortcut_weight is not None:
+        #     assert shortcut_weight.shape == (
+        #     self.planes, self.in_planes, 1, 1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
+        #     shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
+        #     shortcut = self.shortcut(shortcut)
+        # else:
+        #     shortcut = self.shortcut(x)
+
+        if len(weight_params) > 2:
+            shortcut_weight = weight_params[2]
+            assert shortcut_weight.shape == (self.planes * self.expansion, self.in_planes, 1,
+                                             1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
+            shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
+            shortcut = self.shortcut(shortcut)
+        else:
+            shortcut = self.shortcut(x)
+
+        out += shortcut
+        out = self.relu2(out)
+        return out
+
 
 class Bottleneck(nn.Module):
     expansion = 4
@@ -600,10 +666,8 @@ class Bottleneck_NoPara(nn.Module):
         # BatchNorm and ReLU layers
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu1 = DyReLUB(planes)
-
         self.bn2 = nn.BatchNorm2d(planes)
         self.relu2 = DyReLUB(planes)
-
         self.bn3 = nn.BatchNorm2d(self.expansion * planes)
         self.relu3 = DyReLUB(self.expansion * planes)
 
@@ -662,6 +726,7 @@ class Bottleneck_NoPara(nn.Module):
         out += shortcut
         out = self.relu3(out)
         return out
+
 
 class ResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes, ratio=2):
@@ -755,71 +820,7 @@ class ResNet(nn.Module):
         return shared_params
 
 
-class BasicBlock_NoPara(nn.Module):
-    expansion = 1
 
-    def __init__(self, in_planes, planes, stride=1):
-        super(BasicBlock_NoPara, self).__init__()
-        self.in_planes = in_planes
-        self.planes = planes
-        self.stride = stride
-
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.bn2 = nn.BatchNorm2d(planes)
-
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:
-            self.shortcut = nn.Sequential(
-                nn.BatchNorm2d(self.expansion*planes)
-            )
-
-        self.relu1 = DyReLUB(planes)
-        self.relu2 = DyReLUB(planes)
-
-        # learnable scaling factors
-        self.scale_1 = nn.Parameter(torch.ones(1))
-        self.scale_2 = nn.Parameter(torch.ones(1))
-        if stride != 1 or in_planes != self.expansion*planes:
-            self.scale_3 = nn.Parameter(torch.ones(1))
-
-        nn.init.uniform_(self.scale_1)
-        nn.init.uniform_(self.scale_2)
-        if hasattr(self, 'scale_3'):
-            nn.init.uniform_(self.scale_3)
-
-    def forward(self, x, weight_params):
-        conv1_weight, conv2_weight = weight_params[:2]
-
-        # shortcut_weight = weight_params[2] if len(weight_params) > 2 else None
-
-        assert conv1_weight.shape == (
-        self.planes, self.in_planes, 3, 3), f"Unexpected shape for conv1_weight: {conv1_weight.shape}"
-        assert conv2_weight.shape == (
-        self.planes, self.planes, 3, 3), f"Unexpected shape for conv2_weight: {conv2_weight.shape}"
-
-        out = self.relu1(self.bn1(F.conv2d(x, self.scale_1 * conv1_weight, stride=self.stride, padding=1)))
-        out = self.bn2(F.conv2d(out, self.scale_2 * conv2_weight, stride=1, padding=1))
-
-        # if shortcut_weight is not None:
-        #     assert shortcut_weight.shape == (
-        #     self.planes, self.in_planes, 1, 1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
-        #     shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
-        #     shortcut = self.shortcut(shortcut)
-        # else:
-        #     shortcut = self.shortcut(x)
-
-        if len(weight_params) > 2:
-            shortcut_weight = weight_params[2]
-            assert shortcut_weight.shape == (self.planes * self.expansion, self.in_planes, 1,
-                                             1), f"Unexpected shape for shortcut_weight: {shortcut_weight.shape}"
-            shortcut = F.conv2d(x, self.scale_3 * shortcut_weight, stride=self.stride)
-            shortcut = self.shortcut(shortcut)
-        else:
-            shortcut = self.shortcut(x)
-
-        out += shortcut
-        out = self.relu2(out)
-        return out
 
 
 class ResNetImageNet(nn.Module):
@@ -832,21 +833,29 @@ class ResNetImageNet(nn.Module):
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = DyReLUB(64, reduction=4, k=2, conv_type='2d')
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
+
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.classifier = nn.Linear(512 * block[0].expansion, num_classes, bias=False)
 
     def _make_layer(self, block, planes, num_blocks, stride):
-        strides = [stride] + [1] * (num_blocks - 1)
         layers = []
-        for i, stride in enumerate(strides):
+        shared_block = None
+        for i in range(num_blocks):
+            current_stride = stride if i == 0 else 1
             if i < self.ratio:
-                layers.append(block[0](self.in_planes, planes, stride))     # basic block
+                b = block[0](self.in_planes, planes, current_stride)
+                layers.append(b)
+                if i == self.ratio - 1:
+                    shared_block = b  # Save the block for sharing
             else:
-                layers.append(block[1](self.in_planes, planes, stride))     # bottleneck
+                assert shared_block is not None, "Shared block must be defined before creating shared blocks."
+                b = block[1](self.in_planes, planes, current_stride, shared_block)
+                layers.append(b)
             self.in_planes = planes * block[0].expansion
         return nn.ModuleList(layers)
 
@@ -865,30 +874,12 @@ class ResNetImageNet(nn.Module):
         return out
 
     def layer_forward(self, layer, x):
-        for i, block in enumerate(layer):
-            if i < self.ratio:
-                x = block(x)
-            else:
-                weight_params = []
-                for name, param in layer[self.ratio - 1].named_parameters():
-                    if 'conv' in name and 'weight' in name:
-                        weight_params.append(param)
-                x = block(x, weight_params)
+        for block in layer:
+            x = block(x)
         return x
 
-    def get_shared_para(self):
-        shared_params = 0
-        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
-            if len(layer) > self.ratio:
-                num_shared_blocks = len(layer) - self.ratio
-                last_non_shared_block = layer[self.ratio - 1]
-                params_per_block = sum(
-                    p.numel() for name, p in last_non_shared_block.named_parameters()
-                    if ('weight' in name and (
-                                'conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower())
-                )
-                shared_params += params_per_block * num_shared_blocks
-        return shared_params
+
+
 
 class ResNet_50cifar(nn.Module):
     def __init__(self, block, num_blocks, num_classes=10, ratio=2):

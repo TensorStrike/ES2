@@ -487,7 +487,7 @@ def main():
                 val_loss, val_acc = evaluate(args, model, device, valid_loader)
 
             if args.cyclic:
-                if mask.cyclic_end_step >= mask.steps:      # after cycles
+                if mask.cyclic_end_step <= mask.steps:      # after cycles
                     if args.data == 'imagenet':
                         if val_top1_acc > best_acc:
                             print('Saving model')
