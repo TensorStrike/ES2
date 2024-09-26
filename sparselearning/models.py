@@ -878,7 +878,23 @@ class ResNetImageNet(nn.Module):
             x = block(x)
         return x
 
-
+    def get_shared_para(self):
+        '''
+        Counts only the convolutional and linear weights in shared blocks.
+        '''
+        shared_params = 0
+        for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
+            if len(layer) > self.ratio:
+                num_shared_blocks = len(layer) - self.ratio
+                last_non_shared_block = layer[self.ratio - 1]
+                # Count only the prunable weights
+                params_per_block = sum(
+                    p.numel() for name, p in last_non_shared_block.named_parameters()
+                    if ('weight' in name and (
+                                'conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower())
+                )
+                shared_params += params_per_block * num_shared_blocks
+        return shared_params
 
 
 class ResNet_50cifar(nn.Module):
