@@ -18,11 +18,15 @@ import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
     ResNet50, ResNet18, ResNet50_ImageNet
+from sparselearning.resnet_ablation import ResNet34_ReLU
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders, get_imagenet_dataloaders
 import torchvision
 import torchvision.transforms as transforms
 import warnings
 import wandb
+from fvcore.nn import FlopCountAnalysis
+
+
 
 warnings.filterwarnings("ignore", category=UserWarning)
 cudnn.benchmark = True
@@ -113,6 +117,19 @@ def calculate_adjusted_density(model, density):
     return adjusted_density
 
 
+import torch.nn as nn
+
+
+def track_gradient_flow(model):
+    grad_norms = {}
+    for name, param in model.named_parameters():
+        if param.requires_grad and param.grad is not None:
+            if ('weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower()):
+                grad_norm = param.grad.norm().item()
+                grad_norms[name] = grad_norm
+    return grad_norms
+
+
 def test_inference_speed(model, device, test_loader, num_batches=100):
     model.eval()
     model.to(device)
@@ -162,7 +179,6 @@ def train(args, model, device, train_loader, optimizer, epoch, mask=None):
             optimizer.backward(loss)
         else:
             loss.backward()
-
         clip_grad_norm_(model.parameters(), max_norm=1.0)
 
         if mask is not None:
@@ -349,8 +365,8 @@ def main():
         elif args.model == 'ResNet18':
             model = ResNet18(c=c).to(device)
         elif args.model == 'ResNet34':
-            # model = ResNet34(c=100).to(device)
             model = ResNet34(c=c, ratio=args.ratio).to(device)
+            # model = ResNet34_ReLU(c=c, ratio=args.ratio).to(device)
         elif args.model == 'ResNet50':
             if args.data == 'imagenet':
                 model = ResNet50_ImageNet(c=1000, ratio=args.ratio).to(device)
@@ -363,6 +379,9 @@ def main():
 
         # print(summary(model, input_size=(3, 32, 32)))
         print('tensor param:', sum(p.numel() for p in model.parameters()))
+        inputs = torch.randn(1, 3, 32, 32).cuda()
+        flops = FlopCountAnalysis(model.cuda(), inputs)
+        print(f"FLOPs: {flops.total()}")
         test_inference_speed(model, device, test_loader)
 
         print_and_log(model)
@@ -478,6 +497,8 @@ def main():
                             module.beta = decay_factor
 
             train_loss, train_acc = train(args, model, device, train_loader, optimizer, epoch, mask)
+            gradient_norms = track_gradient_flow(model)
+            grad_norms_flat = {f"grad_norm_{layer}": norm for layer, norm in gradient_norms.items()}
 
             lr_scheduler.step()
 
@@ -520,6 +541,7 @@ def main():
                 "val_loss": val_loss,
                 # "val_accuracy": val_acc,
                 "learning_rate": optimizer.param_groups[0]['lr'],
+                "gradient_norm": grad_norms_flat,
             }
 
             if args.data == 'imagenet':

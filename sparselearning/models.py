@@ -964,14 +964,6 @@ class ResNet_50cifar(nn.Module):
         return shared_params
 
 
-# def ResNet18(c=1000, ratio=2):
-#     return ResNet(BasicBlock, [2,2,2,2],c, ratio=ratio)
-
-# def ResNet34(c=10, ratio=2):
-#     return ResNet(BasicBlock, [3,4,6,3],c,ratio=ratio)
-#
-# def ResNet50(c=10, ratio=2):
-#     return ResNet(Bottleneck, [3,4,6,3],c, ratio=ratio)
 
 def ResNet34(c, ratio=2):
     return ResNet([BasicBlock, BasicBlock_NoPara], [3, 4, 6, 3], c, ratio=ratio)
