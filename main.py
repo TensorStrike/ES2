@@ -498,7 +498,7 @@ def main():
 
             train_loss, train_acc = train(args, model, device, train_loader, optimizer, epoch, mask)
             gradient_norms = track_gradient_flow(model)
-            grad_norms_flat = {f"grad_norm_{layer}": norm for layer, norm in gradient_norms.items()}
+            grad_norms_flat = {f"Gradient Norm/{layer}": norm for layer, norm in gradient_norms.items()}
 
             lr_scheduler.step()
 
@@ -541,8 +541,9 @@ def main():
                 "val_loss": val_loss,
                 # "val_accuracy": val_acc,
                 "learning_rate": optimizer.param_groups[0]['lr'],
-                "gradient_norm": grad_norms_flat,
+                # "gradient_norm": grad_norms_flat,
             }
+            metrics.update(grad_norms_flat)
 
             if args.data == 'imagenet':
                 metrics.update({
