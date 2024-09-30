@@ -379,9 +379,9 @@ def main():
 
         # print(summary(model, input_size=(3, 32, 32)))
         print('tensor param:', sum(p.numel() for p in model.parameters()))
-        inputs = torch.randn(1, 3, 32, 32).cuda()
-        flops = FlopCountAnalysis(model.cuda(), inputs)
-        print(f"FLOPs: {flops.total()}")
+        # inputs = torch.randn(1, 3, 32, 32).cuda()
+        # flops = FlopCountAnalysis(model.cuda(), inputs)
+        # print(f"FLOPs: {flops.total()}")
         test_inference_speed(model, device, test_loader)
 
         print_and_log(model)
