@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+import torch.nn.functional as F
 
 class DyReLU(nn.Module):
     def __init__(self, channels, reduction=4, k=2, conv_type='2d'):
@@ -60,6 +60,9 @@ class DyReLUB(DyReLU):
         self.register_buffer('relu_coefs_buffer', torch.zeros(channels, 2 * k))
 
     def forward(self, x):
+        if self.beta <= 0:
+            return F.relu(x)    # just use relu if beta==0
+
         assert x.shape[1] == self.channels
         theta = self.get_relu_coefs(x)
 

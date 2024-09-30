@@ -316,7 +316,7 @@ def main():
     parser.add_argument('--workers', type=int, default=8)
 
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
-    parser.add_argument('--wandb-project', type=str, default='extreme_sparsity')
+    parser.add_argument('--wandb-project', type=str, default='ES2')
 
     args = parser.parse_args()
     setup_logger(args)
