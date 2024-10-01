@@ -120,15 +120,50 @@ def calculate_adjusted_density(model, density):
 import torch.nn as nn
 
 
+# def track_gradient_flow(model):
+#     grad_norms = {}
+#     for name, param in model.named_parameters():
+#         if param.requires_grad and param.grad is not None:
+#             if ('weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower()):
+#                 grad_norm = param.grad.norm().item()
+#                 grad_norms[name] = grad_norm
+#     return grad_norms
+
+
 def track_gradient_flow(model):
-    grad_norms = {}
+    grad_norms = {
+        'Conv1': 0.0,
+        'Layer1': 0.0,
+        'Layer2': 0.0,
+        'Layer3': 0.0,
+        'Layer4': 0.0,
+        'classifier': 0.0
+    }
+
     for name, param in model.named_parameters():
         if param.requires_grad and param.grad is not None:
-            if ('weight' in name and ('conv' in name.lower() or 'linear' in name.lower()) and 'relu' not in name.lower()):
-                grad_norm = param.grad.norm().item()
-                grad_norms[name] = grad_norm
-    return grad_norms
+            if ('weight' in name and
+                    ('conv' in name.lower() or 'linear' in name.lower() or 'classifier' in name.lower() or name.endswith(
+                        '.shortcut.0.weight')) and
+                    'bn' not in name.lower() and
+                    'relu' not in name.lower()):
+                grad_norm = param.grad.norm(2).item()
 
+                if 'conv1' in name:
+                    grad_norms['Conv1'] += grad_norm
+                elif 'layer1' in name:
+                    grad_norms['Layer1'] += grad_norm
+                elif 'layer2' in name:
+                    grad_norms['Layer2'] += grad_norm
+                elif 'layer3' in name:
+                    grad_norms['Layer3'] += grad_norm
+                elif 'layer4' in name:
+                    grad_norms['Layer4'] += grad_norm
+                elif 'classifier' in name:
+                    grad_norms['classifier'] += grad_norm
+
+    print("Gradient norms:", grad_norms)
+    return grad_norms
 
 def test_inference_speed(model, device, test_loader, num_batches=100):
     model.eval()
@@ -498,7 +533,9 @@ def main():
 
             train_loss, train_acc = train(args, model, device, train_loader, optimizer, epoch, mask)
             gradient_norms = track_gradient_flow(model)
-            grad_norms_flat = {f"Gradient Norm/{layer}": norm for layer, norm in gradient_norms.items()}
+            # grad_norms_flat = {f"Gradient Norm/{layer}": norm for layer, norm in gradient_norms.items()}
+            grad_norms_flat = {f"Gradient Norm/{layer_group}": norm for layer_group, norm in gradient_norms.items()}
+
 
             lr_scheduler.step()
 
