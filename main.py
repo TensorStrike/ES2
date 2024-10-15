@@ -165,31 +165,44 @@ def track_gradient_flow(model):
     print("Gradient norms:", grad_norms)
     return grad_norms
 
-def test_inference_speed(model, device, test_loader, num_batches=100):
+
+def test_inference_speed(model, device, test_loader, num_runs=100, batch_size=None):
     model.eval()
     model.to(device)
 
-    start_time = time.time()
+    if batch_size is None:
+        batch_size = test_loader.batch_size
+
+    # Latency measurement
+    latency_times = []
     with torch.no_grad():
-        for i, (data, target) in enumerate(test_loader):
-            if i >= num_batches:
-                break
+        for i in range(num_runs):
+            data, _ = next(iter(test_loader))
+            data = data[:batch_size].to(device)
+
+            start_time = time.time()
+            _ = model(data)
+            end_time = time.time()
+
+            latency_times.append(end_time - start_time)
+
+    avg_latency = sum(latency_times) / len(latency_times)
+    print(f"Average inference latency (batch size {batch_size}): {avg_latency:.6f} seconds")
+
+    # Throughput measurement
+    start_time = time.time()
+    total_samples = 0
+    with torch.no_grad():
+        for data, _ in test_loader:
             data = data.to(device)
             _ = model(data)
-
+            total_samples += data.size(0)
     end_time = time.time()
-    elapsed_time = end_time - start_time
 
-    avg_inference_time_per_batch = elapsed_time / num_batches
-    print(f"Average inference time per batch: {avg_inference_time_per_batch:.6f} seconds")
+    throughput = total_samples / (end_time - start_time)
+    print(f"Inference throughput: {throughput:.2f} samples/second")
 
-
-def convert_drelu_to_drelu_inf(model):
-    for child_name, child in model.named_children():
-        if isinstance(child, DyReLUB):
-            setattr(model, child_name, DyReLUB_inf(child.channels, 4, child.k, child.conv_type))
-        else:
-            convert_drelu_to_drelu_inf(child)
+    return avg_latency, throughput
 
 
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
@@ -333,6 +346,7 @@ def main():
     parser.add_argument('--bench', action='store_true',
                         help='Enables the benchmarking of layers and estimates sparse speedups')
     parser.add_argument('--max-threads', type=int, default=10, help='How many threads to use for data loading.')
+    parser.add_argument('--inference-speed', action='store_true')
     # ITOP settings
     sparselearning.core.add_sparse_args(parser)
 
@@ -352,6 +366,7 @@ def main():
 
     parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
     parser.add_argument('--wandb-project', type=str, default='ES2')
+
 
     args = parser.parse_args()
     setup_logger(args)
@@ -600,35 +615,17 @@ def main():
 
         print('Testing')
 
-        print('111111111111111')
-        evaluate(args, model, device, test_loader, is_test_set=True)
-        # Converts the orignal dreul to the inference version
+        if args.data == 'imagenet':
+            eval_imagenet(args, model, device, test_loader, is_test_set=True)
+            if args.inference_speed == True:
+                test_inference_speed(model, device, test_loader, num_runs=100, batch_size=2)
 
-        convert_drelu_to_drelu_inf(model)
+        else:       # cifar10/100
+            evaluate(args, model, device, test_loader, is_test_set=True)
+            if args.inference_speed == True:
+                test_inference_speed(model, device, test_loader, num_runs=100, batch_size=128)
 
-        # Load checkpoint
-        # checkpoint = torch.load('/home/msl/Documents/ES2/17265023133596997.pt')
-        checkpoint = torch.load(args.save)
 
-        # Remove all drelu layer parameters other than coefficients
-        layers_to_remove = []
-        for key in checkpoint:
-            if "relu" in key and ("weight" in key or "bias" in key or "lambdas" in key or "init_v" in key):
-                layers_to_remove.append(key)
-
-        for key in layers_to_remove:
-            del checkpoint[key]
-
-        # Load Checkpoint without drelu params
-        model.load_state_dict(checkpoint)
-        test_inference_speed(model, device, test_loader)
-
-        # You will need to recompute the number of parameters here
-
-        # Ensure on Cuda
-        model = model.cuda()
-        print('4444444444444444')
-        evaluate(args, model, device, test_loader, is_test_set=True)
 
         print_and_log("\nIteration end: {0}/{1}\n".format(i + 1, args.iters))
 
