@@ -14,11 +14,13 @@ import torch.backends.cudnn as cudnn
 from torchsummary import summary
 from sparselearning.dyrelu import DyReLUB, DyReLUB_inf
 from torch.nn.utils import clip_grad_norm_
+import torch.nn as nn
+
 import sparselearning
 from sparselearning.core import Masking, CosineDecay, LinearDecay
 from sparselearning.models import AlexNet, VGG16, LeNet_300_100, LeNet_5_Caffe, WideResNet, MLP_CIFAR10, ResNet34, \
     ResNet50, ResNet18, ResNet50_ImageNet
-from sparselearning.resnet_ablation import ResNet34_ReLU
+
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders, get_imagenet_dataloaders
 import torchvision
 import torchvision.transforms as transforms
@@ -117,8 +119,6 @@ def calculate_adjusted_density(model, density):
     return adjusted_density
 
 
-import torch.nn as nn
-
 
 # def track_gradient_flow(model):
 #     grad_norms = {}
@@ -166,7 +166,7 @@ def track_gradient_flow(model):
     return grad_norms
 
 
-def test_inference_speed(model, device, test_loader, num_runs=100, batch_size=None):
+def inference_speed(model, device, test_loader, num_runs=100, batch_size=None):
     model.eval()
     model.to(device)
 
@@ -205,6 +205,122 @@ def test_inference_speed(model, device, test_loader, num_runs=100, batch_size=No
     return avg_latency, throughput
 
 
+def compute_flops(model, input_shape, mask, device='cuda'):
+    model.eval()
+    model.to(device)
+
+    # Create a mapping from module instance to name
+    module_to_name = {}
+    for name, module in model.named_modules():
+        module_to_name[module] = name
+
+    # Initialize FLOPs counter
+    flops_counter = FLOPsCounter(mask.masks, module_to_name)
+
+    # Add hooks to the model
+    flops_counter.add_hooks(model)
+
+    # Create dummy input
+    input = torch.randn(input_shape).to(device)
+
+    # Run the model
+    with torch.no_grad():
+        output = model(input)
+
+    # Remove hooks
+    flops_counter.remove_hooks()
+
+    total_flops = flops_counter.total_flops
+
+    print("FLOPs per layer:")
+    for name, flops in flops_counter.module_flops.items():
+        print(f"{name}: {flops / 1e6:.2f} MFLOPs")
+
+    print(f"Total FLOPs: {total_flops / 1e6:.2f} MFLOPs")
+
+    return total_flops
+
+
+class FLOPsCounter:
+    def __init__(self, masks, module_to_name):
+        self.masks = masks  # parameter name to mask
+        self.module_to_name = module_to_name  # module instance to name
+        self.handles = []
+        self.total_flops = 0
+        self.module_flops = {}
+
+    def add_hooks(self, model):
+        for module in model.modules():
+            if isinstance(module, (nn.Conv2d, nn.Linear)):
+                handle = module.register_forward_hook(self.forward_hook)
+                self.handles.append(handle)
+
+    def remove_hooks(self):
+        for handle in self.handles:
+            handle.remove()
+
+    def forward_hook(self, module, input, output):
+        module_name = self.module_to_name[module]
+        flops = 0
+
+        if isinstance(module, nn.Conv2d):
+            flops = self.compute_conv2d_flops(module, input[0], output, module_name)
+
+        elif isinstance(module, nn.Linear):
+            flops = self.compute_linear_flops(module, input[0], output, module_name)
+
+        self.total_flops += flops
+        self.module_flops[module_name] = flops
+
+    def compute_conv2d_flops(self, module, input, output, module_name):
+        batch_size = input.shape[0]
+        in_channels = module.in_channels
+        out_channels = module.out_channels
+        Kh, Kw = module.kernel_size
+        Hout, Wout = output.shape[2], output.shape[3]
+
+        # Adjust for groups
+        groups = module.groups
+        in_channels_per_group = in_channels // groups
+        out_channels_per_group = out_channels // groups
+
+        # Calculate FLOPs per output element
+        conv_per_position_flops = Kh * Kw * in_channels_per_group
+
+        # Total FLOPs per output channel
+        active_elements_count = batch_size * Hout * Wout
+
+        total_flops = conv_per_position_flops * active_elements_count * out_channels
+
+        # Adjust FLOPs based on sparsity
+        parameter_name = module_name + '.weight'
+        weight_mask = self.masks.get(parameter_name, None)
+        if weight_mask is not None:
+            non_zero_weights = (weight_mask != 0).sum().item()
+            total_weights = weight_mask.numel()
+            density = non_zero_weights / total_weights
+            total_flops *= density
+
+        return total_flops
+
+    def compute_linear_flops(self, module, input, output, module_name):
+        batch_size = input.shape[0]
+        in_features = module.in_features
+        out_features = module.out_features
+
+        # Total FLOPs for matrix multiplication
+        total_flops = batch_size * in_features * out_features * 2  # Multiply and Add
+
+        # Adjust FLOPs based on sparsity
+        parameter_name = module_name + '.weight'
+        weight_mask = self.masks.get(parameter_name, None)
+        if weight_mask is not None:
+            non_zero_weights = (weight_mask != 0).sum().item()
+            total_weights = weight_mask.numel()
+            density = non_zero_weights / total_weights
+            total_flops *= density
+
+        return total_flops
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
     model.train()
     train_loss = 0
@@ -413,7 +529,7 @@ def main():
                 print('\t{0}'.format(key))
             raise Exception('You need to select a model')
         elif args.model == 'ResNet18':
-            model = ResNet18(c=c).to(device)
+            model = ResNet18(c=c, ratio=args.ratio).to(device)
         elif args.model == 'ResNet34':
             model = ResNet34(c=c, ratio=args.ratio).to(device)
             # model = ResNet34_ReLU(c=c, ratio=args.ratio).to(device)
@@ -427,12 +543,17 @@ def main():
             cls, cls_args = models[args.model]
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
-        # print(summary(model, input_size=(3, 32, 32)))
-        print('tensor param:', sum(p.numel() for p in model.parameters()))
+
+        print(summary(model, input_size=(3, 32, 32)))
+        # print('tensor param:', sum(p.numel() for p in model.parameters()))
+
+        # flops = compute_flops(model, (1,3,32,32))
+        # print(f"Total FLOPs: {flops}")
+
         # inputs = torch.randn(1, 3, 32, 32).cuda()
         # flops = FlopCountAnalysis(model.cuda(), inputs)
         # print(f"FLOPs: {flops.total()}")
-        test_inference_speed(model, device, test_loader)
+
 
         print_and_log(model)
         print_and_log('=' * 60)
@@ -509,6 +630,12 @@ def main():
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         best_acc = 0.0
+
+        # flops = FlopCountAnalysis(model.cuda(), inputs)
+        # print(f"FLOPs: {flops.total()}")
+
+        flops = compute_flops(model, (1, 3, 32, 32), mask)
+        print(f"Total FLOPs after pruning: {flops}")
 
         # for epoch in range(1, args.epochs*args.multiplier + 1):
         #     t0 = time.time()
@@ -618,12 +745,12 @@ def main():
         if args.data == 'imagenet':
             eval_imagenet(args, model, device, test_loader, is_test_set=True)
             if args.inference_speed == True:
-                test_inference_speed(model, device, test_loader, num_runs=100, batch_size=2)
+                inference_speed(model, device, test_loader, num_runs=100, batch_size=2)
 
         else:       # cifar10/100
             evaluate(args, model, device, test_loader, is_test_set=True)
             if args.inference_speed == True:
-                test_inference_speed(model, device, test_loader, num_runs=100, batch_size=128)
+                inference_speed(model, device, test_loader, num_runs=100, batch_size=128)
 
 
 

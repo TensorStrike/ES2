@@ -743,16 +743,6 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.classifier = nn.Linear(512 * block[0].expansion, num_classes, bias=False)
 
-    # def _make_layer(self, block, planes, num_blocks, stride):
-    #     strides = [stride] + [1] * (num_blocks - 1)
-    #     layers = []
-    #     for i, stride in enumerate(strides):
-    #         if i < self.ratio:      # normal weights
-    #             layers.append(block(self.in_planes, planes, stride))
-    #         else:       # shared weights
-    #             layers.append(BasicBlock_NoPara(self.in_planes, planes, stride))
-    #         self.in_planes = planes * block.expansion
-    #     return nn.ModuleList(layers)
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
@@ -789,17 +779,6 @@ class ResNet(nn.Module):
                         weight_params.append(param)
                 x = block(x, weight_params)
         return x
-
-    # def get_shared_para(self):
-    #     '''
-    #     counts all active and pruned parameters in shared blocks
-    #     '''
-    #     shared_params = 0
-    #     for layer in [self.layer1, self.layer2, self.layer3, self.layer4]:
-    #         if len(layer) > self.ratio:
-    #             params_per_block = sum(p.numel() for p in layer[self.ratio-1].parameters() if len(p.shape) > 1)
-    #             shared_params += params_per_block * (len(layer) - self.ratio)
-    #     return shared_params
 
     def get_shared_para(self):
         '''
