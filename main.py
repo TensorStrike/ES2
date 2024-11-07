@@ -273,26 +273,25 @@ class FLOPsCounter:
         self.module_flops[module_name] = flops
 
     def compute_conv2d_flops(self, module, input, output, module_name):
-        batch_size = input.shape[0]
+        batch_size = 1  # For per-sample FLOPs
         in_channels = module.in_channels
         out_channels = module.out_channels
         Kh, Kw = module.kernel_size
         Hout, Wout = output.shape[2], output.shape[3]
 
-        # Adjust for groups
         groups = module.groups
         in_channels_per_group = in_channels // groups
-        out_channels_per_group = out_channels // groups
 
-        # Calculate FLOPs per output element
+        # FLOPs per output element
         conv_per_position_flops = Kh * Kw * in_channels_per_group
 
-        # Total FLOPs per output channel
-        active_elements_count = batch_size * Hout * Wout
+        # Total output elements
+        output_elements = batch_size * Hout * Wout * out_channels
 
-        total_flops = conv_per_position_flops * active_elements_count * out_channels
+        # Total FLOPs
+        total_flops = 2 * conv_per_position_flops * output_elements
 
-        # Adjust FLOPs based on sparsity
+        # Adjust FLOPs based on sparsity (theoretical adjustment)
         parameter_name = module_name + '.weight'
         weight_mask = self.masks.get(parameter_name, None)
         if weight_mask is not None:
@@ -304,12 +303,12 @@ class FLOPsCounter:
         return total_flops
 
     def compute_linear_flops(self, module, input, output, module_name):
-        batch_size = input.shape[0]
+        batch_size = 1  # For per-sample FLOPs
         in_features = module.in_features
         out_features = module.out_features
 
-        # Total FLOPs for matrix multiplication
-        total_flops = batch_size * in_features * out_features * 2  # Multiply and Add
+        # Total FLOPs
+        total_flops = 2 * batch_size * in_features * out_features
 
         # Adjust FLOPs based on sparsity
         parameter_name = module_name + '.weight'
@@ -321,6 +320,7 @@ class FLOPsCounter:
             total_flops *= density
 
         return total_flops
+
 def train(args, model, device, train_loader, optimizer, epoch, mask=None):
     model.train()
     train_loss = 0
