@@ -544,7 +544,7 @@ def main():
             model = cls(*(cls_args + [args.save_features, args.bench])).to(device)
 
 
-        print(summary(model, input_size=(3, 32, 32)))
+        # print(summary(model, input_size=(3, 32, 32)))
         # print('tensor param:', sum(p.numel() for p in model.parameters()))
 
         # flops = compute_flops(model, (1,3,32,32))
@@ -633,8 +633,12 @@ def main():
 
         # flops = FlopCountAnalysis(model.cuda(), inputs)
         # print(f"FLOPs: {flops.total()}")
+        if args.data == 'cifar10' or args.data == 'cifar100':
+            dummy_input = (1, 3, 32, 32)
+        elif args.data == 'imagenet':
+            dummy_input = (1, 3, 224, 224)
 
-        flops = compute_flops(model, (1, 3, 32, 32), mask)
+        flops = compute_flops(model, dummy_input, mask)
         print(f"Total FLOPs after pruning: {flops}")
 
         # for epoch in range(1, args.epochs*args.multiplier + 1):

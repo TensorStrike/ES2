@@ -60,7 +60,6 @@ class DyReLUB(DyReLU):
         self.register_buffer('relu_coefs_buffer', torch.zeros(channels, 2 * k))
 
     def forward(self, x):
-        print(self.beta)
         if self.beta <= 0 or self.beta==1:
             return F.relu(x)    # just use relu if beta==0
 
