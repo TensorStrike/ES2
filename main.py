@@ -126,19 +126,22 @@ def track_gradient_flow(model):
         'Layer2': 0.0,
         'Layer3': 0.0,
         'Layer4': 0.0,
-        'classifier': 0.0
+        'classifier': 0.0,
+        'Total': 0.0
     }
+    count = 0
 
     for name, param in model.named_parameters():
         if param.requires_grad and param.grad is not None:
             if ('weight' in name and
-                    ('conv' in name.lower() or 'linear' in name.lower() or 'classifier' in name.lower() or name.endswith(
-                        '.shortcut.0.weight')) and
+                    ('conv' in name.lower() or 'linear' in name.lower() or 'classifier' in name.lower() or name.endswith('.shortcut.0.weight')) and
                     'bn' not in name.lower() and
                     'relu' not in name.lower()):
+                count += 1
                 grad_norm = param.grad.norm(2).item()
+                grad_norms['Total'] += grad_norm
 
-                if 'conv1' in name:
+                if name == 'conv1.weight':
                     grad_norms['Conv1'] += grad_norm
                 elif 'layer1' in name:
                     grad_norms['Layer1'] += grad_norm
@@ -150,7 +153,9 @@ def track_gradient_flow(model):
                     grad_norms['Layer4'] += grad_norm
                 elif 'classifier' in name:
                     grad_norms['classifier'] += grad_norm
+                # print('debug: ',name)
 
+    print(f'counted {count} meaningful layers')
     print("Gradient norms:", grad_norms)
     return grad_norms
 
@@ -490,6 +495,10 @@ def main():
 
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
+        if args.cyclic:
+            record_epoch = max(mask.cyclic_end_step, end_ghost_epoch)  # record best model after this epoch
+        else:
+            record_epoch = end_ghost_epoch
         best_acc = 0.0
 
         # for epoch in range(1, args.epochs*args.multiplier + 1):
@@ -541,19 +550,7 @@ def main():
             else:
                 val_loss, val_acc = evaluate(args, model, device, valid_loader)
 
-            if args.cyclic:
-                if mask.cyclic_end_step <= mask.steps:      # after cycles
-                    if args.data == 'imagenet':
-                        if val_top1_acc > best_acc:
-                            print('Saving model')
-                            best_acc = val_top1_acc
-                            torch.save(model.state_dict(), args.save)
-                    else:
-                        if val_acc > best_acc:
-                            print('Saving model')
-                            best_acc = val_acc
-                            torch.save(model.state_dict(), args.save)
-            else:
+            if epoch >= record_epoch:
                 if args.data == 'imagenet':
                     if val_top1_acc > best_acc:
                         print('Saving model')
@@ -564,6 +561,7 @@ def main():
                         print('Saving model')
                         best_acc = val_acc
                         torch.save(model.state_dict(), args.save)
+
 
             print_and_log('Current learning rate: {0}. Time taken for epoch: {1:.2f} seconds.\n'.format(
                 optimizer.param_groups[0]['lr'], time.time() - t0))
