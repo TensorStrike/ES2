@@ -194,29 +194,47 @@ class Masking(object):
             print('Total parameters (trainable) under sparsity level of {0}: {1}'.format(self.density, sparse_size / total_size))
 
     def calculate_cyclic_density(self, cycle_position, pattern='cosine'):
-        # cumulative_steps = sum(self.steps_per_cycle[:self.current_cycle + 1])
-        # cycle_step = self.steps - cumulative_steps - 1
-        # cycle_position = cycle_step / self.steps_per_cycle[self.current_cycle]
-        #
-        # # calculate density using cosine
-        # density_range = self.density_max - self.density_min
-        # self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+        """
+        Calculate the density based on cycle position and pattern.
+
+        Args:
+            cycle_position: Float [0, 1) representing position in current cycle
+            pattern: 'cosine' for smooth transitions, 'triangular' for sharp peaks
+
+        Returns:
+            Float representing the target density
+        """
+        if not hasattr(self, 'density_min') or not hasattr(self, 'density_max'):
+            return getattr(self, 'density', 0.05)
 
         density_range = self.density_max - self.density_min
+        cycle_position = cycle_position % 1.0
+
         if pattern == 'cosine':
             density_factor = 0.5 * (1 - math.cos(2 * math.pi * cycle_position))
         elif pattern == 'triangular':
-            # Triangular wave: starts at min, goes to max at midpoint, returns to min
             if cycle_position <= 0.5:
-                # First half: linear increase from 0 to 1
                 density_factor = 2 * cycle_position
             else:
                 density_factor = 2 * (1 - cycle_position)
-
         else:
-            raise ValueError(f"Unknown cyclic pattern: {pattern}")
+            raise ValueError(f"Unknown cyclic pattern: {pattern}. Use 'cosine' or 'triangular'.")
 
         return self.density_min + density_range * density_factor
+
+    def get_current_cycle_info(self):
+        cumulative_steps = 0
+        for cycle_idx, cycle_length in enumerate(self.steps_per_cycle):
+            if self.steps <= cumulative_steps + cycle_length:
+                # We're in this cycle
+                cycle_start_step = cumulative_steps + 1
+                steps_into_cycle = self.steps - cycle_start_step
+                cycle_position = steps_into_cycle / cycle_length
+                return cycle_idx, cycle_position
+            cumulative_steps += cycle_length
+
+        # If we've exceeded all cycles, we're past the cyclic phase
+        return len(self.steps_per_cycle), 1.0
 
     def step(self):
         self.optimizer.step()
@@ -224,12 +242,17 @@ class Masking(object):
         self.death_rate_decay.step()
         self.death_rate = self.death_rate_decay.get_dr()
         self.steps += 1
+
+
         # print('step ', self.steps)
         if self.prune_every_k_steps is not None:
             if self.steps % self.prune_every_k_steps == 0:
                 if self.args.cyclic:
                     if self.steps <= self.cyclic_end_step:  # cyclic density phase
-                        # check which cycle it is currently in
+                        self.current_cycle, cycle_position = self.get_current_cycle_info()    # check which cycle it is currently in
+
+                        self.next_density = self.calculate_cyclic_density(cycle_position, self.args.cyclic_pattern)
+
                         cumulative_steps = sum(self.steps_per_cycle[:self.current_cycle + 1])
                         if self.steps > cumulative_steps:
                             self.current_cycle += 1
@@ -246,7 +269,6 @@ class Masking(object):
                         # print('Cycle position:', cycle_position)
                         print('Next density:', self.next_density)
 
-                        # Adjust masks based on next_density
                         self.prune_regrow()
 
                     else:

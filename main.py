@@ -354,6 +354,7 @@ def main():
     parser.add_argument('--cyclic', action='store_true')
     parser.add_argument('--num_cycles', type=int, default=2)
     parser.add_argument('--cyclic-length', type=int, default=50)
+    parser.add_argument('--cyclic-length-multiplier', type=float, default=2.0)
     parser.add_argument('--density_max_multiplier', type=int, default=3)
     parser.add_argument('--cyclic-pattern', type=str, default='cosine', choices=['cosine', 'triangular'])
     # imagenet
@@ -488,7 +489,7 @@ def main():
             density = calculate_adjusted_density(model, args.density)  # we adjust density to account for weight sharing
             if args.cyclic:
                 steps_1st_cycle = args.cyclic_length * len(train_loader)
-                steps_per_cycle = [steps_1st_cycle * (2 ** i) for i in range(args.num_cycles)]
+                steps_per_cycle = [int(steps_1st_cycle * (args.cyclic_length_multiplier ** i)) for i in range(args.num_cycles)]
                 mask.steps_per_cycle = steps_per_cycle
                 mask.cyclic_end_step = sum(steps_per_cycle)
                 # mask.steps_per_cycle = args.cyclic_length * len(train_loader)
