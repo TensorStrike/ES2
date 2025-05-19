@@ -193,22 +193,32 @@ class Masking(object):
 
             print('Total parameters (trainable) under sparsity level of {0}: {1}'.format(self.density, sparse_size / total_size))
 
+    def get_cycle_position(self):
+        if isinstance(self.steps_per_cycle, (int, float)):
+            cycle_step = (self.steps - 1) % self.steps_per_cycle
+            return cycle_step / self.steps_per_cycle
+        elif isinstance(self.steps_per_cycle, list):
+            cumulative_steps = 0
+
+            for cycle_idx, cycle_length in enumerate(self.steps_per_cycle):
+                cycle_start = cumulative_steps + 1
+                cycle_end = cumulative_steps + cycle_length
+
+                if cycle_start <= self.steps <= cycle_end:
+                    # We're in this cycle
+                    steps_into_cycle = self.steps - cycle_start
+                    cycle_position = steps_into_cycle / cycle_length
+                    return cycle_position
+
+                cumulative_steps += cycle_length
+            return 1.0
+        else:
+            return 0.0
+
     def calculate_cyclic_density(self, cycle_position, pattern='cosine'):
-        """
-        Calculate the density based on cycle position and pattern.
-
-        Args:
-            cycle_position: Float [0, 1) representing position in current cycle
-            pattern: 'cosine' for smooth transitions, 'triangular' for sharp peaks
-
-        Returns:
-            Float representing the target density
-        """
-        if not hasattr(self, 'density_min') or not hasattr(self, 'density_max'):
-            return getattr(self, 'density', 0.05)
 
         density_range = self.density_max - self.density_min
-        cycle_position = cycle_position % 1.0
+        cycle_position = max(0.0, min(1.0, cycle_position))
 
         if pattern == 'cosine':
             density_factor = 0.5 * (1 - math.cos(2 * math.pi * cycle_position))
@@ -218,23 +228,10 @@ class Masking(object):
             else:
                 density_factor = 2 * (1 - cycle_position)
         else:
-            raise ValueError(f"Unknown cyclic pattern: {pattern}. Use 'cosine' or 'triangular'.")
+            raise ValueError(f"Unknown cyclic pattern: {pattern}")
 
         return self.density_min + density_range * density_factor
 
-    def get_current_cycle_info(self):
-        cumulative_steps = 0
-        for cycle_idx, cycle_length in enumerate(self.steps_per_cycle):
-            if self.steps <= cumulative_steps + cycle_length:
-                # We're in this cycle
-                cycle_start_step = cumulative_steps + 1
-                steps_into_cycle = self.steps - cycle_start_step
-                cycle_position = steps_into_cycle / cycle_length
-                return cycle_idx, cycle_position
-            cumulative_steps += cycle_length
-
-        # If we've exceeded all cycles, we're past the cyclic phase
-        return len(self.steps_per_cycle), 1.0
 
     def step(self):
         self.optimizer.step()
@@ -244,23 +241,14 @@ class Masking(object):
         self.steps += 1
 
 
+
+
         # print('step ', self.steps)
         if self.prune_every_k_steps is not None:
             if self.steps % self.prune_every_k_steps == 0:
                 if self.args.cyclic:
                     if self.steps <= self.cyclic_end_step:  # cyclic density phase
-                        self.current_cycle, cycle_position = self.get_current_cycle_info()    # check which cycle it is currently in
-
-                        self.next_density = self.calculate_cyclic_density(cycle_position, self.args.cyclic_pattern)
-
-                        cumulative_steps = sum(self.steps_per_cycle[:self.current_cycle + 1])
-                        if self.steps > cumulative_steps:
-                            self.current_cycle += 1
-
-                        # calculate cycle position
-                        # cycle_step = (self.steps - 1) % self.steps_per_cycle[self.current_cycle]
-                        cycle_step = self.steps - cumulative_steps - 1
-                        cycle_position = cycle_step / self.steps_per_cycle[self.current_cycle]
+                        cycle_position = self.get_cycle_position()    # check which cycle it is currently in
 
                         self.next_density = self.calculate_cyclic_density(cycle_position, self.args.cyclic_pattern)
 
