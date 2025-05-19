@@ -355,10 +355,11 @@ def main():
     parser.add_argument('--num_cycles', type=int, default=2)
     parser.add_argument('--cyclic-length', type=int, default=50)
     parser.add_argument('--density_max_multiplier', type=int, default=3)
+    parser.add_argument('--cyclic-pattern', type=str, default='cosine', choices=['cosine', 'triangular'])
     # imagenet
     parser.add_argument('--workers', type=int, default=8)
 
-    parser.add_argument('--wandb-mode', type=str, choices=("dryrun, online"), default="dryrun")
+    parser.add_argument('--wandb-mode', type=str, choices=("dryrun", "online"), default="dryrun")
     parser.add_argument('--wandb-project', type=str, default='ES2')
 
 
@@ -553,12 +554,12 @@ def main():
             if epoch >= record_epoch:
                 if args.data == 'imagenet':
                     if val_top1_acc > best_acc:
-                        print('Saving model')
+                        print('Saving model', args.save)
                         best_acc = val_top1_acc
                         torch.save(model.state_dict(), args.save)
                 else:
                     if val_acc > best_acc:
-                        print('Saving model')
+                        print('Saving model', args.save)
                         best_acc = val_acc
                         torch.save(model.state_dict(), args.save)
 
@@ -604,7 +605,6 @@ def main():
             evaluate(args, model, device, test_loader, is_test_set=True)
             if args.inference_speed == True:
                 inference_speed(model, device, test_loader, num_runs=100, batch_size=128)
-
 
 
         print_and_log("\nIteration end: {0}/{1}\n".format(i + 1, args.iters))

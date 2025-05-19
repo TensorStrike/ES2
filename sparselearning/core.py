@@ -84,6 +84,7 @@ class Masking(object):
         self.cyclic_end_step = 0        # step when cyclic density ends
         self.steps_per_cycle = []
         self.current_cycle = 0
+        self.cyclic_pattern = args.cyclic_pattern
 
     def init(self, mode='ERK', density=0.05, erk_power_scale=1.0):
             self.density = density
@@ -192,6 +193,30 @@ class Masking(object):
 
             print('Total parameters (trainable) under sparsity level of {0}: {1}'.format(self.density, sparse_size / total_size))
 
+    def calculate_cyclic_density(self, cycle_position, pattern='cosine'):
+        # cumulative_steps = sum(self.steps_per_cycle[:self.current_cycle + 1])
+        # cycle_step = self.steps - cumulative_steps - 1
+        # cycle_position = cycle_step / self.steps_per_cycle[self.current_cycle]
+        #
+        # # calculate density using cosine
+        # density_range = self.density_max - self.density_min
+        # self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+
+        density_range = self.density_max - self.density_min
+        if pattern == 'cosine':
+            density_factor = 0.5 * (1 - math.cos(2 * math.pi * cycle_position))
+        elif pattern == 'triangular':
+            # Triangular wave: starts at min, goes to max at midpoint, returns to min
+            if cycle_position <= 0.5:
+                # First half: linear increase from 0 to 1
+                density_factor = 2 * cycle_position
+            else:
+                density_factor = 2 * (1 - cycle_position)
+
+        else:
+            raise ValueError(f"Unknown cyclic pattern: {pattern}")
+
+        return self.density_min + density_range * density_factor
 
     def step(self):
         self.optimizer.step()
@@ -214,9 +239,7 @@ class Masking(object):
                         cycle_step = self.steps - cumulative_steps - 1
                         cycle_position = cycle_step / self.steps_per_cycle[self.current_cycle]
 
-                        # calculate density using cosine
-                        density_range = self.density_max - self.density_min
-                        self.next_density = self.density_min + 0.5 * density_range * (1 - math.cos(2 * math.pi * cycle_position))
+                        self.next_density = self.calculate_cyclic_density(cycle_position, self.args.cyclic_pattern)
 
                         print('Current cycle: ', self.current_cycle)
                         # print('Cycle step:', cycle_step)
