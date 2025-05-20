@@ -151,7 +151,7 @@ class Masking(object):
 
                 epsilon = expected_active_params / total_raw_prob               # scaling factor
 
-                min_density = 0.1 * self.density                         # to prevent from layer pruned entirely
+                # min_density = 0.1 * self.density                         # to prevent from layer pruned entirely
 
                 total_nonzero = 0
                 for name, mask in self.masks.items():
@@ -407,7 +407,7 @@ class Masking(object):
 
         epsilon = expected_active_params / total_raw_prob
 
-        min_density = 0.1 * self.get_metrics()['overall_density']   # to prevent layer collapse
+        # min_density = 0.1 * self.get_metrics()['overall_density']   # to prevent layer collapse
 
         # compute a dict for target densities for all layers
         density_dict = {}
