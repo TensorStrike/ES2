@@ -407,7 +407,7 @@ class Masking(object):
 
         epsilon = expected_active_params / total_raw_prob
 
-        min_density = 0.01 * self.get_metrics()['overall_density']   # to prevent layer collapse
+        min_density = 0.01 * desired_density  # to prevent layer collapse
 
         # compute a dict for target densities for all layers
         density_dict = {}
