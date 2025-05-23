@@ -500,7 +500,7 @@ def main():
             mask.add_module(model, sparse_init=args.sparse_init, density=density)
 
         if args.cyclic:
-            record_epoch = max(mask.cyclic_end_step/len(train_loader), end_ghost_epoch)  # record best model after this epoch
+            record_epoch = max(mask.cyclic_end_step//len(train_loader), end_ghost_epoch)  # record best model after this epoch
         else:
             record_epoch = end_ghost_epoch
         best_acc = 0.0
