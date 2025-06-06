@@ -383,7 +383,9 @@ class Masking(object):
     #         self.ERK_prune()
 
     def prune_regrow(self):
-        current_density = self.get_metrics()['overall_density']
+        # current_density = self.get_metrics()['overall_density']
+        current_density = self.get_metrics()['normal_density']
+
         desired_density = self.next_density
         if desired_density < current_density:
             self.ERK_prune(desired_density)
