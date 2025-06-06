@@ -396,6 +396,36 @@ class Masking(object):
             self.ERK_grow(desired_density)
 
 
+    # def ERK_density_dict(self, desired_density, erk_power_scale=1.0):
+    #     target_density = desired_density
+    #     total_params = sum(mask.numel() for mask in self.masks.values())
+    #     expected_active_params = int(total_params * target_density)
+    #
+    #     raw_probabilities = {}
+    #     total_raw_prob = 0.0
+    #
+    #     for name, mask in self.masks.items():
+    #         n_param = mask.numel()
+    #         # np.prod(mask.shape) is the total number of params
+    #         raw_prob = (np.sum(mask.shape) / np.prod(mask.shape)) ** erk_power_scale
+    #         raw_probabilities[name] = raw_prob
+    #         total_raw_prob += raw_prob * n_param
+    #
+    #     epsilon = expected_active_params / total_raw_prob
+    #
+    #     min_density = 0.01 * desired_density  # to prevent layer collapse
+    #
+    #     # compute a dict for target densities for all layers
+    #     density_dict = {}
+    #
+    #     for name, mask in self.masks.items():
+    #         prob_one = epsilon * raw_probabilities[name]
+    #         prob_one = max(prob_one, min_density)
+    #         prob_one = min(prob_one, 1.0)
+    #         density_dict[name] = prob_one
+    #
+    #     return density_dict
+
     def ERK_density_dict(self, desired_density, erk_power_scale=1.0):
         target_density = desired_density
         total_params = sum(mask.numel() for mask in self.masks.values())
@@ -413,7 +443,7 @@ class Masking(object):
 
         epsilon = expected_active_params / total_raw_prob
 
-        min_density = 0.01 * desired_density  # to prevent layer collapse
+        min_density = 0.6 * self.get_metrics()['overall_density']
 
         # compute a dict for target densities for all layers
         density_dict = {}
@@ -425,6 +455,57 @@ class Masking(object):
             density_dict[name] = prob_one
 
         return density_dict
+    # def ERK_prune(self, desired_density):
+    #     '''
+    #     prunes based on ERK principle
+    #     '''
+    #
+    #     # compute a dict for target densities for all layers
+    #     density_dict = self.ERK_density_dict(desired_density)
+    #
+    #     # prune based on the dict
+    #     for module in self.modules:
+    #         for name, weight in module.named_parameters():
+    #             if name in self.masks:
+    #                 target_density = density_dict.get(name, 1.0)
+    #                 n_total = self.masks[name].numel()
+    #                 n_ones = int(target_density * n_total)
+    #                 x, idx = torch.sort(torch.abs(weight.data.view(-1)))
+    #                 mask_flat = self.masks[name].view(-1)
+    #                 mask_flat.zero_()
+    #                 if n_ones > 0:
+    #                     mask_flat[idx[-n_ones:]] = 1.0
+    #                 self.masks[name] = mask_flat.view_as(self.masks[name])
+    #
+    #     self.apply_mask()
+    #
+    # def ERK_grow(self, desired_density):
+    #     density_dict = self.ERK_density_dict(desired_density)
+    #
+    #     for module in self.modules:
+    #         for name, weight in module.named_parameters():
+    #             if name in self.masks:
+    #                 target_density = density_dict.get(name, 1.0)
+    #                 n_total = self.masks[name].numel()
+    #                 n_ones = int(target_density * n_total)
+    #                 current_n_ones = int(self.masks[name].sum().item())
+    #                 n_to_grow = n_ones - current_n_ones     # grow this many back
+    #
+    #                 # if n_to_grow > 0:
+    #                 #     new_mask = self.gradient_growth(name, self.masks[name], weight)     # updated mask after apply gradient-based regrowth
+    #                 #     self.masks[name] = new_mask.view_as(self.masks[name])           # reshape back to original shape
+    #
+    #                 if n_to_grow > 0:
+    #                     grad = self.get_gradient_for_weights(weight)
+    #                     grad = grad * (self.masks[name] == 0).float()  # Consider only zeroed weights
+    #                     y, idx = torch.sort(torch.abs(grad).flatten(), descending=True)
+    #                     n_to_grow = min(n_to_grow, (self.masks[name] == 0).sum().item())
+    #
+    #                     mask_flat = self.masks[name].view(-1)
+    #                     mask_flat[idx[:n_to_grow]] = 1.0
+    #                     self.masks[name] = mask_flat.view_as(self.masks[name])
+    #
+    #     self.apply_mask()
 
     def ERK_prune(self, desired_density):
         '''
@@ -460,7 +541,7 @@ class Masking(object):
                     n_total = self.masks[name].numel()
                     n_ones = int(target_density * n_total)
                     current_n_ones = int(self.masks[name].sum().item())
-                    n_to_grow = n_ones - current_n_ones     # grow this many back
+                    n_to_grow = n_ones - current_n_ones  # grow this many back
 
                     # if n_to_grow > 0:
                     #     new_mask = self.gradient_growth(name, self.masks[name], weight)     # updated mask after apply gradient-based regrowth
@@ -477,8 +558,6 @@ class Masking(object):
                         self.masks[name] = mask_flat.view_as(self.masks[name])
 
         self.apply_mask()
-
-
 
     def truncate_weights(self):
         for module in self.modules:
