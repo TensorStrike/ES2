@@ -387,6 +387,7 @@ class Masking(object):
         # current_density = self.get_metrics()['normalized_density']
 
         desired_density = self.next_density
+        print('current: ',current_density, 'desired: ',desired_density)
         if desired_density < current_density:
             print('===================PRUNING==================')
             self.ERK_prune(desired_density)
